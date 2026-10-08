@@ -11,35 +11,47 @@
   "n:97c978e80245": "2026-10-08T18:32:19Z",
   "n:f3f0f7e15ce7": "2026-10-08T18:32:19Z",
   "n:a9e2999942d6": "2026-10-08T18:32:19Z",
-  "n:9bf16ba87227": "2026-10-08T18:32:19Z"
+  "n:9bf16ba87227": "2026-10-08T18:32:19Z",
+  "x:2108232145269346635": "2026-10-08T18:49:18Z",
+  "x:2108181366193918114": "2026-10-08T18:49:18Z",
+  "x:2108142885421957558": "2026-10-08T18:49:18Z",
+  "x:2108250263827976596": "2026-10-08T18:49:18Z",
+  "x:2108212230500057432": "2026-10-08T18:49:18Z",
+  "x:2108211297334518089": "2026-10-08T18:49:18Z",
+  "x:2108209999272960329": "2026-10-08T18:49:18Z",
+  "x:2108172937022828905": "2026-10-08T18:49:18Z",
+  "x:2108143970891051340": "2026-10-08T18:49:18Z",
+  "x:2108105256743686341": "2026-10-08T18:49:18Z",
+  "n:4db8aac990d6": "2026-10-08T18:49:18Z"
  },
  "slots_done": [],
  "spend": {
   "2026-10": {
-   "usd": 3.3548,
-   "calls": 33,
-   "x_posts": 11,
+   "usd": 4.6973,
+   "calls": 42,
+   "x_posts": 139,
    "x_users": 172,
-   "web_searches": 42
+   "web_searches": 53
   }
  },
  "last_etf_pull": "2026-10-08T18:11:21Z",
  "positioning": {
-  "as_of": "2026-10-08T18:35:13Z",
-  "funding_rate": 0.002291,
-  "funding_pctile_30d": 0.23,
-  "open_interest_usd": 3063608477,
-  "oi_change_24h_pct": -9.06
+  "as_of": "2026-10-08T18:40:46Z",
+  "funding_rate": 0.002458,
+  "funding_pctile_30d": 0.24,
+  "open_interest_usd": 3069963240,
+  "oi_change_24h_pct": -8.87
  },
  "feed_errors": [],
- "last_x_scan": null,
- "last_news_scan": null,
+ "last_x_scan": "2026-10-08T18:40:46Z",
+ "last_news_scan": "2026-10-08T18:40:46Z",
  "theme_states": {
-  "sup": "Ripple moved 200 million XRP between its own addresses; XRPL payment volume was 858 million XRP, near average.",
-  "corp": "Schwartz is set to speak at Swell Oct. 28; Korean custody review is not a launch; Custody and Prime updates reported.",
-  "pay": "An XRPL proposal would allow delegated account permissions; payment volume was 858 million XRP, near average.",
-  "col": "Brevan Howard prime deal discloses no XRP allocation.",
-  "tok": "Meritz and Ripple to review Korean custody, not a launch.",
-  "stb": "Listed items did not report RLUSD or other XRPL stablecoin developments."
+  "stb": "Trackers cited RLUSD burns of 10 million, 14.52 million and 20 million on XRPL, plus 10 million on Ethereum.",
+  "sup": "Ripple was reported to move 200 million XRP between its own addresses.",
+  "etf": "An outlet said spot XRP ETF inflows cooled as custody names grew.",
+  "pay": "XRPL payment volume was reported at 858 million XRP, near average.",
+  "corp": "Custody 1.43 was reported to support Canton assets; Ripple Prime, to finance leveraged U.S. stock ETFs.",
+  "col": "A Brevan Howard prime deal was reported to disclose no XRP allocation.",
+  "tok": "Meritz and Ripple were reported to review Korean custody, not a launch."
  }
 }
