@@ -16,33 +16,30 @@
  "slots_done": [],
  "spend": {
   "2026-10": {
-   "usd": 2.8804,
-   "calls": 25,
+   "usd": 3.3548,
+   "calls": 33,
    "x_posts": 11,
    "x_users": 172,
-   "web_searches": 24
+   "web_searches": 42
   }
  },
  "last_etf_pull": "2026-10-08T18:11:21Z",
  "positioning": {
-  "as_of": "2026-10-08T18:20:27Z",
-  "funding_rate": 0.001681,
-  "funding_pctile_30d": 0.2,
-  "open_interest_usd": 3035365823,
-  "oi_change_24h_pct": -9.9
+  "as_of": "2026-10-08T18:35:13Z",
+  "funding_rate": 0.002291,
+  "funding_pctile_30d": 0.23,
+  "open_interest_usd": 3063608477,
+  "oi_change_24h_pct": -9.06
  },
- "feed_errors": [
-  "Ripple Insights: HTTP 404 from https://ripple.com/insights/feed/",
-  "XRPL Blog: HTTP 404 from https://xrpl.org/blog/rss.xml"
- ],
- "last_x_scan": null,
- "last_news_scan": "2026-10-08T18:20:26Z",
+ "feed_errors": [],
+ "last_x_scan": "2026-10-08T18:35:13Z",
+ "last_news_scan": "2026-10-08T18:35:13Z",
  "theme_states": {
-  "sup": "Ripple moved 200 million XRP between its own addresses; payment volume was near average.",
-  "corp": "Ripple set a Swell speech and reported custody and prime updates; no allocation or Korean launch.",
-  "pay": "XRPL payment volume printed 858 million XRP, near average; delegated account permissions were proposed.",
-  "col": "A Brevan Howard prime deal disclosed no XRP allocation.",
-  "tok": "Meritz and Ripple will review Korean custody, and the review is not a launch.",
-  "stb": "No item this week reported RLUSD or other stablecoin activity on the XRP Ledger."
+  "sup": "Ripple moved 200 million XRP between its own addresses; XRPL payment volume was 858 million XRP, near average.",
+  "corp": "Schwartz is set to speak at Swell Oct. 28; Korean custody review is not a launch; Custody and Prime updates reported.",
+  "pay": "An XRPL proposal would allow delegated account permissions; payment volume was 858 million XRP, near average.",
+  "col": "Brevan Howard prime deal discloses no XRP allocation.",
+  "tok": "Meritz and Ripple to review Korean custody, not a launch.",
+  "stb": "Listed items did not report RLUSD or other XRPL stablecoin developments."
  }
 }
