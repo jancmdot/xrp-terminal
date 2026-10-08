@@ -27,7 +27,11 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     steps:
+      # Check out the newest main, not the commit the run was queued on: a run that waited behind
+      # another one must start from that run's saved data, or its own results won't merge.
       - uses: actions/checkout@v5
+        with:
+          ref: main
 
       - uses: actions/setup-python@v6
         with:
@@ -51,5 +55,13 @@ jobs:
           [ -f data.json ] && git add data.json
           if git diff --cached --quiet; then echo "No changes"; exit 0; fi
           git commit -m "data: ${{ inputs.task || 'auto' }} $(date -u +%Y-%m-%dT%H:%MZ)"
-          for i in 1 2 3; do git pull --rebase --quiet && git push --quiet && exit 0; sleep 5; done
+          for i in 1 2 3; do
+            git pull --rebase --quiet && git push --quiet && exit 0
+            git rebase --abort 2>/dev/null || true
+            sleep 5
+          done
+          # Still conflicting: keep this run's results on a side branch instead of losing them
+          b="data-unmerged-$(date -u +%Y%m%d-%H%M)"
+          git push --quiet origin HEAD:refs/heads/$b
+          echo "::error::Results couldn't be merged into main; saved on branch $b"
           exit 1

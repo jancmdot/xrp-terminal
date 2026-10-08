@@ -702,6 +702,9 @@ async function loadData(){
 /* =====================================================================
    ETF PANEL
    ===================================================================== */
+// Days the source has actually reported (a day with no figures yet is kept out of the math)
+const etfRows = () => (DATA.etf && Array.isArray(DATA.etf.daily) ? DATA.etf.daily : []).filter(d => d.reported !== false && d.net_flow_usd != null);
+
 function etfStats(daily){
   const flows = daily.map(d => d.net_flow_usd);
   const last = daily[daily.length-1];
@@ -731,7 +734,8 @@ function etfStats(daily){
 
 function renderEtf(){
   const {etf} = DATA;
-  if (!etf || !Array.isArray(etf.daily) || etf.daily.length < 2){
+  const rowsR = etfRows();
+  if (!etf || rowsR.length < 2){
     $("#etf-asof").textContent = "";
     $("#etf-kpis").innerHTML = "";
     $("#etf-read").innerHTML = `<div class="empty">ETF flows aren't connected yet. They appear after the first nightly pull once the ETF data key is added.</div>`;
@@ -740,7 +744,9 @@ function renderEtf(){
     return;
   }
   $(".etf-chart-wrap").hidden = false;
-  const st = etfStats(etf.daily);
+  const st = etfStats(rowsR);
+  const lastRaw = etf.daily[etf.daily.length-1];
+  const pending = lastRaw && lastRaw.reported === false ? lastRaw.date : null;
   $("#etf-asof").textContent = "as of " + NY_MD.format(new Date(etf.as_of + "T16:00:00-04:00"));
   const streakTxt = st.sg === 0 ? "flat" : st.streak + "d " + (st.sg > 0 ? "in" : "out");
   const sizeKpi = st.hasAum
@@ -753,6 +759,7 @@ function renderEtf(){
     <div class="kpi"><div class="k">Streak</div><div class="v ${st.sg>0?"up":st.sg<0?"down":"flat"}">${streakTxt}</div><div class="s">z ${st.z>=0?"+":"−"}${Math.abs(st.z).toFixed(1)} vs 30d</div></div>`;
 
   const pts = [];
+  if (pending) pts.push(`Flows for ${NY_MD.format(new Date(pending + "T16:00:00-04:00"))} haven't been reported yet, so these figures run through ${NY_MD.format(new Date(st.last.date + "T16:00:00-04:00"))}.`);
   pts.push(`Over 20 trading days funds took in ${fmtUsd(st.s20)}${st.s20pct == null ? "" : `, which is ${fmtPct(st.s20pct,1)} ${st.baseName}`}.`);
   if (Math.abs(st.z) >= 2) pts.push(`The last print is unusual for this product (${st.z>0?"+":"−"}${Math.abs(st.z).toFixed(1)} standard deviations from the 30-day mean). Treat it as a short-term signal until it repeats.`);
   else pts.push(`The last print is within the normal range (${st.z>=0?"+":"−"}${Math.abs(st.z).toFixed(1)} standard deviations from the 30-day mean), so it doesn't change the trend read on its own.`);
@@ -773,7 +780,7 @@ function renderEtf(){
     <div class="rule">Rule applied: ${esc(st.rule)}. Trend strength = 20-day sum as a share ${st.hasAum ? "of fund assets" : "of cumulative inflows"} (low &lt; 0.5%, high &gt; 2%).</div>`;
 
   // fund table: sized by AUM when available, otherwise by cumulative net flow
-  const last5 = etf.daily.slice(-5);
+  const last5 = rowsR.slice(-5);
   const sizeKey = st.hasAum ? "aum_usd" : "cum_flow_usd";
   const rows = (etf.funds || []).map(f => {
     const day = (st.last.by_fund || {})[f.ticker];
@@ -789,7 +796,8 @@ function renderEtf(){
 
 let etfChart = null;
 function drawEtfChart(){
-  if (!window.LightweightCharts || !DATA.etf || !Array.isArray(DATA.etf.daily) || DATA.etf.daily.length < 2) return;
+  const rowsR = etfRows();
+  if (!window.LightweightCharts || rowsR.length < 2) return;
   const el = $("#etfchart"); el.innerHTML = "";
   const up = cssv("--up"), down = cssv("--down"), amber = cssv("--amber");
   etfChart = LightweightCharts.createChart(el, {
@@ -804,10 +812,10 @@ function drawEtfChart(){
     localization:{priceFormatter: v => fmtUsd(v)}
   });
   const bars = etfChart.addHistogramSeries({priceLineVisible:false, lastValueVisible:false, priceFormat:{type:"custom", formatter:v=>fmtUsd(v)}});
-  bars.setData(DATA.etf.daily.map(d => ({time:d.date, value:d.net_flow_usd, color: d.net_flow_usd >= 0 ? up : down})));
+  bars.setData(rowsR.map(d => ({time:d.date, value:d.net_flow_usd, color: d.net_flow_usd >= 0 ? up : down})));
   const cum = etfChart.addLineSeries({color:amber, lineWidth:2, priceScaleId:"cum", priceLineVisible:false, lastValueVisible:false, crosshairMarkerVisible:false});
   cum.priceScale().applyOptions({scaleMargins:{top:0.12, bottom:0.4}, visible:false});
-  cum.setData(DATA.etf.daily.map(d => ({time:d.date, value:d.cum_flow_usd})));
+  cum.setData(rowsR.map(d => ({time:d.date, value:d.cum_flow_usd})));
   etfChart.timeScale().fitContent();
 }
 

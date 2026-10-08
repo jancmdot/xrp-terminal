@@ -119,7 +119,6 @@ def etf_flows() -> dict:
     daily, cum, tickers, fund_cum = [], 0.0, [], {}
     for r in rows:
         d = dt.datetime.fromtimestamp((r.get("timestamp") or 0) / 1000, UTC).strftime("%Y-%m-%d")
-        net = float(r.get("flow_usd") or 0)
         by = {}
         for f in r.get("etf_flows") or []:
             t = f.get("etf_ticker")
@@ -127,14 +126,22 @@ def etf_flows() -> dict:
                 continue
             if t not in tickers:
                 tickers.append(t)
-            v = float(f.get("flow_usd") or 0)
+            # CoinGlass leaves flow_usd out when a fund has no figure yet; keep that apart from a real $0
+            if f.get("flow_usd") is None:
+                by[t] = None
+                continue
+            v = float(f["flow_usd"])
             by[t] = round(v)
             fund_cum[t] = fund_cum.get(t, 0) + v
-        cum += net
-        daily.append({"date": d, "net_flow_usd": round(net), "cum_flow_usd": round(cum), "total_aum_usd": None,
-                      "price_usd": r.get("price_usd"), "spot_volume_usd": round(vol[d]) if d in vol else None, "by_fund": by})
+        reported = any(v is not None for v in by.values()) if by else r.get("flow_usd") is not None
+        net = float(r.get("flow_usd") or 0) if reported else None
+        cum += net or 0
+        daily.append({"date": d, "reported": reported, "net_flow_usd": round(net) if net is not None else None,
+                      "cum_flow_usd": round(cum), "total_aum_usd": None, "price_usd": r.get("price_usd"),
+                      "spot_volume_usd": round(vol[d]) if d in vol else None, "by_fund": by})
     funds = [{"ticker": t, "issuer": ISSUERS.get(t, ""), "aum_usd": None, "cum_flow_usd": round(fund_cum.get(t, 0))} for t in tickers]
-    return {"as_of": daily[-1]["date"] if daily else None, "funds": funds, "daily": daily[-60:],
+    rep = [x for x in daily if x["reported"]]
+    return {"as_of": rep[-1]["date"] if rep else None, "funds": funds, "daily": daily[-60:],
             "aum_available": False, "flows_since": daily[0]["date"] if daily else None}
 
 

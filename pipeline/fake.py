@@ -143,6 +143,9 @@ def _coinglass(path, q):
             f = [("XRPC", 2e6), ("XRPZ", 4e6 + i * 1e5), ("XRP", 3e6), ("GXRP", -1e6 if i % 7 == 0 else 1e6), ("TOXR", 0)]
             rows.append({"timestamp": int(d.timestamp() * 1000), "flow_usd": sum(v for _, v in f), "price_usd": 2.3,
                          "etf_flows": [{"etf_ticker": t, "flow_usd": v} if v else {"etf_ticker": t} for t, v in f]})
+        # today, not reported yet: per-fund figures missing
+        rows.append({"timestamp": int(day.timestamp() * 1000), "flow_usd": 0, "price_usd": 2.3,
+                     "etf_flows": [{"etf_ticker": t} for t in ("XRPC", "XRPZ", "XRP", "GXRP", "TOXR")]})
         return {"code": "0", "data": rows}
     n = int(q.get("limit", 180))
     t0 = int(now_utc().timestamp() * 1000)

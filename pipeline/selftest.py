@@ -56,6 +56,9 @@ def main() -> int:
     check("24h reactions filled", all((i.get("reaction") or {}).get("vs_btc_24h") is not None for i in data["items"]))
     check("ETF daily rows present", data["etf"] and len(data["etf"]["daily"]) > 20)
     check("ETF per-fund flows present", "XRPZ" in data["etf"]["daily"][-1]["by_fund"])
+    check("unreported ETF day kept apart from $0", data["etf"]["daily"][-1]["reported"] is False
+          and data["etf"]["daily"][-1]["net_flow_usd"] is None and data["etf"]["as_of"] == data["etf"]["daily"][-2]["date"])
+    check("$0 fund flow kept as 0, missing as null", data["etf"]["daily"][-2]["by_fund"].get("TOXR") is None)
     check("spend recorded", data["meta"]["spend"]["usd"] > 0)
     check("theme states written", any(v["state"] for v in data["themes"].values()))
     check("theories copied", len(data["theories"]) == 5)
