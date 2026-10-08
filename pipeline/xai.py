@@ -4,8 +4,9 @@ from __future__ import annotations
 import json
 import os
 import re
+import threading
 
-from .util import http, log, now_utc
+from .util import HttpError, http, log, now_utc
 
 
 class BudgetExceeded(RuntimeError):
@@ -19,6 +20,7 @@ class Budget:
         self.state = state
         self.cfg = settings["budget"]
         self.month = now_utc().strftime("%Y-%m")
+        self.lock = threading.Lock()
         self.state.setdefault("spend", {}).setdefault(self.month, {"usd": 0.0, "calls": 0, "x_posts": 0, "x_users": 0, "web_searches": 0})
 
     @property
@@ -44,12 +46,13 @@ class Budget:
         webs = int(tools.get("web_search_calls") or 0)
         usd = ((inp - cached) * c["price_input_per_m"] + cached * c["price_cached_input_per_m"] + out * c["price_output_per_m"]) / 1e6
         usd += posts * c["price_x_post"] + users * c["price_x_user"] + webs * c["price_web_search"]
-        m = self.m
-        m["usd"] = round(m["usd"] + usd, 4)
-        m["calls"] += 1
-        m["x_posts"] += posts
-        m["x_users"] += users
-        m["web_searches"] += webs
+        with self.lock:
+            m = self.m
+            m["usd"] = round(m["usd"] + usd, 4)
+            m["calls"] += 1
+            m["x_posts"] += posts
+            m["x_users"] += users
+            m["web_searches"] += webs
         log.info("grok %-22s in=%d out=%d posts=%d users=%d web=%d  ≈$%.3f  (month $%.2f / $%s)",
                  label, inp, out, posts, users, webs, usd, m["usd"], c["monthly_usd"])
         return usd
@@ -65,7 +68,10 @@ class Grok:
     def available(self) -> bool:
         return bool(self.key)
 
-    def respond(self, *, system: str, user: str, schema: dict, name: str, tools: list | None = None, label: str = "") -> tuple[dict, dict]:
+    no_effort = False      # set if the model rejects the reasoning-effort setting
+
+    def respond(self, *, system: str, user: str, schema: dict, name: str, tools: list | None = None, label: str = "",
+                effort: str | None = None) -> tuple[dict, dict]:
         """One Responses API call with a JSON schema. Returns (parsed, info) where info has citations and cost."""
         self.budget.check()
         body = {
@@ -76,9 +82,20 @@ class Grok:
         }
         if tools:
             body["tools"] = tools
-        r = http("POST", f"{self.cfg['base_url'].rstrip('/')}/responses",
-                 headers={"Authorization": f"Bearer {self.key}", "Content-Type": "application/json"},
-                 json=body, timeout=self.cfg.get("timeout_s", 240), retries=1)
+        if effort and not Grok.no_effort:
+            body["reasoning"] = {"effort": effort}
+        url = f"{self.cfg['base_url'].rstrip('/')}/responses"
+        headers = {"Authorization": f"Bearer {self.key}", "Content-Type": "application/json"}
+        try:
+            r = http("POST", url, headers=headers, json=body, timeout=self.cfg.get("timeout_s", 240), retries=1)
+        except HttpError as e:
+            if e.status == 400 and "reasoning" in body and "reason" in (e.body or "").lower():
+                log.info("model doesn't take a reasoning-effort setting; continuing without it")
+                Grok.no_effort = True
+                body.pop("reasoning")
+                r = http("POST", url, headers=headers, json=body, timeout=self.cfg.get("timeout_s", 240), retries=1)
+            else:
+                raise
         data = r.json()
         cost = self.budget.add(data.get("usage"), label or name)
         for it in data.get("output") or []:

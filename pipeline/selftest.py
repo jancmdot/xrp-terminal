@@ -61,6 +61,7 @@ def main() -> int:
     check("unreported ETF day kept apart from $0", data["etf"]["daily"][-1]["reported"] is False
           and data["etf"]["daily"][-1]["net_flow_usd"] is None and data["etf"]["as_of"] == data["etf"]["daily"][-2]["date"])
     check("$0 fund flow kept as 0, missing as null", data["etf"]["daily"][-2]["by_fund"].get("TOXR") is None)
+    check("immaterial items capped at low", all(i["impact"]["tier"] in ("low", "noise") for i in data["items"] if "amendment" in i["headline"].lower()))
     check("spend recorded", data["meta"]["spend"]["usd"] > 0)
     check("theme states written", any(v["state"] for v in data["themes"].values()))
     check("theories copied", len(data["theories"]) == 5)

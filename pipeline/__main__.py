@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import sys
+from concurrent.futures import ThreadPoolExecutor
 
 from . import classify, markets, news, store, xscan
 from .util import DATA_DIR, NY, iso, load_yaml, log, now_utc, parse_iso, save_json, setup_logging
@@ -48,22 +49,25 @@ def run_scan(grok: Grok, state: dict, evs: dict, settings: dict, web: bool = Tru
 
     cands, x_ok = [], False
     x_since = window_start(state.get("last_x_scan"))
-    try:
-        cands += xscan.signal_scan(grok, handles, x_since)
-        cands += xscan.discovery_scan(grok, handles, x_since, settings["xai"]["discovery_max_posts"])
-        x_ok = True
-    except BudgetExceeded as e:
-        log.warning("%s", e)
-
     n_since = window_start(state.get("last_news_scan"))
-    rss, errors = news.rss_items(feeds, settings["feed"]["keywords"], n_since)
-    cands += rss
-    state["feed_errors"] = errors
-    if web:
+    # The account groups, the discovery search and the web news search are independent: run them together
+    with ThreadPoolExecutor(max_workers=3) as ex:
+        f_sig = ex.submit(xscan.signal_scan, grok, handles, x_since)
+        f_dis = ex.submit(xscan.discovery_scan, grok, handles, x_since, settings["xai"]["discovery_max_posts"])
+        f_web = ex.submit(news.web_items, grok, n_since, settings["xai"].get("web_news_max_searches", 4)) if web else None
+        rss, errors = news.rss_items(feeds, settings["feed"]["keywords"], n_since)
         try:
-            cands += news.web_items(grok, n_since, settings["xai"].get("web_news_max_searches", 4))
+            cands += f_sig.result() + f_dis.result()
+            x_ok = True
         except BudgetExceeded as e:
             log.warning("%s", e)
+        if f_web:
+            try:
+                cands += f_web.result()
+            except BudgetExceeded as e:
+                log.warning("%s", e)
+    cands += rss
+    state["feed_errors"] = errors
 
     # de-duplicate against this batch, earlier runs and the event log
     fresh, keys = [], set()
@@ -152,6 +156,8 @@ def main(argv: list[str] | None = None) -> int:
             run_etf(state)
     finally:
         state["slots_done"] += slots
+        for e in evs.values():
+            classify.rescore(e, settings["rubric"])
         try:
             filled = markets.fill_reactions(evs, markets.Candles())
             if filled:

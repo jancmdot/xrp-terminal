@@ -81,7 +81,15 @@ def score(r: dict, rubric: dict) -> tuple[int, str]:
          rubric["novelty"].get(r["novelty"], 0) + rubric["size"].get(r["size"], 0) + rubric["scope"].get(r["scope"], 0))
     t = rubric["tiers"]
     tier = "high" if s >= t["high"] else "medium" if s >= t["medium"] else "low" if s >= t["low"] else "noise"
+    if tier in ("high", "medium") and r["size"] in rubric.get("cap_low_for_size", []):
+        tier = "low"          # well-sourced but immaterial: can't move price much on its own
     return s, tier
+
+
+def rescore(e: dict, rubric: dict) -> None:
+    """Recompute a logged event's tier from its stored fields, so rubric changes apply to the whole log."""
+    r = {"source_tier": e["source"]["tier"], "status": e["status"], **e["rubric"]}
+    e["score"], e["impact"]["tier"] = score(r, rubric)
 
 
 def _candidate_line(cid: str, c: dict) -> dict:
@@ -119,7 +127,7 @@ def rate(grok: Grok, candidates: list[dict], recent: list[dict], positioning: st
             "instructions": "Rate every candidate. Return one entry per cid. If account_tier_from_config is given, use it as source_tier.",
         }, ensure_ascii=False)
         try:
-            data, _ = grok.respond(system=SYSTEM, user=user, schema=RATING_SCHEMA, name="ratings", label="rate")
+            data, _ = grok.respond(system=SYSTEM, user=user, schema=RATING_SCHEMA, name="ratings", label="rate", effort="low")
         except Exception as e:
             log.warning("rating batch failed: %s", e)
             if e.__class__.__name__ == "BudgetExceeded":
@@ -163,7 +171,7 @@ def theme_states(grok: Grok, items: list[dict]) -> dict:
                        "themes": {k: v[-15:] for k, v in by.items()}}, ensure_ascii=False)
     try:
         data, _ = grok.respond(system="You summarize news themes for an objective trading terminal. " + THEME_GUIDE,
-                               user=user, schema=STATES_SCHEMA, name="states", label="theme-states")
+                               user=user, schema=STATES_SCHEMA, name="states", label="theme-states", effort="low")
     except Exception as e:
         log.warning("theme states failed: %s", e)
         return {}

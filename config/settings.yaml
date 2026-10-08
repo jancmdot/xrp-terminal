@@ -11,7 +11,7 @@ xai:
   model: grok-4.7                 # any Grok model with x_search + structured outputs
   base_url: https://api.x.ai/v1
   timeout_s: 240
-  discovery_max_posts: 15         # asked for, not hard-enforced by the API
+  discovery_max_posts: 10         # asked for, not hard-enforced by the API
   web_news_hours_et: [7]          # Grok web news search runs on these scans (and on manual scans); it's the costly part
   web_news_max_searches: 4        # asked for, not hard-enforced; the Oct 8 test ran 18 searches (~$0.36) without a cap
 
@@ -37,6 +37,7 @@ rubric:
   size:     {large: 2, moderate: 1, small: 0, na: 0}
   scope:    {direct: 1, indirect: 0, market_wide: 0}
   tiers:    {high: 6, medium: 4, low: 1}   # score >= value; below low = noise
+  cap_low_for_size: [small, na]            # without real size, an item rates low at most
 
 base_rates:
   unlock_n: 30                    # events per theme before a probability is shown
