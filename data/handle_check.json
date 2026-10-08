@@ -1,9 +1,10 @@
 {
- "checked_at": "2026-10-08T17:54:51Z",
+ "checked_at": "2026-10-08T18:00:27Z",
  "accounts": [
   {
    "group": "Ripple & XRP Ledger",
    "handle": "Ripple",
+   "status": "found",
    "exists": true,
    "display_name": "Ripple",
    "description": "We're enabling the Internet of Value."
@@ -11,6 +12,7 @@
   {
    "group": "Ripple & XRP Ledger",
    "handle": "RippleXDev",
+   "status": "found",
    "exists": true,
    "display_name": "RippleX",
    "description": "Empowering XRP Ledger developers with infrastructure, tools & support to drive solutions & innovation."
@@ -18,34 +20,39 @@
   {
    "group": "Ripple & XRP Ledger",
    "handle": "bgarlinghouse",
+   "status": "found",
    "exists": true,
    "display_name": "Brad Garlinghouse",
-   "description": "CEO at Ripple."
+   "description": "CEO at Ripple"
   },
   {
    "group": "Ripple & XRP Ledger",
    "handle": "JoelKatz",
+   "status": "found",
    "exists": true,
    "display_name": "David 'JoelKatz' Schwartz",
-   "description": "CTO Emeritus at Ripple; one of the original architects of the XRP ledger."
+   "description": "Replacing TradFi with decentralized, censorship-resistant blockchain tech. CTO Emeritus at Ripple; one of the original architects of the XRP ledger."
   },
   {
    "group": "Ripple & XRP Ledger",
    "handle": "s_alderoty",
+   "status": "found",
    "exists": true,
    "display_name": "Stuart Alderoty",
-   "description": "Chief Legal Officer at Ripple and President of NatCryptoAssoc."
+   "description": "Chief Legal Officer @Ripple and President @NatCryptoAssoc. Over 40 years of legal experience with expertise in regulatory affairs and complex litigation."
   },
   {
    "group": "Ripple & XRP Ledger",
    "handle": "MonicaLongSF",
+   "status": "found",
    "exists": true,
    "display_name": "Monica Long",
-   "description": "President of Ripple, on a mission to enable the Internet of Value."
+   "description": "President of @Ripple. On a mission to enable the Internet of Value #IoV."
   },
   {
    "group": "Ripple & XRP Ledger",
    "handle": "XRPLF",
+   "status": "found",
    "exists": true,
    "display_name": "XRP Ledger Foundation",
    "description": "Non-profit that contributes to, grows, and advocates for the XRP Ledger and its community."
@@ -53,6 +60,7 @@
   {
    "group": "Ripple & XRP Ledger",
    "handle": "xrpl_commons",
+   "status": "found",
    "exists": true,
    "display_name": "XRPL Commons",
    "description": "Building the Commons with the XRP Ledger Community."
@@ -60,6 +68,7 @@
   {
    "group": "ETF issuers",
    "handle": "BitwiseInvest",
+   "status": "not_found",
    "exists": false,
    "display_name": null,
    "description": null
@@ -67,27 +76,31 @@
   {
    "group": "ETF issuers",
    "handle": "Grayscale",
+   "status": "found",
    "exists": true,
    "display_name": "Grayscale",
-   "description": "Grayscale, the world’s largest digital asset-focused investment platform."
+   "description": "The world’s largest digital asset-focused investment platform."
   },
   {
    "group": "ETF issuers",
    "handle": "21Shares",
+   "status": "found",
    "exists": true,
    "display_name": "21shares",
-   "description": "Pioneering crypto investments; world’s largest crypto ETP provider (US: @21Shares_US; Capital Markets: @21sharesCM)."
+   "description": "Crypto investment pioneer and the world’s largest crypto ETP provider."
   },
   {
    "group": "ETF issuers",
    "handle": "CanaryFunds",
+   "status": "found",
    "exists": true,
    "display_name": "Canary Capital",
-   "description": "Institutional digital asset solutions; risk-managed single-asset trusts and hedge funds, plus research and market commentary."
+   "description": "Institutional digital asset solutions: risk-managed single-asset trusts, hedge funds, research, and market commentary."
   },
   {
    "group": "ETF issuers",
    "handle": "FTI_US",
+   "status": "not_found",
    "exists": false,
    "display_name": null,
    "description": null
@@ -95,90 +108,103 @@
   {
    "group": "ETF analysts & flow data",
    "handle": "JSeyff",
-   "exists": false,
-   "display_name": null,
-   "description": null
+   "status": "found",
+   "exists": true,
+   "display_name": "James Seyffart",
+   "description": "Bloomberg analyst covering ETFs, crypto and asset management. Breaking down filings, flows and market structure. Views my own."
   },
   {
    "group": "ETF analysts & flow data",
    "handle": "EricBalchunas",
-   "exists": false,
-   "display_name": null,
-   "description": null
+   "status": "found",
+   "exists": true,
+   "display_name": "Eric Balchunas",
+   "description": "Senior ETF Analyst for @Bloomberg. Dad. Rutgers grad. Gen X-er. Author of \"The Institutional ETF Toolbox\" & \"The Bogle Effect.\" Co-host of Trillions & ETF IQ."
   },
   {
    "group": "ETF analysts & flow data",
    "handle": "NateGeraci",
-   "exists": false,
-   "display_name": null,
-   "description": null
+   "status": "found",
+   "exists": true,
+   "display_name": "Nate Geraci",
+   "description": "President @NovaDiusWealth, Host @ETFPrime, Co-Founder @ETF_Institute, Host @CryptoPrimePod"
   },
   {
    "group": "ETF analysts & flow data",
    "handle": "Matt_Hougan",
-   "exists": false,
-   "display_name": null,
-   "description": null
+   "status": "found",
+   "exists": true,
+   "display_name": "Matt Hougan",
+   "description": "CIO @Bitwise. Co-founder @FutureProof_HQ. Previously CEO @ETFcom. Husband, father, & runner (when I find time)."
   },
   {
    "group": "ETF analysts & flow data",
    "handle": "coinglass_com",
-   "exists": false,
-   "display_name": null,
-   "description": null
+   "status": "found",
+   "exists": true,
+   "display_name": "CoinGlass",
+   "description": "CoinGlass: Aggregated Derivative Exchange Data, including liquidation heatmap, Bitcoin futures open interest, funding rates and liquidations."
   },
   {
    "group": "ETF analysts & flow data",
    "handle": "SoSoValueCrypto",
-   "exists": false,
-   "display_name": null,
-   "description": null
+   "status": "found",
+   "exists": true,
+   "display_name": "SoSoValue",
+   "description": "Enable crypto investment for the global masses. Cut the noise, find true value."
   },
   {
    "group": "Regulators & policy reporters",
    "handle": "SECGov",
+   "status": "found",
    "exists": true,
    "display_name": "U.S. Securities and Exchange Commission",
-   "description": "Protecting investors, maintaining fair, orderly, and efficient markets, and facilitating capital formation. Led by @SECPaulSAtkins, 34th Chairman of the SEC"
+   "description": "Protecting investors, maintaining fair, orderly, and efficient markets, and facilitating capital formation. Led by @SECPaulSAtkins, 34th Chairman of the SEC."
   },
   {
    "group": "Regulators & policy reporters",
    "handle": "CFTC",
+   "status": "found",
    "exists": true,
    "display_name": "CFTC",
-   "description": "The CFTC is an independent federal regulatory agency tasked with overseeing the US derivatives markets. Hyperlinks are not endorsements."
+   "description": "The CFTC is an independent federal regulatory agency tasked with overseeing the US derivatives markets."
   },
   {
    "group": "Regulators & policy reporters",
    "handle": "HesterPeirce",
+   "status": "found",
    "exists": true,
    "display_name": "Hester Peirce",
-   "description": "SEC Commissioner since 1/2018. My tweets may not reflect the views of the SEC or any other SEC Commissioner."
+   "description": "SEC Commissioner since 1/2018. Tweets may not reflect the views of the SEC or any other SEC Commissioner."
   },
   {
    "group": "Regulators & policy reporters",
    "handle": "EleanorTerrett",
+   "status": "found",
    "exists": true,
    "display_name": "Eleanor Terrett",
-   "description": "Journalist & Host @CryptoAmerica_ • Former @FoxBusiness • Citizen of 🇺🇸🇬🇧 • Mother of Cats🐈 • Breaker of News🗞️ • THIS IS MY ONLY X ACCOUNT!"
+   "description": "Journalist and host at @CryptoAmerica_; former @FoxBusiness."
   },
   {
    "group": "Regulators & policy reporters",
    "handle": "CGasparino",
+   "status": "found",
    "exists": true,
    "display_name": "Charles Gasparino",
-   "description": "Charles Gasparino is a FOX Biz Senior Correspondent, NY Post columnist & author of Go Woke Go Broke; The Inside Story of the Radicalization of Corporate America"
+   "description": "FOX Biz Senior Correspondent, NY Post columnist, and author of Go Woke Go Broke."
   },
   {
    "group": "Wires & on-chain",
    "handle": "WuBlockchain",
-   "exists": false,
-   "display_name": null,
-   "description": null
+   "status": "found",
+   "exists": true,
+   "display_name": "Wu Blockchain",
+   "description": "Important crypto news, mainly Asia, led by Colin Wu (吴说); non-financial advice."
   },
   {
    "group": "Wires & on-chain",
    "handle": "TheBlock__",
+   "status": "not_found",
    "exists": false,
    "display_name": null,
    "description": null
@@ -186,41 +212,47 @@
   {
    "group": "Wires & on-chain",
    "handle": "CoinDesk",
-   "exists": false,
-   "display_name": null,
-   "description": null
+   "status": "found",
+   "exists": true,
+   "display_name": "CoinDesk",
+   "description": "Leading the conversation on accelerating crypto’s future."
   },
   {
    "group": "Wires & on-chain",
    "handle": "Cointelegraph",
-   "exists": false,
-   "display_name": null,
-   "description": null
+   "status": "found",
+   "exists": true,
+   "display_name": "Cointelegraph",
+   "description": "Trusted crypto media since 2013 covering news, research, podcasts, and more."
   },
   {
    "group": "Wires & on-chain",
    "handle": "DeItaone",
-   "exists": false,
-   "display_name": null,
+   "status": "found",
+   "exists": true,
+   "display_name": "*Walter Bloomberg",
    "description": null
   },
   {
    "group": "Wires & on-chain",
    "handle": "whale_alert",
-   "exists": false,
-   "display_name": null,
-   "description": null
+   "status": "found",
+   "exists": true,
+   "display_name": "Whale Alert",
+   "description": "Live reporting on large and interesting blockchain transactions as they happen."
   },
   {
    "group": "Wires & on-chain",
    "handle": "lookonchain",
-   "exists": false,
-   "display_name": null,
-   "description": null
+   "status": "found",
+   "exists": true,
+   "display_name": "Lookonchain",
+   "description": "Looking for smartmoney onchain!"
   },
   {
    "group": "Wires & on-chain",
    "handle": "xrpscan",
+   "status": "unclear",
    "exists": false,
    "display_name": null,
    "description": null
