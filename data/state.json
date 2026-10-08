@@ -9,5 +9,13 @@
    "x_users": 155,
    "web_searches": 0
   }
+ },
+ "last_etf_pull": "2026-10-08T18:11:21Z",
+ "positioning": {
+  "as_of": "2026-10-08T18:11:22Z",
+  "funding_rate": 0.001645,
+  "funding_pctile_30d": 0.19,
+  "open_interest_usd": 3007862318,
+  "oi_change_24h_pct": -10.72
  }
 }
