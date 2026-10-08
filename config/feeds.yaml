@@ -8,5 +8,5 @@ feeds:
   - {name: Cointelegraph,       url: "https://cointelegraph.com/rss", tier: t1}
   - {name: The Block,           url: "https://www.theblock.co/rss.xml", tier: t1}
   - {name: Decrypt,             url: "https://decrypt.co/feed", tier: t1}
-  - {name: Ripple Insights,     url: "https://ripple.com/insights/feed/", tier: primary}   # verify
-  - {name: XRPL Blog,           url: "https://xrpl.org/blog/rss.xml", tier: primary}      # verify
+# Ripple Insights and the XRPL blog had no working feed URL (404 on Oct 8); their news reaches the
+# feed through @Ripple / @XRPLF on X and the web news search.

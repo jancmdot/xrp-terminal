@@ -30,6 +30,8 @@ def run(root: Path, task: str, now: dt.datetime) -> str:
 def main() -> int:
     tmp = Path(tempfile.mkdtemp(prefix="xrpterm-"))
     shutil.copytree(REPO / "config", tmp / "config")
+    with open(tmp / "config" / "feeds.yaml", "a") as f:     # a feed that 404s, to test error reporting
+        f.write('  - {name: XRPL Blog, url: "https://xrpl.org/blog/rss.xml", tier: primary}\n')
     t0 = dt.datetime.now(dt.timezone.utc).replace(microsecond=0)
     checks = []
 

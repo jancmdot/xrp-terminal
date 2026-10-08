@@ -35,7 +35,7 @@
   "Ripple Insights: HTTP 404 from https://ripple.com/insights/feed/",
   "XRPL Blog: HTTP 404 from https://xrpl.org/blog/rss.xml"
  ],
- "last_x_scan": "2026-10-08T18:20:26Z",
+ "last_x_scan": null,
  "last_news_scan": "2026-10-08T18:20:26Z",
  "theme_states": {
   "sup": "Ripple moved 200 million XRP between its own addresses; payment volume was near average.",

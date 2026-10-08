@@ -99,6 +99,7 @@ def _clean(posts: list[dict], cites: list[str], since: dt.datetime, label: str) 
         })
     if dropped:
         log.info("%s: dropped %d posts without a matching search citation", label, dropped)
+    log.info("%s: %d posts returned, %d kept, %d citations", label, len(posts), len(kept), len(cites))
     return kept
 
 
@@ -107,10 +108,13 @@ def signal_scan(grok: Grok, handles_cfg: dict, since: dt.datetime) -> list[dict]
     out = []
     for g in groups_from_config(handles_cfg):
         handles = list(g["tiers"])
+        froms = " OR ".join(f"from:{h}" for h in handles)
         user = (f"Find every post from these accounts posted after {iso(since)} that is about {TOPIC}. "
                 f"Accounts: {', '.join('@' + h for h in handles)}. "
-                "Skip replies that add no information and plain reposts. If there are none, return an empty list. "
-                "Use as few searches as you need.")
+                "Use x_keyword_search with X search operators, for example: "
+                f"`(XRP OR Ripple OR XRPL OR RLUSD OR ETF) ({froms}) since:{since.strftime('%Y-%m-%d')}`, in Latest mode. "
+                "Split the accounts across a few searches if a query gets too long. "
+                "Skip replies that add no information and plain reposts. If there are none, return an empty list.")
         try:
             data, info = grok.respond(system=RETRIEVE_SYSTEM, user=user, schema=POSTS_SCHEMA, name="posts",
                                       tools=[{"type": "x_search", "allowed_x_handles": handles, **_window(since)}],
@@ -137,7 +141,10 @@ def discovery_scan(grok: Grok, handles_cfg: dict, since: dt.datetime, max_posts:
             "ETF flows or filings, regulation or court actions, Ripple corporate news, XRP Ledger adoption, RLUSD, "
             "large on-chain movements, exchange listings or delistings, bank or payment partnerships. "
             "Prefer posts from the organization involved or posts that link to a primary source. "
-            "Skip price predictions, chart analysis, giveaways and engagement bait. If there are none, return an empty list.")
+            "Skip price predictions, chart analysis, giveaways and engagement bait. "
+            "Use x_keyword_search in Latest mode with queries such as `XRP ETF`, `Ripple partnership`, `XRPL`, `RLUSD`, "
+            f"`XRP SEC`, each with `min_faves:20 since:{since.strftime('%Y-%m-%d')}`, and x_semantic_search for XRP news. "
+            "If there are none, return an empty list.")
     try:
         data, info = grok.respond(system=RETRIEVE_SYSTEM, user=user, schema=POSTS_SCHEMA, name="posts",
                                   tools=[tool], label="x:discovery")

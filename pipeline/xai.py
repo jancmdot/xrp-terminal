@@ -81,6 +81,11 @@ class Grok:
                  json=body, timeout=self.cfg.get("timeout_s", 240), retries=1)
         data = r.json()
         cost = self.budget.add(data.get("usage"), label or name)
+        for it in data.get("output") or []:
+            if it.get("type") == "message":
+                continue
+            brief = {k: v for k, v in it.items() if k not in ("id", "status", "results", "output", "content")}
+            log.info("    tool %s", json.dumps(brief, ensure_ascii=False)[:300])
         text = output_text(data)
         parsed = parse_json(text)
         cites = set(data.get("citations") or [])

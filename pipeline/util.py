@@ -25,7 +25,14 @@ log = logging.getLogger("xrpterm")
 
 
 def setup_logging() -> None:
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s", datefmt="%H:%M:%S")
+    """Console plus data/last_run.log, which is committed so a run can be reviewed without the Actions UI."""
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    fmt = logging.Formatter("%(asctime)s %(levelname)s %(message)s", datefmt="%H:%M:%S")
+    root = logging.getLogger()
+    root.setLevel(logging.INFO)
+    for h in (logging.StreamHandler(), logging.FileHandler(DATA_DIR / "last_run.log", mode="w", encoding="utf-8")):
+        h.setFormatter(fmt)
+        root.addHandler(h)
 
 
 # ---------------------------------------------------------------- time
