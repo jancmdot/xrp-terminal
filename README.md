@@ -21,7 +21,8 @@ All times New York. The workflow fires at both UTC hours that can map to a slot,
 
 | What | When |
 |---|---|
-| X scan (curated accounts + open discovery), RSS, web news, rating | 7:00, 12:00, 17:00 |
+| X scan (curated accounts + open discovery), RSS, rating | 8:00, 17:00 |
+| Web news search (Grok) | 8:00 scan only |
 | ETF flows, positioning | 20:00 (flows post after the US close) |
 | Price reactions, base rates, `data.json` rebuild | every run |
 

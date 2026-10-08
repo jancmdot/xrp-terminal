@@ -3,7 +3,7 @@
 # each slot (EDT and EST), and the pipeline runs a slot only once.
 
 schedule:
-  scan_hours_et: [7, 12, 17]      # X + news scans
+  scan_hours_et: [8, 17]          # X + news scans
   etf_hour_et: 20                 # ETF flow pull, after flows post
   late_window_hours: 1            # a delayed run still counts for its slot
 
@@ -12,7 +12,7 @@ xai:
   base_url: https://api.x.ai/v1
   timeout_s: 240
   discovery_max_posts: 10         # asked for, not hard-enforced by the API
-  web_news_hours_et: [7]          # Grok web news search runs on these scans (and on manual scans); it's the costly part
+  web_news_hours_et: [8]          # Grok web news search runs on these scans (and on manual scans); it's the costly part
   web_news_max_searches: 4        # asked for, not hard-enforced; the Oct 8 test ran 18 searches (~$0.36) without a cap
 
 budget:

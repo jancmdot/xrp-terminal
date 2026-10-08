@@ -14,6 +14,8 @@ import tempfile
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+import yaml
+
 REPO = Path(__file__).resolve().parent.parent
 
 
@@ -67,7 +69,8 @@ def main() -> int:
     check("theories copied", len(data["theories"]) == 5)
 
     # schedule: a second scan in the same slot must not run
-    ny7 = t0.astimezone(ZoneInfo("America/New_York")).replace(hour=7, minute=10, second=0)
+    first = yaml.safe_load((REPO / "config" / "settings.yaml").read_text())["schedule"]["scan_hours_et"][0]
+    ny7 = t0.astimezone(ZoneInfo("America/New_York")).replace(hour=first, minute=10, second=0)
     run(tmp, "auto", ny7.astimezone(dt.timezone.utc))
     log_b = run(tmp, "auto", (ny7 + dt.timedelta(minutes=50)).astimezone(dt.timezone.utc))
     check("slot runs only once", "tasks: reactions only" in log_b)
