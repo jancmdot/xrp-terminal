@@ -73,9 +73,39 @@ a{color:var(--info)}
 .notice-in b{font:700 var(--fs-xs)/1.6 var(--f-label);letter-spacing:.08em;color:var(--amber);white-space:nowrap}
 
 /* ---------- desk ---------- */
-.desk{max-width:1560px;margin:0 auto;padding-inline:16px;padding-block:12px 40px;display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:12px;align-items:start}
-.col{display:flex;flex-direction:column;gap:12px;min-width:0}
-@media (max-width:1100px){.desk{grid-template-columns:minmax(0,1fr)}}
+.desk{max-width:1560px;margin:0 auto;padding-inline:16px;padding-block:12px 40px;display:flex;flex-direction:column;gap:12px}
+.cols{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:12px;align-items:start}
+.cols[data-split="even"]{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.cols[data-split="right"]{grid-template-columns:minmax(0,1fr) minmax(0,1.7fr)}
+.cols.solo{grid-template-columns:minmax(0,1fr)}
+.cols.solo > .zone.is-empty{display:none}
+.zone{display:flex;flex-direction:column;gap:12px;min-width:0}
+.zone-full.is-empty{display:none}
+@media (max-width:1100px){.cols,.cols[data-split]{grid-template-columns:minmax(0,1fr)}}
+
+/* ---------- arrange mode ---------- */
+.tbtn{background:none;border:1px solid var(--line-2);color:var(--dim);font:500 var(--fs-xs)/1 var(--f-label);letter-spacing:.07em;padding:6px 8px 5px;cursor:pointer;text-transform:uppercase;white-space:nowrap}
+.tbtn:hover{color:var(--fg);border-color:var(--dim)}
+.tbtn.on,.tbtn[aria-pressed="true"]{background:var(--amber);border-color:var(--amber);color:var(--amber-ink)}
+.layoutbar{position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--bar-h,52px));z-index:15;max-width:1560px;margin:12px auto 0;padding-inline:16px}
+.layoutbar-in{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;border:1px solid var(--amber);background:var(--panel-2);padding:8px 12px}
+.layoutbar-in b{font:700 var(--fs-xs)/1 var(--f-label);letter-spacing:.1em;color:var(--amber)}
+.lb-hint{font-size:var(--fs-s);color:var(--dim)}
+.layoutbar .sp{flex:1}
+.pctl{display:none;align-items:center;gap:2px;order:-1;margin-right:4px}
+.arranging .pctl{display:inline-flex}
+.pctl button{background:var(--panel-2);border:1px solid var(--line-2);color:var(--dim);font:700 11px/1 var(--f-mono);width:24px;height:22px;padding:0;cursor:pointer}
+.pctl button:hover:not(:disabled){color:var(--amber);border-color:var(--amber)}
+.pctl button:disabled{opacity:.3;cursor:default}
+.pctl .grip{cursor:grab;touch-action:none;width:30px;color:var(--amber);border-color:var(--amber)}
+.pctl .grip:active{cursor:grabbing}
+.arranging .panel{outline:1px dashed color-mix(in srgb,var(--amber) 55%,transparent);outline-offset:-1px}
+.arranging .zone{min-height:72px;position:relative;border:1px dashed var(--line-2);padding:8px}
+.arranging .zone.is-empty{display:flex}
+.arranging .zone::before{content:attr(data-label);font:500 var(--fs-xs)/1 var(--f-label);letter-spacing:.08em;color:var(--faint);text-transform:uppercase}
+.drop-ph{border:1px dashed var(--amber);background:var(--amber-wash);display:flex;align-items:center;justify-content:center;font:500 var(--fs-xs)/1 var(--f-label);letter-spacing:.08em;color:var(--amber);text-transform:uppercase}
+.drag-ghost{position:fixed;z-index:50;pointer-events:none;background:var(--amber);color:var(--amber-ink);font:700 var(--fs-xs)/1 var(--f-label);letter-spacing:.08em;padding:7px 10px 6px;text-transform:uppercase;transform:translate(12px,12px)}
+body.dragging{user-select:none;cursor:grabbing}
 .panel{background:var(--panel);border:1px solid var(--line);min-width:0;scroll-margin-top:72px}
 .ph{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;padding:9px 12px;border-bottom:1px solid var(--line)}
 .ph h2{margin:0;font:500 11px/1.2 var(--f-label);letter-spacing:.1em;color:var(--amber);text-transform:uppercase}
@@ -231,12 +261,14 @@ table.funds{width:100%;border-collapse:collapse;font:var(--fs-s)/1.4 var(--f-mon
 .theory p b{font:500 var(--fs-xs)/1 var(--f-label);letter-spacing:.06em;color:var(--faint);text-transform:uppercase;margin-right:6px}
 
 /* ---------- footer ---------- */
-.foot{max-width:1560px;margin:0 auto;padding-inline:16px;padding-block:0 48px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
-.foot .panel{padding:12px}
-.foot h3{margin:0 0 8px;font:500 11px/1.2 var(--f-label);letter-spacing:.1em;color:var(--amber);text-transform:uppercase}
-.foot p,.foot li{font-size:var(--fs-s);line-height:1.6;color:var(--dim);margin:0}
-.foot ul{margin:0;padding-left:16px;display:grid;gap:3px}
-.foot code{font-family:var(--f-mono);font-size:var(--fs-xs);color:var(--fg)}
+.method{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.mcard{padding:12px;display:grid;gap:8px;align-content:start;min-width:0;border-top:1px solid var(--line)}
+.method .mcard:first-child{border-top:0}
+@media (min-width:860px){.method .mcard{border-top:0}.method .mcard+.mcard{border-left:1px solid var(--line)}}
+.mcard h3{margin:0;font:500 var(--fs-xs)/1.3 var(--f-label);letter-spacing:.08em;color:var(--dim);text-transform:uppercase}
+.mcard p,.mcard li{font-size:var(--fs-s);line-height:1.6;color:var(--dim);margin:0}
+.mcard ul{margin:0;padding-left:16px;display:grid;gap:3px}
+.mcard code{font-family:var(--f-mono);font-size:var(--fs-xs);color:var(--fg)}
 
 @media (prefers-reduced-motion:reduce){.q-px{transition:none}}
 </style>
@@ -257,6 +289,7 @@ table.funds{width:100%;border-collapse:collapse;font:var(--fs-s)/1.4 var(--f-mon
       <span class="pill" id="pill-data"><span class="dot"></span>Data · loading</span>
       <span class="mkt" id="mkt">US MKT —</span>
       <span class="clock">NY <b id="clock">--:--:--</b></span>
+      <button type="button" class="tbtn" id="layout-btn" aria-pressed="false" title="Move and rearrange panels">Arrange</button>
     </div>
   </div>
 </header>
@@ -265,8 +298,26 @@ table.funds{width:100%;border-collapse:collapse;font:var(--fs-s)/1.4 var(--f-mon
   <div class="notice-in"><b>SAMPLE MODE</b><span id="notice-text">News, X, ETF, theme and theory panels are showing example content in the exact shape the daily pipeline will write. None of it is real news or real fund data.</span></div>
 </div>
 
-<main class="desk">
-  <div class="col">
+<div class="layoutbar" id="layoutbar" hidden>
+  <div class="layoutbar-in">
+    <b>ARRANGE</b>
+    <span class="lb-hint">Drag a panel by its handle, or use the arrows. Drop into the top or bottom strip for full width.</span>
+    <span class="sp"></span>
+    <span class="lbl">Columns</span>
+    <div class="seg" role="group" aria-label="Column widths" id="split">
+      <button type="button" data-split="left">WIDE LEFT</button>
+      <button type="button" data-split="even">EVEN</button>
+      <button type="button" data-split="right">WIDE RIGHT</button>
+    </div>
+    <button type="button" class="tbtn" id="layout-reset">Reset layout</button>
+    <button type="button" class="tbtn on" id="layout-done">Done</button>
+  </div>
+</div>
+
+<main class="desk" id="desk">
+  <div class="zone zone-full" id="z-top" data-zone="top" data-label="Full width · top"></div>
+  <div class="cols" id="cols">
+    <div class="col zone" id="z-left" data-zone="left" data-label="Left column">
     <section class="panel" id="p-chart" aria-label="XRP price chart">
       <div class="ph">
         <h2>XRP/USD</h2>
@@ -325,9 +376,9 @@ table.funds{width:100%;border-collapse:collapse;font:var(--fs-s)/1.4 var(--f-mon
       </div>
       <div class="feed" id="feed"></div>
     </section>
-  </div>
+    </div>
 
-  <div class="col">
+    <div class="col zone" id="z-right" data-zone="right" data-label="Right column">
     <section class="panel" id="p-etf" aria-label="Spot XRP ETF flows">
       <div class="ph">
         <h2>Spot XRP ETFs · US</h2>
@@ -364,36 +415,46 @@ table.funds{width:100%;border-collapse:collapse;font:var(--fs-s)/1.4 var(--f-mon
       </div>
       <div id="theories"></div>
     </section>
+    </div>
+  </div>
+  <div class="zone zone-full" id="z-bottom" data-zone="bottom" data-label="Full width · bottom">
+    <section class="panel" id="p-method" aria-label="Method and data">
+      <div class="ph">
+        <h2>Method &amp; data</h2>
+        <span class="sp"></span>
+        <span class="sub">How ratings and probabilities are made</span>
+      </div>
+      <div class="method">
+        <div class="mcard">
+          <h3>How impact is rated</h3>
+          <p>Grok fills in the same fields for every item, and the tier is calculated from them with fixed points, so it doesn't depend on how excited a post sounds:</p>
+          <ul>
+            <li>Source tier: primary record, established outlet, smaller outlet, or unvetted account</li>
+            <li>Confirmation: confirmed, reported, rumor, speculative</li>
+            <li>New information, or already known or scheduled</li>
+            <li>Size relative to XRP's daily volume, ETF flows or float</li>
+            <li>Whether it's specifically about XRP</li>
+          </ul>
+          <p>Items without real size rate low at most. Market positioning (funding, open interest) is given to Grok as context for the rationale but isn't scored.</p>
+        </div>
+        <div class="mcard">
+          <h3>Where the probability comes from</h3>
+          <p>Every item is logged with its time, theme and source tier. The pipeline then measures XRP's move against BTC over 1h, 4h and 24h. Once a theme has <b id="unlock-n">30</b> logged events, its items show the historical share that moved more than ±3% versus BTC within 24 hours. Until then you see the rubric tier only, marked <span class="mono">RUBRIC</span>.</p>
+          <p id="log-status"></p>
+        </div>
+        <div class="mcard">
+          <h3>Data</h3>
+          <ul>
+            <li>Price: Coinbase public candles and ticker, streamed straight to this page</li>
+            <li>News, X, ETF, themes: <code>data.json</code> written by the scheduled pipeline</li>
+            <li>Charts: <a href="https://www.tradingview.com/lightweight-charts/" target="_blank" rel="noopener">TradingView Lightweight Charts</a></li>
+            <li id="data-meta">—</li>
+          </ul>
+        </div>
+      </div>
+    </section>
   </div>
 </main>
-
-<footer class="foot" id="p-method">
-  <div class="panel">
-    <h3>How impact is rated</h3>
-    <p>Every item gets a tier from a fixed rubric. The same factors apply to every item, so the rating doesn't depend on how excited the post sounds.</p>
-    <ul style="margin-top:8px">
-      <li>Source tier: primary record, established outlet, smaller outlet, or unvetted account</li>
-      <li>New information, or already scheduled and known</li>
-      <li>Size relative to XRP's daily volume, ETF assets or float</li>
-      <li>Confirmation status: confirmed, reported, rumor, speculative</li>
-      <li>Market positioning at the time (leverage, funding)</li>
-    </ul>
-  </div>
-  <div class="panel">
-    <h3>Where the probability comes from</h3>
-    <p>Every item is logged with its time, theme and source tier. The pipeline then measures XRP's move against BTC over 1h, 4h and 24h. Once a theme has <b id="unlock-n">30</b> logged events, its items show the historical share that moved more than ±3% versus BTC within 24 hours. Until then you see the rubric tier only, marked <span class="mono">RUBRIC</span>.</p>
-    <p style="margin-top:8px" id="log-status"></p>
-  </div>
-  <div class="panel">
-    <h3>Data</h3>
-    <ul>
-      <li>Price: Coinbase public candles and ticker, streamed straight to this page</li>
-      <li>News, X, ETF, themes: <code>data.json</code> written by the scheduled pipeline</li>
-      <li>Charts: <a href="https://www.tradingview.com/lightweight-charts/" target="_blank" rel="noopener">TradingView Lightweight Charts</a></li>
-      <li id="data-meta">—</li>
-    </ul>
-  </div>
-</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.2.3/dist/lightweight-charts.standalone.production.js"></script>
 <script>
@@ -1242,7 +1303,169 @@ function wire(){
   });
 }
 
+/* =====================================================================
+   ARRANGE: move panels between the top strip, two columns and bottom
+   strip. Saved in this browser only.
+   ===================================================================== */
+const ZONES = ["top", "left", "right", "bottom"];
+const zoneEl = z => document.getElementById("z-" + z);
+const panelsIn = z => $$(":scope > .panel", zoneEl(z));
+const panelTitle = p => (p.querySelector(".ph h2")?.textContent || p.id).trim();
+const isArranging = () => document.body.classList.contains("arranging");
+let DEFAULT_LAYOUT = null, DR = null;
+
+function readLayout(){
+  const zones = {}; ZONES.forEach(z => zones[z] = panelsIn(z).map(p => p.id));
+  return {v:1, zones, split: $("#cols").dataset.split || "left"};
+}
+function applyLayout(L){
+  if (!L || !L.zones) return;
+  const seen = new Set();
+  ZONES.forEach(z => (L.zones[z] || []).forEach(id => {
+    const p = document.getElementById(id);
+    if (p && p.classList.contains("panel") && !seen.has(id)){ zoneEl(z).appendChild(p); seen.add(id); }
+  }));
+  $("#cols").dataset.split = ["left", "even", "right"].includes(L.split) ? L.split : "left";
+  syncZones();
+}
+function saveLayout(){ store.set("layout", readLayout()); }
+
+function syncZones(){
+  ZONES.forEach(z => zoneEl(z).classList.toggle("is-empty", panelsIn(z).length === 0));
+  const solo = !isArranging() && (!panelsIn("left").length || !panelsIn("right").length);
+  $("#cols").classList.toggle("solo", solo);
+  $$("#split button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.split === ($("#cols").dataset.split || "left"))));
+  $$(".panel").forEach(p => {
+    const c = p.querySelector(".pctl"); if (!c) return;
+    const z = p.parentElement.dataset.zone, list = panelsIn(z), i = list.indexOf(p);
+    c.querySelector('[data-a="up"]').disabled = z === "top" && i === 0;
+    c.querySelector('[data-a="down"]').disabled = z === "bottom" && i === list.length - 1;
+    c.querySelector('[data-a="left"]').disabled = z === "left";
+    c.querySelector('[data-a="right"]').disabled = z === "right";
+  });
+}
+
+function movePanel(p, a){
+  const z = p.parentElement.dataset.zone, list = panelsIn(z), i = list.indexOf(p);
+  if (a === "up"){
+    if (i > 0) list[i-1].before(p);
+    else if (z === "left" || z === "right") zoneEl("top").appendChild(p);
+    else if (z === "bottom") zoneEl("left").appendChild(p);
+  } else if (a === "down"){
+    if (i < list.length - 1) list[i+1].after(p);
+    else if (z === "top") zoneEl("left").prepend(p);
+    else if (z === "left" || z === "right") zoneEl("bottom").prepend(p);
+  } else if (a === "left" || a === "right"){
+    if (z === a) return;
+    const tl = panelsIn(a), ref = tl[Math.min(i, tl.length)];
+    ref ? ref.before(p) : zoneEl(a).appendChild(p);
+  }
+  syncZones(); saveLayout();
+  const btn = p.querySelector(`.pctl [data-a="${a}"]`);
+  if (btn && !btn.disabled) btn.focus(); else p.querySelector(".pctl .grip")?.focus();
+}
+
+function placeDrop(x, y){
+  const zone = document.elementsFromPoint(x, y).map(el => el.closest && el.closest(".zone")).find(Boolean);
+  if (!zone) return;
+  const items = $$(":scope > .panel:not([hidden])", zone);
+  let before = null;
+  for (const el of items){ const r = el.getBoundingClientRect(); if (y < r.top + r.height / 2){ before = el; break; } }
+  if (before){ if (DR.ph.nextElementSibling !== before) zone.insertBefore(DR.ph, before); }
+  else if (zone.lastElementChild !== DR.ph) zone.appendChild(DR.ph);
+}
+function onDragMove(e){
+  if (!DR) return;
+  DR.x = e.clientX; DR.y = e.clientY;
+  DR.ghost.style.left = DR.x + "px"; DR.ghost.style.top = DR.y + "px";
+  placeDrop(DR.x, DR.y);
+}
+function dragTick(){
+  if (!DR) return;
+  const edge = 70;
+  if (DR.y < edge) window.scrollBy(0, -14); else if (DR.y > innerHeight - edge) window.scrollBy(0, 14); else return;
+  placeDrop(DR.x, DR.y);
+}
+function stopDrag(drop){
+  if (!DR) return;
+  const {p, ph, ghost, timer} = DR;
+  if (drop) ph.replaceWith(p); else ph.remove();
+  p.hidden = false; ghost.remove(); clearInterval(timer);
+  document.body.classList.remove("dragging");
+  window.removeEventListener("pointermove", onDragMove);
+  window.removeEventListener("pointerup", onDragUp);
+  window.removeEventListener("pointercancel", onDragCancel);
+  DR = null;
+  syncZones(); if (drop) saveLayout();
+}
+const onDragUp = () => stopDrag(true);
+const onDragCancel = () => stopDrag(false);
+function startDrag(e, p){
+  if (e.pointerType === "mouse" && e.button !== 0) return;
+  e.preventDefault();
+  const r = p.getBoundingClientRect();
+  const ph = document.createElement("div");
+  ph.className = "drop-ph"; ph.style.height = Math.max(64, Math.min(r.height, 160)) + "px";
+  ph.textContent = "Drop " + panelTitle(p) + " here";
+  p.after(ph); p.hidden = true;
+  const ghost = document.createElement("div");
+  ghost.className = "drag-ghost"; ghost.textContent = panelTitle(p);
+  document.body.appendChild(ghost);
+  document.body.classList.add("dragging");
+  DR = {p, ph, ghost, x: e.clientX, y: e.clientY, timer: setInterval(dragTick, 16)};
+  ghost.style.left = DR.x + "px"; ghost.style.top = DR.y + "px";
+  window.addEventListener("pointermove", onDragMove);
+  window.addEventListener("pointerup", onDragUp);
+  window.addEventListener("pointercancel", onDragCancel);
+}
+
+function setArranging(on){
+  if (!on && DR) stopDrag(false);
+  document.body.classList.toggle("arranging", on);
+  $("#layoutbar").hidden = !on;
+  $("#layout-btn").setAttribute("aria-pressed", String(on));
+  document.documentElement.style.setProperty("--bar-h", $(".bar").offsetHeight + "px");
+  syncZones();
+}
+
+function initLayout(){
+  DEFAULT_LAYOUT = readLayout();
+  $$(".panel").forEach(p => {
+    const ph = p.querySelector(".ph"); if (!ph) return;
+    const t = esc(panelTitle(p));
+    const c = document.createElement("span");
+    c.className = "pctl";
+    c.innerHTML = `<button type="button" class="grip" aria-label="Drag ${t}" title="Drag to move">⠿</button>` +
+      `<button type="button" data-a="up" aria-label="Move ${t} up" title="Up">↑</button>` +
+      `<button type="button" data-a="down" aria-label="Move ${t} down" title="Down">↓</button>` +
+      `<button type="button" data-a="left" aria-label="Move ${t} to the left column" title="Left column">←</button>` +
+      `<button type="button" data-a="right" aria-label="Move ${t} to the right column" title="Right column">→</button>`;
+    ph.prepend(c);
+    c.querySelector(".grip").addEventListener("pointerdown", e => startDrag(e, p));
+    c.addEventListener("click", e => { const b = e.target.closest("button[data-a]"); if (b) movePanel(p, b.dataset.a); });
+  });
+  applyLayout(store.get("layout", null));
+  syncZones();
+  $("#layout-btn").addEventListener("click", () => setArranging(!isArranging()));
+  $("#layout-done").addEventListener("click", () => setArranging(false));
+  $("#layout-reset").addEventListener("click", () => {
+    try { localStorage.removeItem("xrpterm:layout"); } catch {}
+    applyLayout(DEFAULT_LAYOUT);
+  });
+  $("#split").addEventListener("click", e => {
+    const b = e.target.closest("button[data-split]"); if (!b) return;
+    $("#cols").dataset.split = b.dataset.split; syncZones(); saveLayout();
+  });
+  document.addEventListener("keydown", e => {
+    if (e.key !== "Escape") return;
+    if (DR) stopDrag(false);
+    else if (isArranging()) setArranging(false);
+  });
+  addEventListener("resize", () => document.documentElement.style.setProperty("--bar-h", $(".bar").offsetHeight + "px"));
+}
+
 async function main(){
+  initLayout();
   buildThemeChips();
   wire();
   tickClock(); setInterval(tickClock, 1000);
