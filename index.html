@@ -3,6 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b0b0c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="XRP Terminal">
 <title>XRP News Terminal</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -79,7 +84,7 @@ a{color:var(--info)}
 
 /* ---------- quote bar ---------- */
 .bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
-.bar-in{display:flex;flex-wrap:wrap;align-items:center;gap:10px 22px;padding:10px 16px;max-width:1560px;margin:0 auto}
+.bar-in{display:flex;flex-wrap:wrap;align-items:center;gap:10px 22px;padding-block:10px;padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px));max-width:1560px;margin:0 auto}
 .brand{display:flex;align-items:baseline;gap:8px;white-space:nowrap}
 .brand .mark{font:700 13px/1 var(--f-label);background:var(--amber);color:var(--amber-ink);padding:5px 6px 4px;letter-spacing:.04em}
 .brand .t{font:500 11px/1 var(--f-label);letter-spacing:.14em;color:var(--dim)}
@@ -99,12 +104,12 @@ a{color:var(--info)}
 .clock b{color:var(--fg);font-weight:500}
 
 /* ---------- notice ---------- */
-.notice{max-width:1560px;margin:12px auto 0;padding-inline:16px}
+.notice{max-width:1560px;margin:12px auto 0;padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px))}
 .notice-in{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--amber);background:var(--amber-wash);padding:9px 12px;font-size:var(--fs-s);line-height:1.5}
 .notice-in b{font:700 var(--fs-xs)/1.6 var(--f-label);letter-spacing:.08em;color:var(--amber);white-space:nowrap}
 
 /* ---------- desk ---------- */
-.desk{max-width:1560px;margin:0 auto;padding-inline:16px;padding-block:12px 40px;display:flex;flex-direction:column;gap:12px}
+.desk{max-width:1560px;margin:0 auto;padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px));padding-block:12px calc(40px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px}
 .cols{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:12px;align-items:start}
 .cols[data-split="even"]{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
 .cols[data-split="right"]{grid-template-columns:minmax(0,1fr) minmax(0,1.7fr)}
@@ -118,7 +123,7 @@ a{color:var(--info)}
 .tbtn{background:none;border:1px solid var(--line-2);color:var(--dim);font:500 var(--fs-xs)/1 var(--f-label);letter-spacing:.07em;padding:6px 8px 5px;cursor:pointer;text-transform:uppercase;white-space:nowrap}
 .tbtn:hover{color:var(--fg);border-color:var(--dim)}
 .tbtn.on,.tbtn[aria-pressed="true"]{background:var(--amber);border-color:var(--amber);color:var(--amber-ink)}
-.layoutbar{position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--bar-h,52px));z-index:15;max-width:1560px;margin:12px auto 0;padding-inline:16px}
+.layoutbar{position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--bar-h,52px));z-index:15;max-width:1560px;margin:12px auto 0;padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px))}
 .layoutbar-in{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;border:1px solid var(--amber);background:var(--panel-2);padding:8px 12px}
 .layoutbar-in b{font:700 var(--fs-xs)/1 var(--f-label);letter-spacing:.1em;color:var(--amber)}
 .lb-hint{font-size:var(--fs-s);color:var(--dim)}
@@ -308,6 +313,39 @@ table.funds{width:100%;border-collapse:collapse;font:var(--fs-s)/1.4 var(--f-mon
 .mcard ul{margin:0;padding-left:16px;display:grid;gap:3px}
 .mcard code{font-family:var(--f-mono);font-size:var(--fs-xs);color:var(--fg)}
 
+
+/* ---------- phones ---------- */
+.menu-btn{display:none}
+.feed-more{display:block;width:100%;background:none;border:0;border-top:1px solid var(--line);color:var(--amber);font:500 var(--fs-xs)/1 var(--f-label);letter-spacing:.08em;text-transform:uppercase;padding:14px 12px;cursor:pointer}
+.feed-more:hover{background:var(--panel-2)}
+@media (max-width:700px){
+  .bar-in{gap:8px 12px;padding-block:8px}
+  .brand .t,.q-sym{display:none}
+  .quote{gap:8px;flex:1;min-width:0;flex-wrap:nowrap}
+  .q-px{font-size:20px;padding:0 2px}
+  .q-hl{display:none}
+  .menu-btn{display:inline-flex;align-items:center;min-height:34px}
+  .bar-right{display:none;margin-left:0;width:100%;gap:10px;padding-top:4px;border-top:1px solid var(--line)}
+  .bar.menu-open .bar-right{display:flex}
+  .q-chg{white-space:nowrap}
+  /* touch targets */
+  .seg button{padding:9px 10px;min-height:36px}
+  .chip{padding:9px 11px}
+  .tbtn{padding:10px 11px;min-height:36px}
+  .skins button{width:32px;height:32px;padding:3px}
+  .sel{font-size:16px;padding:6px 8px;min-height:36px}
+  .chk{min-height:36px;font-size:var(--fs-s)}
+  .chk input{width:18px;height:18px}
+  .pctl button{width:36px;height:34px;font-size:13px}
+  .pctl .grip{width:40px}
+  .pctl [data-a="left"],.pctl [data-a="right"]{display:none}
+  .layoutbar .lbl,.layoutbar #split{display:none}
+  .lb-hint{flex-basis:100%}
+  .ph{padding:10px 12px}
+  .notice-in{flex-direction:column;gap:4px}
+  .legend span:not(.wrap){font-size:var(--fs-xs)}
+  .ev-tip{width:calc(100% - 20px)}
+}
 @media (prefers-reduced-motion:reduce){.q-px{transition:none}}
 </style>
 </head>
@@ -323,7 +361,8 @@ table.funds{width:100%;border-collapse:collapse;font:var(--fs-s)/1.4 var(--f-mon
       <span class="q-chg" id="q-chg">—</span>
       <span class="q-hl">24H H <b id="q-h">—</b> L <b id="q-l">—</b></span>
     </div>
-    <div class="bar-right">
+    <button type="button" class="tbtn menu-btn" id="menu-btn" aria-expanded="false" aria-controls="bar-right" title="Status, theme and layout">Menu</button>
+    <div class="bar-right" id="bar-right">
       <span class="pill" id="pill-price"><span class="dot"></span>Price · connecting</span>
       <span class="pill" id="pill-data"><span class="dot"></span>Data · loading</span>
       <span class="mkt" id="mkt">US MKT —</span>
@@ -596,7 +635,9 @@ function setSkin(id){
   }
   drawEtfChart();
   fxColors();
+  syncThemeColor();
 }
+function syncThemeColor(){ const m = document.querySelector('meta[name="theme-color"]'); if (m) m.content = cssv("--bg"); }
 
 /* =====================================================================
    BACKGROUND: a vector grid with a slow light sweep, plus drifting
@@ -669,7 +710,10 @@ function fxDraw(t){
     ctx.beginPath(); ctx.arc(p.x, p.y, p.rad, 0, Math.PI * 2); ctx.fill();
   }
 }
-function fxLoop(t){ fxDraw(t); FX.raf = requestAnimationFrame(fxLoop); }
+function fxLoop(t){
+  if (!isPhone() || !FX.last || t - FX.last > 30){ fxDraw(t); FX.last = t; }
+  FX.raf = requestAnimationFrame(fxLoop);
+}
 function setFx(on){
   FX.on = on; store.set("fx", on);
   document.body.classList.toggle("fx-on", on);
@@ -1118,9 +1162,16 @@ function itemHtml(it){
   </article>`;
 }
 
+const isPhone = () => matchMedia("(max-width:700px)").matches;
+let feedAll = false;
 function renderFeed(){
   const xs = filteredItems();
-  $("#feed").innerHTML = xs.length ? xs.map(itemHtml).join("") : `<div class="empty">No items match these filters.</div>`;
+  const cap = isPhone() && !feedAll && xs.length > 6 ? 6 : xs.length;
+  let shown = xs.slice(0, cap);
+  if (openId && !shown.some(i => i.id === openId)){ const o = xs.find(i => i.id === openId); if (o) shown = [...shown, o]; }
+  $("#feed").innerHTML = xs.length
+    ? shown.map(itemHtml).join("") + (cap < xs.length ? `<button type="button" class="feed-more" id="feed-more">Show all ${xs.length} items</button>` : "")
+    : `<div class="empty">No items match these filters.</div>`;
   $("#feed-count").textContent = `${xs.length} of ${(DATA.items||[]).length}`;
   const m = DATA.meta || {};
   $("#feed-scan").textContent = m.last_x_scan ? `X scan ${NY_HM.format(new Date(m.last_x_scan))} · news ${m.last_news_scan ? NY_HM.format(new Date(m.last_news_scan)) : "—"} ET` : "";
@@ -1242,7 +1293,8 @@ function setBars(bars){
   candles.setData(bars.map(b => ({time:b.time, open:b.open, high:b.high, low:b.low, close:b.close})));
   setVolume();
   chart.timeScale().fitContent();
-  const n = bars.length; if (n > 160) chart.timeScale().setVisibleLogicalRange({from:n-160, to:n+4});
+  const n = bars.length, vis = isPhone() ? 70 : 160;
+  if (n > vis) chart.timeScale().setVisibleLogicalRange({from:n-vis, to:n+3});
   setMarkers();
   const last = bars[n-1]; if (last){ const ch = (last.close-last.open)/last.open*100; $("#ohlc").innerHTML = `O <b>${fmtPx(last.open)}</b>H <b>${fmtPx(last.high)}</b>L <b>${fmtPx(last.low)}</b>C <b>${fmtPx(last.close)}</b><span class="${clsOf(ch)}">${fmtPct(ch)}</span>`; }
 }
@@ -1534,6 +1586,7 @@ function wire(){
     $("#p-feed").scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block:"start"});
   });
   $("#feed").addEventListener("click", e => {
+    if (e.target.closest("#feed-more")){ feedAll = true; renderFeed(); return; }
     if (e.target.closest("a")) return;
     const h = e.target.closest(".item-head"); if (!h) return;
     toggleItem(h.closest(".item").dataset.id, false);
@@ -1588,6 +1641,18 @@ function syncZones(){
 
 function movePanel(p, a){
   const z = p.parentElement.dataset.zone, list = panelsIn(z), i = list.indexOf(p);
+  if (matchMedia("(max-width:1100px)").matches && (a === "up" || a === "down")){
+    const zi = ZONES.indexOf(z);
+    if (a === "up" && i > 0) list[i-1].before(p);
+    else if (a === "down" && i < list.length - 1) list[i+1].after(p);
+    else {
+      const nz = ZONES[zi + (a === "up" ? -1 : 1)];
+      if (nz){ const tl = panelsIn(nz); a === "up" ? zoneEl(nz).appendChild(p) : (tl[0] ? tl[0].before(p) : zoneEl(nz).appendChild(p)); }
+    }
+    syncZones(); saveLayout();
+    p.querySelector(`.pctl [data-a="${a}"]`)?.focus();
+    return;
+  }
   if (a === "up"){
     if (i > 0) list[i-1].before(p);
     else if (z === "left" || z === "right") zoneEl("top").appendChild(p);
@@ -1705,8 +1770,25 @@ function initLayout(){
   addEventListener("resize", () => document.documentElement.style.setProperty("--bar-h", $(".bar").offsetHeight + "px"));
 }
 
+function initMenu(){
+  const bar = $(".bar"), btn = $("#menu-btn");
+  const setBarH = () => document.documentElement.style.setProperty("--bar-h", bar.offsetHeight + "px");
+  btn.addEventListener("click", () => {
+    const open = !bar.classList.contains("menu-open");
+    bar.classList.toggle("menu-open", open);
+    btn.setAttribute("aria-expanded", String(open));
+    btn.textContent = open ? "Close" : "Menu";
+    setBarH();
+  });
+  $("#layout-btn").addEventListener("click", () => {
+    if (bar.classList.contains("menu-open")) btn.click();
+  });
+}
+
 async function main(){
   buildSkinPicker();
+  syncThemeColor();
+  initMenu();
   initFx();
   initLayout();
   buildThemeChips();
