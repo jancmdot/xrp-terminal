@@ -1,21 +1,48 @@
 {
- "seen": {},
+ "seen": {
+  "n:7ab818db3cb3": "2026-10-08T18:32:19Z",
+  "n:36f781ee9b8e": "2026-10-08T18:32:19Z",
+  "n:b81e12589ef3": "2026-10-08T18:32:19Z",
+  "n:39e32ff9c15d": "2026-10-08T18:32:19Z",
+  "n:f94e06c7d8b4": "2026-10-08T18:32:19Z",
+  "n:d1cac56d04c4": "2026-10-08T18:32:19Z",
+  "n:0f2a887a632c": "2026-10-08T18:32:19Z",
+  "n:ce04e9cda937": "2026-10-08T18:32:19Z",
+  "n:97c978e80245": "2026-10-08T18:32:19Z",
+  "n:f3f0f7e15ce7": "2026-10-08T18:32:19Z",
+  "n:a9e2999942d6": "2026-10-08T18:32:19Z",
+  "n:9bf16ba87227": "2026-10-08T18:32:19Z"
+ },
  "slots_done": [],
  "spend": {
   "2026-10": {
-   "usd": 1.8178,
-   "calls": 16,
+   "usd": 2.8804,
+   "calls": 25,
    "x_posts": 11,
-   "x_users": 155,
-   "web_searches": 0
+   "x_users": 172,
+   "web_searches": 24
   }
  },
  "last_etf_pull": "2026-10-08T18:11:21Z",
  "positioning": {
-  "as_of": "2026-10-08T18:11:22Z",
-  "funding_rate": 0.001645,
-  "funding_pctile_30d": 0.19,
-  "open_interest_usd": 3007862318,
-  "oi_change_24h_pct": -10.72
+  "as_of": "2026-10-08T18:20:27Z",
+  "funding_rate": 0.001681,
+  "funding_pctile_30d": 0.2,
+  "open_interest_usd": 3035365823,
+  "oi_change_24h_pct": -9.9
+ },
+ "feed_errors": [
+  "Ripple Insights: HTTP 404 from https://ripple.com/insights/feed/",
+  "XRPL Blog: HTTP 404 from https://xrpl.org/blog/rss.xml"
+ ],
+ "last_x_scan": "2026-10-08T18:20:26Z",
+ "last_news_scan": "2026-10-08T18:20:26Z",
+ "theme_states": {
+  "sup": "Ripple moved 200 million XRP between its own addresses; payment volume was near average.",
+  "corp": "Ripple set a Swell speech and reported custody and prime updates; no allocation or Korean launch.",
+  "pay": "XRPL payment volume printed 858 million XRP, near average; delegated account permissions were proposed.",
+  "col": "A Brevan Howard prime deal disclosed no XRP allocation.",
+  "tok": "Meritz and Ripple will review Korean custody, and the review is not a launch.",
+  "stb": "No item this week reported RLUSD or other stablecoin activity on the XRP Ledger."
  }
 }
