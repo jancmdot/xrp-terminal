@@ -99,9 +99,10 @@ ARTICLES_SCHEMA = {
 }
 
 
-def web_items(grok: Grok, since: dt.datetime) -> list[dict]:
+def web_items(grok: Grok, since: dt.datetime, max_searches: int = 4) -> list[dict]:
     user = (f"Find news articles published after {iso(since)} about XRP, Ripple, the XRP Ledger, RLUSD or spot XRP ETFs, "
             "from established outlets or primary sources such as press releases, filings and regulator sites. "
+            f"Run at most {max_searches} web searches and don't open pages unless a result's date or content is unclear. "
             "Skip price-prediction and technical-analysis articles. Return at most 12. For each give the article URL, its title, "
             "the outlet, the publish time in ISO 8601 UTC, and one factual sentence in your own words about what it reports.")
     try:

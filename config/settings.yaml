@@ -12,7 +12,8 @@ xai:
   base_url: https://api.x.ai/v1
   timeout_s: 240
   discovery_max_posts: 15         # asked for, not hard-enforced by the API
-  web_news_search: true           # one Grok web search per scan for articles RSS misses
+  web_news_hours_et: [7]          # Grok web news search runs on these scans (and on manual scans); it's the costly part
+  web_news_max_searches: 4        # asked for, not hard-enforced; the Oct 8 test ran 18 searches (~$0.36) without a cap
 
 budget:
   monthly_usd: 40                 # scans stop for the month once estimated spend hits this

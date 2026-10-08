@@ -58,6 +58,8 @@ def _xai(body):
     tools = body.get("tools") or [{}]
     if name == "posts":
         allowed = tools[0].get("allowed_x_handles")
+        if tools[0].get("to_date") and tools[0].get("to_date") == tools[0].get("from_date"):
+            return _wrap({"posts": []}, [], _usage())          # what the real API did with a same-day window
         if allowed and "JSeyff" in allowed:
             posts = [{"url": "https://x.com/JSeyff/status/1975000000000000001", "handle": "JSeyff", "author_name": "James Seyffart",
                       "posted_at": _ago(5), "text": "Spot XRP ETFs saw $18.2M net inflows yesterday, 4th straight day of inflows.",
@@ -75,6 +77,10 @@ def _xai(body):
             posts = [{"url": "https://x.com/i/status/1975000000000000003", "handle": "someaccount", "author_name": "Some Account",
                       "posted_at": _ago(2), "text": "XRP to $100 by Christmas, banks are loading up!!", "quoted_text": None, "links": []}]
             cites = ["https://x.com/someaccount/status/1975000000000000003"]
+            r = _wrap({"posts": posts}, cites, _usage(posts=12))
+            # answer split over two messages, as the real API sometimes does
+            r["output"].insert(0, {"type": "message", "content": [{"type": "output_text", "text": '{"posts": []}', "annotations": []}]})
+            return r
         return _wrap({"posts": posts}, cites, _usage(posts=12))
     if name == "articles":
         a = [{"url": "https://www.reuters.com/markets/ripple-test-article", "title": "Ripple expands payments license footprint",

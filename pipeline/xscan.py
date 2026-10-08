@@ -68,8 +68,9 @@ def groups_from_config(handles_cfg: dict) -> list[dict]:
 
 
 def _window(since: dt.datetime) -> dict:
-    # x_search date filters are whole UTC days; finer filtering happens on posted_at below
-    return {"from_date": since.strftime("%Y-%m-%d"), "to_date": now_utc().strftime("%Y-%m-%d")}
+    # x_search date filters are whole UTC days. Setting from_date and to_date to the same day returned no
+    # posts at all (Oct 8 run), so start a day early and leave the end open; posted_at is filtered below.
+    return {"from_date": (since - dt.timedelta(days=1)).strftime("%Y-%m-%d")}
 
 
 def _clean(posts: list[dict], cites: list[str], since: dt.datetime, label: str) -> list[dict]:

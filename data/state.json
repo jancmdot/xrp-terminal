@@ -32,8 +32,8 @@
   "oi_change_24h_pct": -9.06
  },
  "feed_errors": [],
- "last_x_scan": "2026-10-08T18:35:13Z",
- "last_news_scan": "2026-10-08T18:35:13Z",
+ "last_x_scan": null,
+ "last_news_scan": null,
  "theme_states": {
   "sup": "Ripple moved 200 million XRP between its own addresses; XRPL payment volume was 858 million XRP, near average.",
   "corp": "Schwartz is set to speak at Swell Oct. 28; Korean custody review is not a launch; Custody and Prime updates reported.",

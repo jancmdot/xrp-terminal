@@ -111,13 +111,21 @@ def output_text(data: dict) -> str:
 
 
 def parse_json(text: str) -> dict:
-    text = (text or "").strip()
-    try:
-        return json.loads(text)
-    except json.JSONDecodeError:
-        pass
-    text = re.sub(r"^```(?:json)?|```$", "", text, flags=re.M).strip()
-    start, end = text.find("{"), text.rfind("}")
-    if start >= 0 and end > start:
-        return json.loads(text[start:end + 1])
-    raise ValueError("Grok returned no JSON")
+    """The answer can arrive as several JSON objects (one per output message). Use the last complete one."""
+    text = re.sub(r"^```(?:json)?|```$", "", (text or "").strip(), flags=re.M).strip()
+    dec, objs, i = json.JSONDecoder(), [], 0
+    while True:
+        i = text.find("{", i)
+        if i < 0:
+            break
+        try:
+            obj, end = dec.raw_decode(text, i)
+        except json.JSONDecodeError:
+            i += 1
+            continue
+        if isinstance(obj, dict):
+            objs.append(obj)
+        i = end
+    if not objs:
+        raise ValueError("Grok returned no JSON")
+    return objs[-1]

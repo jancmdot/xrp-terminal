@@ -37,7 +37,7 @@ def window_start(last: str | None, default_h: int = 12, max_h: int = 26) -> dt.d
     return max(t, now - dt.timedelta(hours=max_h))
 
 
-def run_scan(grok: Grok, state: dict, evs: dict, settings: dict) -> None:
+def run_scan(grok: Grok, state: dict, evs: dict, settings: dict, web: bool = True) -> None:
     if not grok.available:
         log.warning("XAI_API_KEY not set: skipping the X and news scan")
         return
@@ -59,9 +59,9 @@ def run_scan(grok: Grok, state: dict, evs: dict, settings: dict) -> None:
     rss, errors = news.rss_items(feeds, settings["feed"]["keywords"], n_since)
     cands += rss
     state["feed_errors"] = errors
-    if settings["xai"].get("web_news_search"):
+    if web:
         try:
-            cands += news.web_items(grok, n_since)
+            cands += news.web_items(grok, n_since, settings["xai"].get("web_news_max_searches", 4))
         except BudgetExceeded as e:
             log.warning("%s", e)
 
@@ -145,7 +145,9 @@ def main(argv: list[str] | None = None) -> int:
         if "verify_handles" in tasks:
             run_verify(grok)
         if "scan" in tasks:
-            run_scan(grok, state, evs, settings)
+            ny_h = now_utc().astimezone(NY).hour
+            web = args.task == "scan" or any(h <= ny_h <= h + 1 for h in settings["xai"].get("web_news_hours_et", []))
+            run_scan(grok, state, evs, settings, web=web)
         if "etf" in tasks:
             run_etf(state)
     finally:
