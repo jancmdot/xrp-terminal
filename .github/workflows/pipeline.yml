@@ -1,0 +1,55 @@
+name: pipeline
+
+# Fires at both UTC hours that can map to each New York slot (EDT and EST).
+# The pipeline decides from New York time what's due and runs each slot once:
+#   scans at 7:00, 12:00, 17:00 ET · ETF pull at 20:00 ET (see config/settings.yaml)
+# Every run also fills price reactions and rebuilds data.json.
+on:
+  schedule:
+    - cron: "7 0,1,11,12,16,17,21,22 * * *"
+  workflow_dispatch:
+    inputs:
+      task:
+        description: What to run
+        type: choice
+        default: auto
+        options: [auto, scan, etf, reactions, rebuild, verify_handles]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pipeline
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install
+        run: pip install -r requirements.txt
+
+      - name: Run pipeline
+        env:
+          XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
+          COINGLASS_API_KEY: ${{ secrets.COINGLASS_API_KEY }}
+        run: python -m pipeline --task "${{ inputs.task || 'auto' }}"
+
+      - name: Save results
+        run: |
+          git config user.name "xrp-terminal-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data
+          [ -f data.json ] && git add data.json
+          if git diff --cached --quiet; then echo "No changes"; exit 0; fi
+          git commit -m "data: ${{ inputs.task || 'auto' }} $(date -u +%Y-%m-%dT%H:%MZ)"
+          for i in 1 2 3; do git pull --rebase --quiet && git push --quiet && exit 0; sleep 5; done
+          exit 1

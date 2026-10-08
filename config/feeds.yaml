@@ -1,0 +1,12 @@
+# RSS/Atom feeds for articles. Items are kept only if they match settings.feed.keywords.
+# A feed that fails is skipped and listed in data.json under meta.feed_errors.
+# tier: primary = the publisher is the source (regulator, company); t1/t2 = outlet.
+
+feeds:
+  - {name: SEC press releases,  url: "https://www.sec.gov/news/pressreleases.rss", tier: primary}
+  - {name: CoinDesk,            url: "https://www.coindesk.com/arc/outboundfeeds/rss/", tier: t1}
+  - {name: Cointelegraph,       url: "https://cointelegraph.com/rss", tier: t1}
+  - {name: The Block,           url: "https://www.theblock.co/rss.xml", tier: t1}
+  - {name: Decrypt,             url: "https://decrypt.co/feed", tier: t1}
+  - {name: Ripple Insights,     url: "https://ripple.com/insights/feed/", tier: primary}   # verify
+  - {name: XRPL Blog,           url: "https://xrpl.org/blog/rss.xml", tier: primary}      # verify

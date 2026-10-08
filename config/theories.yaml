@@ -1,0 +1,23 @@
+# Popular XRP claims and what's on record. Shown in the Theory Check panel.
+# verdict: supported | partly | unsupported | speculative | untestable
+theories:
+  - claim: ETF demand will create an XRP supply shock.
+    verdict: partly
+    true_part: ETF flows are real and have been mostly positive, but fund holdings are a small share of circulating supply, and escrow releases and treasury sales add supply every month.
+    would_change: ETF holdings rising faster than exchange balances fall, for several months in a row.
+  - claim: XRP will replace SWIFT.
+    verdict: unsupported
+    true_part: Ripple sells cross-border payment software, and only some of those flows use XRP as a bridge. SWIFT remains the main bank messaging network, and many Ripple bank partners never touch XRP.
+    would_change: Banks disclosing large, recurring payment volume settled through XRP.
+  - claim: Banks will hold XRP as collateral or a reserve asset.
+    verdict: speculative
+    true_part: Collateral use comes up in crypto lending and prime brokerage, but confirmed bank holdings are rare and not disclosed at scale.
+    would_change: Capital rules that treat XRP favorably, or audited bank disclosures of holdings.
+  - claim: Tokenization on the XRP Ledger will drive XRP demand.
+    verdict: partly
+    true_part: Tokenized assets on the ledger are growing. Each transaction burns a tiny fee and accounts lock a small reserve, so XRP demand grows far more slowly than the value tokenized.
+    would_change: Products that require holding meaningful XRP balances, such as XRP-denominated liquidity for tokenized assets.
+  - claim: XRP will reach $X by date Y.
+    verdict: untestable
+    true_part: Price targets say nothing about cause. The terminal logs them as sentiment and leaves them out of impact scoring.
+    would_change: Nothing. A target is a prediction, not evidence.

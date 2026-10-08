@@ -1,0 +1,1283 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>XRP News Terminal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Martian+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: sticky quote bar + function-key row, then a two-column desk:
+   left = price chart over the news/X feed, right = ETF flows, themes, theory checks.
+   Stacks to one column under 1100px. Deliberately dark-only, like a trading terminal. */
+:root{
+  color-scheme: dark;
+  --bg:#080c11;
+  --panel:#0d131a;
+  --panel-2:#111922;
+  --line:#1c2631;
+  --line-2:#2a3746;
+  --fg:#d9e1e9;
+  --dim:#8695a5;
+  --faint:#566472;
+  --amber:#f1b13c;
+  --amber-ink:#1a1204;
+  --amber-wash:rgba(241,177,60,.10);
+  --up:#35c98b;
+  --down:#ef5e5e;
+  --up-wash:rgba(53,201,139,.12);
+  --down-wash:rgba(239,94,94,.12);
+  --warn:#e5c45e;
+  --info:#6fb4f6;
+  --f-mono:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --f-label:"Martian Mono", "JetBrains Mono", ui-monospace, monospace;
+  --f-text:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --fs-xs:10.5px; --fs-s:12px; --fs-m:13.5px; --fs-l:16px; --fs-xl:22px; --fs-xxl:30px;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font:var(--fs-m)/1.5 var(--f-text);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+button{font:inherit;color:inherit}
+a{color:var(--info)}
+:focus-visible{outline:1px solid var(--amber);outline-offset:2px}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.up{color:var(--up)} .down{color:var(--down)} .flat{color:var(--dim)}
+[hidden]{display:none!important}
+
+/* ---------- quote bar ---------- */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+.bar-in{display:flex;flex-wrap:wrap;align-items:center;gap:10px 22px;padding:10px 16px;max-width:1560px;margin:0 auto}
+.brand{display:flex;align-items:baseline;gap:8px;white-space:nowrap}
+.brand .mark{font:700 13px/1 var(--f-label);background:var(--amber);color:var(--amber-ink);padding:5px 6px 4px;letter-spacing:.04em}
+.brand .t{font:500 11px/1 var(--f-label);letter-spacing:.14em;color:var(--dim)}
+.quote{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.q-sym{font-size:var(--fs-s);color:var(--dim);letter-spacing:.06em}
+.q-px{font-size:var(--fs-xl);font-weight:700;letter-spacing:-.01em;padding:0 4px;transition:background-color .6s}
+.q-px.tick-up{background:var(--up-wash)} .q-px.tick-down{background:var(--down-wash)}
+.q-chg{font-size:var(--fs-m);font-weight:500}
+.q-hl{font-size:var(--fs-s);color:var(--dim)} .q-hl b{color:var(--fg);font-weight:500}
+.bar-right{display:flex;align-items:center;gap:8px 14px;flex-wrap:wrap;margin-left:auto}
+.pill{font:500 var(--fs-xs)/1 var(--f-label);letter-spacing:.06em;padding:5px 7px 4px;border:1px solid var(--line-2);color:var(--dim);white-space:nowrap;text-transform:uppercase}
+.pill.live{border-color:var(--up);color:var(--up)}
+.pill.sample{border-color:var(--amber);color:var(--amber)}
+.pill.warn{border-color:var(--warn);color:var(--warn)}
+.pill .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:currentColor;margin-right:6px;vertical-align:1px}
+.mkt,.clock{font:var(--fs-s)/1 var(--f-mono);color:var(--dim);white-space:nowrap;font-variant-numeric:tabular-nums}
+.clock b{color:var(--fg);font-weight:500}
+.keys{display:flex;gap:2px;padding:0 16px;max-width:1560px;margin:0 auto;overflow-x:auto;scrollbar-width:none}
+.keys::-webkit-scrollbar{display:none}
+.keys a{display:flex;align-items:center;gap:7px;padding:7px 12px 8px;text-decoration:none;color:var(--dim);font:500 var(--fs-xs)/1 var(--f-label);letter-spacing:.08em;white-space:nowrap;border-bottom:2px solid transparent}
+.keys a kbd{font:700 var(--fs-xs)/1 var(--f-mono);background:var(--panel-2);border:1px solid var(--line-2);color:var(--amber);padding:2px 5px}
+.keys a:hover,.keys a.on{color:var(--fg);border-bottom-color:var(--amber)}
+
+/* ---------- notice ---------- */
+.notice{max-width:1560px;margin:12px auto 0;padding-inline:16px}
+.notice-in{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--amber);background:var(--amber-wash);padding:9px 12px;font-size:var(--fs-s);line-height:1.5}
+.notice-in b{font:700 var(--fs-xs)/1.6 var(--f-label);letter-spacing:.08em;color:var(--amber);white-space:nowrap}
+
+/* ---------- desk ---------- */
+.desk{max-width:1560px;margin:0 auto;padding-inline:16px;padding-block:12px 40px;display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:12px;align-items:start}
+.col{display:flex;flex-direction:column;gap:12px;min-width:0}
+@media (max-width:1100px){.desk{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--panel);border:1px solid var(--line);min-width:0;scroll-margin-top:110px}
+.ph{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;padding:9px 12px;border-bottom:1px solid var(--line)}
+.ph h2{margin:0;font:500 11px/1.2 var(--f-label);letter-spacing:.1em;color:var(--amber);text-transform:uppercase}
+.ph .sub{font:var(--fs-xs)/1.3 var(--f-mono);color:var(--faint);letter-spacing:.02em}
+.ph .sp{flex:1}
+.seg{display:inline-flex;border:1px solid var(--line-2)}
+.seg button{background:none;border:0;padding:4px 9px;font:500 var(--fs-xs)/1.3 var(--f-mono);color:var(--dim);cursor:pointer;letter-spacing:.04em}
+.seg button+button{border-left:1px solid var(--line-2)}
+.seg button[aria-pressed="true"]{background:var(--amber);color:var(--amber-ink)}
+.seg button:hover:not([aria-pressed="true"]){color:var(--fg);background:var(--panel-2)}
+.chk{display:inline-flex;align-items:center;gap:6px;font:var(--fs-xs)/1 var(--f-mono);color:var(--dim);cursor:pointer;user-select:none}
+.chk input{accent-color:var(--amber);margin:0}
+.sel{background:var(--panel-2);border:1px solid var(--line-2);color:var(--fg);font:var(--fs-xs)/1.3 var(--f-mono);padding:4px 6px}
+
+/* ---------- chart ---------- */
+.chart-wrap{position:relative;height:400px}
+@media (max-width:700px){.chart-wrap{height:300px}}
+#chart{position:absolute;inset:0}
+.ohlc{position:absolute;left:10px;top:8px;z-index:3;font:var(--fs-xs)/1.4 var(--f-mono);color:var(--dim);pointer-events:none;font-variant-numeric:tabular-nums;background:color-mix(in srgb,var(--panel) 82%,transparent);padding:2px 4px}
+.ohlc b{color:var(--fg);font-weight:500;margin-right:8px}
+.chart-msg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;z-index:4;font:var(--fs-s)/1.6 var(--f-mono);color:var(--dim);pointer-events:none}
+.chart-msg span{background:var(--panel);border:1px solid var(--line-2);padding:10px 14px;max-width:420px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;padding:8px 12px;border-top:1px solid var(--line);font:var(--fs-xs)/1.4 var(--f-mono);color:var(--faint)}
+.legend span{white-space:nowrap}
+.legend span.wrap{white-space:normal}
+.lbl{font:500 var(--fs-xs)/1.3 var(--f-label);letter-spacing:.07em;color:var(--faint);text-transform:uppercase}
+.legend i{font-style:normal;margin-right:4px}
+
+/* ---------- feed ---------- */
+.filters{display:flex;flex-direction:column;gap:8px;padding:9px 12px;border-bottom:1px solid var(--line)}
+.frow{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:thin}
+.chip{flex:none;background:none;border:1px solid var(--line-2);color:var(--dim);font:500 var(--fs-xs)/1 var(--f-mono);padding:5px 8px;cursor:pointer;letter-spacing:.03em}
+.chip[aria-pressed="true"]{border-color:var(--amber);color:var(--amber);background:var(--amber-wash)}
+.chip:hover{color:var(--fg)}
+.feed{display:flex;flex-direction:column}
+.item{border-bottom:1px solid var(--line)}
+.item:last-child{border-bottom:0}
+.item.sel-on{background:var(--panel-2)}
+.item-head{display:grid;grid-template-columns:62px minmax(0,1fr) 92px;gap:12px;width:100%;text-align:left;background:none;border:0;padding:11px 12px;cursor:pointer;align-items:start}
+.item-head:hover{background:var(--panel-2)}
+.i-time{display:flex;flex-direction:column;gap:3px;font:var(--fs-s)/1.2 var(--f-mono);font-variant-numeric:tabular-nums}
+.i-time b{font-weight:500;color:var(--fg)}
+.i-time i{font-style:normal;color:var(--faint);font-size:var(--fs-xs)}
+.i-kind{display:inline-block;width:max-content;font:700 9.5px/1 var(--f-label);letter-spacing:.06em;padding:3px 4px 2px;border:1px solid var(--line-2);color:var(--dim)}
+.i-kind.k-x{color:var(--fg)}
+.i-main{display:flex;flex-direction:column;gap:5px;min-width:0}
+.i-src{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;font:var(--fs-xs)/1.3 var(--f-mono);color:var(--dim)}
+.i-src .h{color:var(--faint)}
+.i-hl{font:500 var(--fs-m)/1.4 var(--f-text);color:var(--fg);text-wrap:pretty}
+.i-tags{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.tag,.st,.tier,.dir,.hz,.smp{font:500 9.5px/1 var(--f-mono);letter-spacing:.04em;padding:3px 5px;border:1px solid var(--line-2);color:var(--dim);white-space:nowrap;text-transform:uppercase}
+.tag{color:var(--fg)}
+.tier{border-color:transparent;background:var(--panel-2)}
+.tier-primary{color:var(--up)} .tier-t1{color:var(--info)} .tier-t2{color:var(--dim)} .tier-crowd{color:var(--faint)}
+.st-confirmed{color:var(--up);border-color:color-mix(in srgb,var(--up) 45%,transparent)}
+.st-reported{color:var(--info);border-color:color-mix(in srgb,var(--info) 45%,transparent)}
+.st-rumor{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 50%,transparent)}
+.st-speculative{color:var(--faint);border-style:dashed}
+.d-bullish{color:var(--up)} .d-bearish{color:var(--down)} .d-neutral,.d-mixed{color:var(--dim)}
+.dir,.hz{border-color:transparent;padding-inline:2px}
+.smp{color:var(--amber);border-color:color-mix(in srgb,var(--amber) 50%,transparent)}
+.i-imp{display:flex;flex-direction:column;align-items:flex-end;gap:4px;font:var(--fs-xs)/1.2 var(--f-mono);text-align:right}
+.meter{display:flex;gap:2px}
+.meter i{width:14px;height:6px;background:var(--line-2)}
+.imp-high .meter i{background:var(--amber)}
+.imp-medium .meter i:nth-child(-n+2){background:var(--amber)}
+.imp-low .meter i:nth-child(1){background:var(--amber)}
+.i-imp .lvl{color:var(--fg);font-weight:500;letter-spacing:.06em}
+.imp-noise .i-imp .lvl{color:var(--faint)}
+.i-imp .basis{color:var(--faint)}
+.i-imp .basis.br{color:var(--info)}
+.item-body{padding:0 12px 14px calc(62px + 24px);display:grid;gap:12px}
+.ib-sum{margin:0;color:var(--fg);max-width:70ch}
+.ib-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.ib-box{border:1px solid var(--line);padding:9px 10px;background:var(--bg);min-width:0}
+.ib-box h4{margin:0 0 6px;font:500 var(--fs-xs)/1.2 var(--f-label);letter-spacing:.08em;color:var(--dim);text-transform:uppercase}
+.ib-box p{margin:0;font-size:var(--fs-s);line-height:1.55}
+.factors{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.factor{font:var(--fs-xs)/1.2 var(--f-mono);padding:3px 6px;background:var(--panel-2)}
+.factor.plus{color:var(--fg)} .factor.minus{color:var(--dim)}
+.rx{width:100%;border-collapse:collapse;font:var(--fs-s)/1.4 var(--f-mono);font-variant-numeric:tabular-nums}
+.rx th{font-weight:400;color:var(--faint);text-align:right;padding:2px 0 4px;font-size:var(--fs-xs)}
+.rx th:first-child,.rx td:first-child{text-align:left}
+.rx td{text-align:right;padding:2px 0}
+.ib-foot{display:flex;flex-wrap:wrap;gap:8px 16px;font:var(--fs-xs)/1.4 var(--f-mono);color:var(--faint)}
+.empty{padding:28px 16px;text-align:center;color:var(--dim);font:var(--fs-s)/1.6 var(--f-mono)}
+@media (max-width:700px){
+  .item-head{grid-template-columns:48px minmax(0,1fr);gap:10px}
+  .i-imp{grid-column:2;flex-direction:row;align-items:center;justify-content:flex-start;gap:8px;text-align:left}
+  .item-body{padding-left:12px}
+}
+
+/* ---------- ETF ---------- */
+.etf-top{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-bottom:1px solid var(--line)}
+.kpi{padding:10px 12px;min-width:0}
+.kpi+.kpi{border-left:1px solid var(--line)}
+.kpi .k{font:500 var(--fs-xs)/1.3 var(--f-label);letter-spacing:.07em;color:var(--faint);text-transform:uppercase}
+.kpi .v{font:700 var(--fs-l)/1.3 var(--f-mono);font-variant-numeric:tabular-nums;margin-top:4px;white-space:nowrap}
+.kpi .v.big{font-size:var(--fs-xl)}
+.kpi .s{font:var(--fs-xs)/1.3 var(--f-mono);color:var(--dim);margin-top:2px}
+@media (max-width:520px){.etf-top{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi:nth-child(3){border-left:0}.kpi:nth-child(n+3){border-top:1px solid var(--line)}}
+.read{padding:12px;border-bottom:1px solid var(--line);display:grid;gap:9px}
+.verdict{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.vchip{font:700 var(--fs-xs)/1 var(--f-label);letter-spacing:.07em;padding:6px 8px 5px;text-transform:uppercase}
+.vchip.bullish{background:var(--up-wash);color:var(--up)}
+.vchip.bearish{background:var(--down-wash);color:var(--down)}
+.vchip.neutral{background:var(--panel-2);color:var(--fg)}
+.vchip.hz{background:none;border:1px solid var(--line-2);color:var(--dim)}
+.vchip.cf{background:none;color:var(--faint);padding-inline:2px}
+.read ul{margin:0;padding:0;list-style:none;display:grid;gap:5px}
+.read li{font-size:var(--fs-s);line-height:1.5;padding-left:14px;position:relative}
+.read li::before{content:"";position:absolute;left:2px;top:.62em;width:5px;height:1px;background:var(--amber)}
+.rule{font:var(--fs-xs)/1.5 var(--f-mono);color:var(--faint)}
+.etf-chart-wrap{position:relative;height:170px;border-bottom:1px solid var(--line)}
+#etfchart{position:absolute;inset:0}
+.etf-chart-key{position:absolute;left:10px;top:6px;z-index:3;display:flex;gap:10px;font:var(--fs-xs)/1 var(--f-mono);color:var(--faint);pointer-events:none}
+.etf-chart-key i{display:inline-block;width:8px;height:8px;margin-right:4px;vertical-align:-1px}
+.tbl-wrap{overflow-x:auto}
+table.funds{width:100%;border-collapse:collapse;font:var(--fs-s)/1.4 var(--f-mono);font-variant-numeric:tabular-nums}
+.funds th{font:500 var(--fs-xs)/1.2 var(--f-label);letter-spacing:.06em;color:var(--faint);text-align:right;padding:8px 12px 6px;text-transform:uppercase;white-space:nowrap}
+.funds td{text-align:right;padding:6px 12px;border-top:1px solid var(--line);white-space:nowrap}
+.funds th:first-child,.funds td:first-child{text-align:left}
+.funds td:first-child b{font-weight:700;color:var(--fg)}
+.funds td:first-child span{color:var(--faint);margin-left:8px}
+.sharebar{display:inline-block;width:46px;height:5px;background:var(--line-2);margin-left:8px;vertical-align:1px;position:relative}
+.sharebar i{position:absolute;left:0;top:0;bottom:0;background:var(--dim)}
+.note{padding:9px 12px;font:var(--fs-xs)/1.5 var(--f-mono);color:var(--faint);border-top:1px solid var(--line)}
+
+/* ---------- themes ---------- */
+.themes{display:flex;flex-direction:column}
+.th-row{display:grid;grid-template-columns:52px minmax(0,1fr) 84px;gap:10px;align-items:center;padding:9px 12px;border:0;border-bottom:1px solid var(--line);background:none;text-align:left;cursor:pointer;width:100%}
+.th-row:last-child{border-bottom:0}
+.th-row:hover{background:var(--panel-2)}
+.th-row[aria-pressed="true"]{background:var(--amber-wash)}
+.th-code{font:700 var(--fs-xs)/1 var(--f-mono);color:var(--amber);letter-spacing:.04em}
+.th-main{min-width:0;display:flex;flex-direction:column;gap:3px}
+.th-name{font:500 var(--fs-s)/1.3 var(--f-text);color:var(--fg)}
+.th-state{font-size:var(--fs-xs);line-height:1.45;color:var(--dim)}
+.th-side{display:flex;flex-direction:column;align-items:flex-end;gap:4px;font:var(--fs-xs)/1.2 var(--f-mono);color:var(--faint);text-align:right}
+.balance{display:flex;width:84px;height:5px;background:var(--line-2)}
+.balance .b{background:var(--up)} .balance .r{background:var(--down)} .balance .n{background:var(--faint)}
+.th-side .br{color:var(--info)}
+
+/* ---------- theories ---------- */
+.theory{padding:11px 12px;border-bottom:1px solid var(--line);display:grid;gap:6px}
+.theory:last-child{border-bottom:0}
+.theory .claim{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.theory q{font:500 var(--fs-m)/1.4 var(--f-text);color:var(--fg);quotes:"\201C" "\201D"}
+.vd{flex:none;font:700 9.5px/1 var(--f-label);letter-spacing:.06em;padding:4px 6px 3px;text-transform:uppercase;border:1px solid}
+.vd-supported{color:var(--up)} .vd-partly{color:var(--warn)} .vd-unsupported{color:var(--down)} .vd-speculative{color:var(--info)} .vd-untestable{color:var(--faint)}
+.theory p{margin:0;font-size:var(--fs-s);line-height:1.55;color:var(--dim)}
+.theory p b{font:500 var(--fs-xs)/1 var(--f-label);letter-spacing:.06em;color:var(--faint);text-transform:uppercase;margin-right:6px}
+
+/* ---------- footer ---------- */
+.foot{max-width:1560px;margin:0 auto;padding-inline:16px;padding-block:0 48px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.foot .panel{padding:12px}
+.foot h3{margin:0 0 8px;font:500 11px/1.2 var(--f-label);letter-spacing:.1em;color:var(--amber);text-transform:uppercase}
+.foot p,.foot li{font-size:var(--fs-s);line-height:1.6;color:var(--dim);margin:0}
+.foot ul{margin:0;padding-left:16px;display:grid;gap:3px}
+.foot code{font-family:var(--f-mono);font-size:var(--fs-xs);color:var(--fg)}
+
+@media (prefers-reduced-motion:reduce){.q-px{transition:none}}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="bar-in">
+    <div class="brand"><span class="mark">XRP</span><span class="t">NEWS TERMINAL</span></div>
+    <div class="quote" aria-live="off">
+      <span class="q-sym">XRP/USD</span>
+      <span class="q-px" id="q-px">—</span>
+      <span class="q-chg" id="q-chg">—</span>
+      <span class="q-hl">24H H <b id="q-h">—</b> L <b id="q-l">—</b></span>
+    </div>
+    <div class="bar-right">
+      <span class="pill" id="pill-price"><span class="dot"></span>Price · connecting</span>
+      <span class="pill" id="pill-data"><span class="dot"></span>Data · loading</span>
+      <span class="mkt" id="mkt">US MKT —</span>
+      <span class="clock">NY <b id="clock">--:--:--</b></span>
+    </div>
+  </div>
+  <nav class="keys" aria-label="Panels">
+    <a href="#p-chart" data-k="1"><kbd>1</kbd>CHART</a>
+    <a href="#p-feed" data-k="2"><kbd>2</kbd>NEWS + X</a>
+    <a href="#p-etf" data-k="3"><kbd>3</kbd>ETF FLOWS</a>
+    <a href="#p-themes" data-k="4"><kbd>4</kbd>THEMES</a>
+    <a href="#p-theories" data-k="5"><kbd>5</kbd>THEORY CHECK</a>
+    <a href="#p-method" data-k="6"><kbd>6</kbd>METHOD</a>
+  </nav>
+</header>
+
+<div class="notice" id="notice" hidden>
+  <div class="notice-in"><b>SAMPLE MODE</b><span id="notice-text">News, X, ETF, theme and theory panels are showing example content in the exact shape the daily pipeline will write. None of it is real news or real fund data.</span></div>
+</div>
+
+<main class="desk">
+  <div class="col">
+    <section class="panel" id="p-chart" aria-label="XRP price chart">
+      <div class="ph">
+        <h2>XRP/USD</h2>
+        <span class="sub" id="chart-src">Coinbase · connecting</span>
+        <span class="sp"></span>
+        <div class="seg" role="group" aria-label="Timeframe" id="tf">
+          <button type="button" data-g="900">15M</button>
+          <button type="button" data-g="3600" aria-pressed="true">1H</button>
+          <button type="button" data-g="21600">6H</button>
+          <button type="button" data-g="86400">1D</button>
+        </div>
+        <label class="chk"><input type="checkbox" id="show-ev" checked> Events</label>
+      </div>
+      <div class="chart-wrap">
+        <div class="ohlc" id="ohlc"></div>
+        <div id="chart"></div>
+        <div class="chart-msg" id="chart-msg" hidden><span></span></div>
+      </div>
+      <div class="legend">
+        <span><i class="up">▲</i>bullish item</span>
+        <span><i class="down">▼</i>bearish item</span>
+        <span><i class="flat">●</i>neutral / mixed</span>
+        <span class="wrap">Theme code shown on medium and high impact items · click a marker to open it</span>
+      </div>
+    </section>
+
+    <section class="panel" id="p-feed" aria-label="News and X feed">
+      <div class="ph">
+        <h2>News + X</h2>
+        <span class="sub" id="feed-count"></span>
+        <span class="sp"></span>
+        <span class="sub" id="feed-scan"></span>
+      </div>
+      <div class="filters">
+        <div class="frow">
+          <div class="seg" role="group" aria-label="Source type" id="f-kind">
+            <button type="button" data-v="all" aria-pressed="true">ALL</button>
+            <button type="button" data-v="news">NEWS</button>
+            <button type="button" data-v="x">X</button>
+          </div>
+          <label class="lbl" for="f-sort">Sort</label>
+          <select class="sel" id="f-sort">
+            <option value="newest">Newest</option>
+            <option value="impact">Impact</option>
+          </select>
+          <label class="lbl" for="f-min">Min impact</label>
+          <select class="sel" id="f-min">
+            <option value="0">All</option>
+            <option value="1">Low +</option>
+            <option value="2">Medium +</option>
+            <option value="3">High</option>
+          </select>
+          <label class="chk"><input type="checkbox" id="f-soft"> Hide rumors &amp; speculation</label>
+        </div>
+        <div class="chips" id="f-themes" role="group" aria-label="Themes"></div>
+      </div>
+      <div class="feed" id="feed"></div>
+    </section>
+  </div>
+
+  <div class="col">
+    <section class="panel" id="p-etf" aria-label="Spot XRP ETF flows">
+      <div class="ph">
+        <h2>Spot XRP ETFs · US</h2>
+        <span class="sub" id="etf-asof"></span>
+        <span class="sp"></span>
+        <span class="sub">Daily · posts after the US close</span>
+      </div>
+      <div class="etf-top" id="etf-kpis"></div>
+      <div class="read" id="etf-read"></div>
+      <div class="etf-chart-wrap">
+        <div class="etf-chart-key"><span><i style="background:var(--up)"></i>daily net</span><span><i style="background:var(--amber);height:2px;vertical-align:2px"></i>cumulative</span></div>
+        <div id="etfchart"></div>
+      </div>
+      <div class="tbl-wrap">
+        <table class="funds" id="etf-funds"></table>
+      </div>
+      <div class="note">Read flows as a share of fund assets and of XRP's spot volume. A single print says little; a trend that holds for weeks says more.</div>
+    </section>
+
+    <section class="panel" id="p-themes" aria-label="Themes">
+      <div class="ph">
+        <h2>Themes · 7 days</h2>
+        <span class="sp"></span>
+        <span class="sub">Click a theme to filter the feed</span>
+      </div>
+      <div class="themes" id="themes"></div>
+    </section>
+
+    <section class="panel" id="p-theories" aria-label="Theory check">
+      <div class="ph">
+        <h2>Theory check</h2>
+        <span class="sp"></span>
+        <span class="sub">Popular claims, checked against what's on record</span>
+      </div>
+      <div id="theories"></div>
+    </section>
+  </div>
+</main>
+
+<footer class="foot" id="p-method">
+  <div class="panel">
+    <h3>How impact is rated</h3>
+    <p>Every item gets a tier from a fixed rubric. The same factors apply to every item, so the rating doesn't depend on how excited the post sounds.</p>
+    <ul style="margin-top:8px">
+      <li>Source tier: primary record, established outlet, smaller outlet, or unvetted account</li>
+      <li>New information, or already scheduled and known</li>
+      <li>Size relative to XRP's daily volume, ETF assets or float</li>
+      <li>Confirmation status: confirmed, reported, rumor, speculative</li>
+      <li>Market positioning at the time (leverage, funding)</li>
+    </ul>
+  </div>
+  <div class="panel">
+    <h3>Where the probability comes from</h3>
+    <p>Every item is logged with its time, theme and source tier. The pipeline then measures XRP's move against BTC over 1h, 4h and 24h. Once a theme has <b id="unlock-n">30</b> logged events, its items show the historical share that moved more than ±3% versus BTC within 24 hours. Until then you see the rubric tier only, marked <span class="mono">RUBRIC</span>.</p>
+    <p style="margin-top:8px" id="log-status"></p>
+  </div>
+  <div class="panel">
+    <h3>Data</h3>
+    <ul>
+      <li>Price: Coinbase public candles and ticker, streamed straight to this page</li>
+      <li>News, X, ETF, themes: <code>data.json</code> written by the scheduled pipeline</li>
+      <li>Charts: <a href="https://www.tradingview.com/lightweight-charts/" target="_blank" rel="noopener">TradingView Lightweight Charts</a></li>
+      <li id="data-meta">—</li>
+    </ul>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.2.3/dist/lightweight-charts.standalone.production.js"></script>
+<script>
+/* =====================================================================
+   DATA CONTRACT — data.json (schema "xrp-terminal/0.1")
+   The pipeline writes this file next to the page. When it is missing
+   (or the page is opened from disk) the page falls back to SAMPLE data.
+
+   meta:   { schema, generated_at ISO, sample bool, last_x_scan ISO,
+             last_news_scan ISO, sources:[str] }
+   etf:    { as_of "YYYY-MM-DD",
+             funds:[{ticker, issuer, aum_usd}],
+             daily:[{date, net_flow_usd, total_aum_usd, cum_flow_usd,
+                     spot_volume_usd, by_fund:{TICKER:usd}}] }   // oldest → newest
+   items:  [{ id, kind:"news"|"x", published_at ISO, headline, summary,
+              source:{name, handle?, url?, tier:"primary"|"t1"|"t2"|"crowd"},
+              themes:[theme id], status:"confirmed"|"reported"|"rumor"|"speculative",
+              direction:"bullish"|"bearish"|"neutral"|"mixed",
+              horizon:"intraday"|"swing"|"structural",
+              impact:{ tier:"high"|"medium"|"low"|"noise",
+                       basis:"rubric"|"base_rate", p?:0..1, n?:int,
+                       factors:[{t:"+"|"-", label}] , rationale },
+              reality_check,
+              reaction?:{ xrp_1h, xrp_4h, xrp_24h, vs_btc_1h, vs_btc_4h, vs_btc_24h } }]  // % moves
+   themes: { [theme id]: { state, base_rate:{ n, p|null } } }
+   theories: [{ claim, verdict:"supported"|"partly"|"unsupported"|"speculative"|"untestable",
+                true_part, would_change }]
+   event_log: { logged:int, unlock_n:int }
+   ===================================================================== */
+
+const THEMES = {
+  etf:  {code:"ETF",   name:"ETF & institutional flows"},
+  reg:  {code:"REG",   name:"Regulation & legal"},
+  tok:  {code:"TKN",   name:"Tokenization & real-world assets"},
+  stb:  {code:"RLUSD", name:"RLUSD & stablecoins"},
+  pay:  {code:"PAY",   name:"Payments adoption"},
+  col:  {code:"COL",   name:"Collateral & treasury use"},
+  corp: {code:"CORP",  name:"Ripple corporate"},
+  sup:  {code:"SUP",   name:"Supply & on-chain flows"},
+  mac:  {code:"MAC",   name:"Macro & crypto beta"},
+  spec: {code:"SPEC",  name:"Speculative narratives"}
+};
+const TIER_LABEL = {primary:"PRIMARY", t1:"TIER 1", t2:"TIER 2", crowd:"UNVETTED"};
+const IMPACT_RANK = {noise:0, low:1, medium:2, high:3};
+const IMPACT_LABEL = {noise:"NOISE", low:"LOW", medium:"MED", high:"HIGH"};
+const HORIZON_LABEL = {intraday:"intraday", swing:"days–weeks", structural:"long-term"};
+const DIR_ARROW = {bullish:"▲", bearish:"▼", neutral:"●", mixed:"◆"};
+
+/* ---------- helpers ---------- */
+const $ = (s, el=document) => el.querySelector(s);
+const $$ = (s, el=document) => [...el.querySelectorAll(s)];
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const safeUrl = u => { try { const x = new URL(u); return (x.protocol === "https:" || x.protocol === "http:") ? x.href : null; } catch { return null; } };
+const cssv = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const store = {
+  get(k, d){ try { const v = localStorage.getItem("xrpterm:" + k); return v == null ? d : JSON.parse(v); } catch { return d; } },
+  set(k, v){ try { localStorage.setItem("xrpterm:" + k, JSON.stringify(v)); } catch {} }
+};
+function fmtUsd(n, sign=true){
+  if (n == null || isNaN(n)) return "—";
+  const a = Math.abs(n), s = n < 0 ? "−" : (sign && n > 0 ? "+" : "");
+  if (a >= 1e9) return s + "$" + (a/1e9).toFixed(2) + "B";
+  if (a >= 1e6) return s + "$" + (a/1e6).toFixed(1) + "M";
+  if (a >= 1e3) return s + "$" + (a/1e3).toFixed(0) + "K";
+  return s + "$" + a.toFixed(0);
+}
+const fmtPx = p => p == null || isNaN(p) ? "—" : (p >= 10 ? p.toFixed(3) : p.toFixed(4));
+const fmtPct = (p, d=2) => p == null || isNaN(p) ? "—" : (p > 0 ? "+" : p < 0 ? "−" : "") + Math.abs(p).toFixed(d) + "%";
+const clsOf = v => v > 0 ? "up" : v < 0 ? "down" : "flat";
+const NY_HM = new Intl.DateTimeFormat("en-US", {timeZone:"America/New_York", hour:"2-digit", minute:"2-digit", hour12:false});
+const NY_HMS = new Intl.DateTimeFormat("en-US", {timeZone:"America/New_York", hour:"2-digit", minute:"2-digit", second:"2-digit", hour12:false});
+const NY_MD = new Intl.DateTimeFormat("en-US", {timeZone:"America/New_York", month:"short", day:"numeric"});
+const NY_MDHM = new Intl.DateTimeFormat("en-US", {timeZone:"America/New_York", month:"short", day:"numeric", hour:"2-digit", minute:"2-digit", hour12:false});
+const NY_PARTS = new Intl.DateTimeFormat("en-US", {timeZone:"America/New_York", weekday:"short", hour:"numeric", minute:"numeric", hour12:false});
+function rel(iso){
+  const m = Math.max(0, (Date.now() - new Date(iso).getTime()) / 60000);
+  if (m < 60) return Math.round(m) + "m ago";
+  if (m < 60*36) return Math.round(m/60) + "h ago";
+  return Math.round(m/1440) + "d ago";
+}
+function mulberry32(a){ return function(){ a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function gauss(r){ let u = 0, v = 0; while (!u) u = r(); while (!v) v = r(); return Math.sqrt(-2*Math.log(u)) * Math.cos(2*Math.PI*v); }
+
+/* =====================================================================
+   SAMPLE DATA — example content in the data.json shape. Times are
+   relative to page load so the feed lines up with the live chart.
+   ===================================================================== */
+function buildSample(now){
+  const ago = min => new Date(now - min*60000).toISOString();
+  const rnd = mulberry32(20261008);
+
+  // ---- ETF: 40 business days ending on the last weekday before today
+  const funds = [
+    {ticker:"XRPZ", issuer:"Franklin Templeton", w:.30},
+    {ticker:"XRP",  issuer:"Bitwise",            w:.24},
+    {ticker:"GXRP", issuer:"Grayscale",          w:.18},
+    {ticker:"TOXR", issuer:"21Shares",           w:.16},
+    {ticker:"XRPC", issuer:"Canary Capital",     w:.12}
+  ];
+  const days = [];
+  const d = new Date(now); d.setUTCHours(12,0,0,0);
+  while (days.length < 40){ d.setUTCDate(d.getUTCDate() - 1); const wd = d.getUTCDay(); if (wd !== 0 && wd !== 6) days.unshift(d.toISOString().slice(0,10)); }
+  let aum = 1.58e9, cum = 1.21e9;
+  const daily = days.map((date, i) => {
+    let net = 6.5e6 + gauss(rnd) * 8e6;
+    if (i === 38) net = -38.4e6;          // single-fund redemption day
+    if (i === 39) net = 11.2e6;
+    if (i === 21) net = 31.5e6;
+    const by = {};
+    let left = net;
+    funds.forEach((f, j) => {
+      let v;
+      if (i === 38) v = f.ticker === "TOXR" ? -44.9e6 : (j === funds.length-1 ? null : 1.6e6 + rnd()*1.2e6);
+      else v = j === funds.length-1 ? null : net * f.w + gauss(rnd) * 1.1e6;
+      if (v === null) v = left; else left -= v;
+      by[f.ticker] = Math.round(v);
+    });
+    const drift = 1 + gauss(rnd) * 0.018;
+    aum = aum * drift + net;
+    cum += net;
+    return {date, net_flow_usd: Math.round(net), total_aum_usd: Math.round(aum), cum_flow_usd: Math.round(cum),
+            spot_volume_usd: Math.round(2.6e9 + rnd() * 2.2e9), by_fund: by};
+  });
+  const lastAum = daily[daily.length-1].total_aum_usd;
+  const fundsOut = funds.map(f => ({ticker:f.ticker, issuer:f.issuer, aum_usd: Math.round(lastAum * f.w * (0.94 + rnd()*0.12))}));
+
+  const F = (t, label) => ({t, label});
+  const items = [
+    { id:"s01", kind:"x", published_at:ago(14*60+20),
+      headline:"Spot XRP ETFs back to net inflows after yesterday's single-fund redemption",
+      summary:"Daily flow data shows a net inflow across US spot XRP funds, led by the largest fund. The prior day's outflow came almost entirely from one fund.",
+      source:{name:"Example ETF Analyst", handle:"@example_etf_analyst", tier:"t1"},
+      themes:["etf"], status:"confirmed", direction:"bullish", horizon:"swing",
+      impact:{tier:"low", basis:"rubric", factors:[F("+","verifiable flow data"),F("+","established analyst"),F("-","small vs fund assets"),F("-","reverses one day only")],
+        rationale:"Inflow is real but under 1% of fund assets. It matters as trend confirmation, not as a catalyst."},
+      reality_check:"One inflow day after one outflow day doesn't establish a trend. Watch the 5-day and 20-day sums in the ETF panel."},
+    { id:"s02", kind:"news", published_at:ago(70),
+      headline:"Bank consortium pilots tokenized deposit settlement on the XRP Ledger",
+      summary:"A group of regional banks announced a limited pilot settling tokenized deposits between members on the XRP Ledger.",
+      source:{name:"Sample Wire", tier:"t1"},
+      themes:["tok","pay"], status:"reported", direction:"bullish", horizon:"structural",
+      impact:{tier:"low", basis:"rubric", factors:[F("+","named institutions"),F("-","pilot, no volumes"),F("-","no XRP holding required"),F("-","not yet on primary record")],
+        rationale:"Ledger adoption is not the same as XRP demand. Pilots of this kind have rarely moved price beyond the same day."},
+      reality_check:"Tokenized deposits settle in the banks' own tokens. XRP is used only for small network fees and reserves, so the direct demand effect is tiny."},
+    { id:"s03", kind:"x", published_at:ago(160),
+      headline:"180M XRP moved from an unlabeled wallet to a major exchange",
+      summary:"On-chain alert flags a single 180M XRP transfer into an exchange deposit address.",
+      source:{name:"Example On-chain Alerts", handle:"@example_onchain", tier:"primary"},
+      themes:["sup"], status:"confirmed", direction:"bearish", horizon:"intraday",
+      impact:{tier:"medium", basis:"rubric", factors:[F("+","on-chain record"),F("+","large vs hourly volume"),F("-","sender unknown"),F("-","deposit ≠ sale")],
+        rationale:"Size is meaningful against hourly spot volume, so short-term selling pressure is plausible. Intent is unknown."},
+      reality_check:"Large exchange deposits are often internal moves or custody shuffles. Treat as a risk flag until order-book data shows actual selling.",
+      reaction:{xrp_1h:-0.6, xrp_4h:-0.9, vs_btc_1h:-0.4, vs_btc_4h:-0.5}},
+    { id:"s04", kind:"news", published_at:ago(240),
+      headline:"Regulator opens comment period on crypto market-structure rule",
+      summary:"A federal agency published a proposed rule on digital asset trading venues, starting a 60-day comment period.",
+      source:{name:"Example Regulator Release", tier:"primary"},
+      themes:["reg"], status:"confirmed", direction:"mixed", horizon:"swing",
+      impact:{tier:"medium", basis:"rubric", factors:[F("+","primary record"),F("+","affects all US venues"),F("-","proposal, not final"),F("-","long timeline")],
+        rationale:"Clarity is a long-term positive, but a proposal starts a months-long process. Near-term effect depends on details traders find in the text."},
+      reality_check:"Proposed rules change before they're final. Most of the price effect of regulatory news historically comes at final adoption or enforcement, not at proposal.",
+      reaction:{xrp_1h:0.4, xrp_4h:1.1, vs_btc_1h:0.1, vs_btc_4h:0.3}},
+    { id:"s05", kind:"x", published_at:ago(330),
+      headline:"\"Insider says a top-10 bank will announce an XRP reserve next week\"",
+      summary:"Anonymous account claims a bank will add XRP to its balance sheet. No document, name or second source.",
+      source:{name:"Example Crowd Account", handle:"@example_xrp_crowd", tier:"crowd"},
+      themes:["col","spec"], status:"rumor", direction:"bullish", horizon:"intraday",
+      impact:{tier:"noise", basis:"rubric", factors:[F("-","anonymous"),F("-","no document"),F("-","unvetted account"),F("-","recurring claim pattern")],
+        rationale:"Unsourced and matches a claim that recurs every few weeks. Logged as sentiment only."},
+      reality_check:"Bank balance-sheet decisions show up in filings and regulatory disclosures. Until one does, this is a rumor.",
+      reaction:{xrp_1h:0.1, xrp_4h:-0.3, vs_btc_1h:0.0, vs_btc_4h:-0.1}},
+    { id:"s06", kind:"news", published_at:ago(420),
+      headline:"RLUSD circulating supply reaches a new high as exchange listings expand",
+      summary:"Ripple's dollar stablecoin supply rose for a third straight week, with new listings on two exchanges.",
+      source:{name:"Example Ledger News", tier:"t2"},
+      themes:["stb"], status:"confirmed", direction:"neutral", horizon:"structural",
+      impact:{tier:"low", basis:"rubric", factors:[F("+","verifiable supply data"),F("-","indirect link to XRP"),F("-","gradual, expected")],
+        rationale:"Growth supports the ledger's activity, but holders of a dollar stablecoin don't need to hold XRP."},
+      reality_check:"Stablecoin growth and XRP price have moved independently for long stretches. Treat it as an ecosystem health signal.",
+      reaction:{xrp_1h:0.2, xrp_4h:0.0, vs_btc_1h:0.1, vs_btc_4h:-0.2}},
+    { id:"s07", kind:"news", published_at:ago(540),
+      headline:"Monthly escrow release: 1B XRP unlocked, majority returned to escrow",
+      summary:"The scheduled monthly escrow release completed. Most of the unlocked amount was placed back into new escrow contracts.",
+      source:{name:"Sample Wire", tier:"t1"},
+      themes:["sup"], status:"confirmed", direction:"neutral", horizon:"intraday",
+      impact:{tier:"low", basis:"base_rate", p:0.13, n:38, factors:[F("+","on-chain record"),F("-","scheduled, known in advance"),F("-","mostly re-locked")],
+        rationale:"Scheduled events are usually priced in. The base rate for this event type is low."},
+      reality_check:"The release itself isn't new supply on the market. What matters is the net amount Ripple keeps and sells over the month.",
+      reaction:{xrp_1h:-0.2, xrp_4h:-0.4, vs_btc_1h:-0.1, vs_btc_4h:0.1}},
+    { id:"s08", kind:"x", published_at:ago(12*60),
+      headline:"Nasdaq futures down 1.8% overnight as rate-cut odds fall",
+      summary:"Risk assets sold off overnight. Crypto majors fell in line with equity futures.",
+      source:{name:"Example Macro Desk", handle:"@example_macro", tier:"t1"},
+      themes:["mac"], status:"confirmed", direction:"bearish", horizon:"intraday",
+      impact:{tier:"medium", basis:"rubric", factors:[F("+","broad market move"),F("+","XRP–BTC correlation high in selloffs"),F("-","not XRP-specific")],
+        rationale:"Market-wide risk-off moves XRP through its correlation with BTC rather than through XRP-specific demand."},
+      reality_check:"Separate this from XRP news: the ‘vs BTC’ column shows whether XRP did worse or better than the market.",
+      reaction:{xrp_1h:-1.4, xrp_4h:-2.6, vs_btc_1h:-0.2, vs_btc_4h:-0.6}},
+    { id:"s09", kind:"x", published_at:ago(16*60),
+      headline:"\"XRP goes to $50 once ETFs pass $10B\"",
+      summary:"Viral post projecting a price target from future ETF assets. No model or source given.",
+      source:{name:"Example Crowd Account", handle:"@example_price_calls", tier:"crowd"},
+      themes:["spec","etf"], status:"speculative", direction:"bullish", horizon:"structural",
+      impact:{tier:"noise", basis:"rubric", factors:[F("-","price target, no model"),F("-","unvetted account")],
+        rationale:"Price targets carry no information about cause. Excluded from scoring and logged as sentiment."},
+      reality_check:"ETF assets are a small share of XRP's market value. A target like this assumes a price response far beyond anything flows have produced so far.",
+      reaction:{xrp_1h:0.0, xrp_4h:0.1, xrp_24h:-0.8, vs_btc_1h:0.0, vs_btc_4h:0.0, vs_btc_24h:-0.3}},
+    { id:"s10", kind:"news", published_at:ago(26*60),
+      headline:"Ripple closes acquisition of a corporate treasury software firm",
+      summary:"The deal, announced earlier in the quarter, has closed. Terms were not disclosed.",
+      source:{name:"Example Crypto Daily", tier:"t2"},
+      themes:["corp","col"], status:"confirmed", direction:"bullish", horizon:"structural",
+      impact:{tier:"low", basis:"rubric", factors:[F("+","company confirmed"),F("-","announced weeks ago"),F("-","no XRP usage disclosed")],
+        rationale:"Closing a known deal adds little new information. Long-term relevance depends on whether XRP is used in the product."},
+      reality_check:"Ripple corporate growth and XRP demand are related but not the same. Watch for product changes that use XRP directly.",
+      reaction:{xrp_1h:0.3, xrp_4h:0.5, xrp_24h:0.9, vs_btc_1h:0.2, vs_btc_4h:0.3, vs_btc_24h:0.6}},
+    { id:"s11", kind:"news", published_at:ago(31*60),
+      headline:"Payments firm adds XRP-bridged corridor between the US and Mexico",
+      summary:"A remittance company says it now routes part of its US–Mexico volume through an XRP bridge.",
+      source:{name:"Sample Wire", tier:"t1"},
+      themes:["pay"], status:"reported", direction:"bullish", horizon:"structural",
+      impact:{tier:"low", basis:"rubric", factors:[F("+","uses XRP directly"),F("-","volume undisclosed"),F("-","one corridor")],
+        rationale:"Direct XRP use is the relevant kind of adoption, but without volume it can't be sized."},
+      reality_check:"Bridge use holds XRP for seconds to minutes, so demand depends on volume, not on the number of corridors announced.",
+      reaction:{xrp_1h:0.1, xrp_4h:0.4, xrp_24h:0.2, vs_btc_1h:0.0, vs_btc_4h:0.2, vs_btc_24h:0.2}},
+    { id:"s12", kind:"x", published_at:ago(38*60),
+      headline:"One fund posts a $45M outflow; looks like a single large redemption",
+      summary:"Flow data shows one fund accounted for nearly all of the day's net outflow. Other funds were flat to positive.",
+      source:{name:"Example ETF Analyst", handle:"@example_etf_analyst", tier:"t1"},
+      themes:["etf"], status:"confirmed", direction:"bearish", horizon:"intraday",
+      impact:{tier:"medium", basis:"rubric", factors:[F("+","verifiable flow data"),F("+","largest outflow in 30 days"),F("-","one fund, one day")],
+        rationale:"Unusual size for one day, but concentrated in one fund, which points to a single holder rather than broad selling."},
+      reality_check:"The 20-day trend stayed positive through this day. A one-day redemption is a short-term signal unless others follow.",
+      reaction:{xrp_1h:-0.5, xrp_4h:-1.2, xrp_24h:-2.1, vs_btc_1h:-0.3, vs_btc_4h:-0.8, vs_btc_24h:-1.4}}
+  ];
+
+  const themes = {
+    etf:  {state:"Inflows resumed after a one-fund redemption. 20-day trend still positive.", base_rate:{n:12, p:0.25}},
+    reg:  {state:"Comment period open on a market-structure proposal. No deadline this week.", base_rate:{n:7, p:0.43}},
+    tok:  {state:"Pilot announcements continue. No disclosed XRP-denominated volume.", base_rate:{n:19, p:0.05}},
+    stb:  {state:"RLUSD supply rising. Link to XRP demand is indirect.", base_rate:{n:9, p:0.0}},
+    pay:  {state:"New corridor announcements. Volumes mostly undisclosed.", base_rate:{n:15, p:0.07}},
+    col:  {state:"Much discussion, little confirmed activity.", base_rate:{n:4, p:null}},
+    corp: {state:"Acquisition closed. Integration news only.", base_rate:{n:6, p:0.17}},
+    sup:  {state:"Escrow cycle on schedule. One large exchange deposit flagged.", base_rate:{n:38, p:0.13}},
+    mac:  {state:"Risk-off overnight. XRP tracking BTC closely.", base_rate:{n:22, p:0.41}},
+    spec: {state:"Heavy volume of price-target posts. Excluded from scoring.", base_rate:null}
+  };
+
+  const theories = [
+    {claim:"ETF demand will create an XRP supply shock.", verdict:"partly",
+     true_part:"ETF flows are real and have been mostly positive, but fund holdings are a small share of circulating supply, and escrow releases and treasury sales add supply every month.",
+     would_change:"ETF holdings rising faster than exchange balances fall, for several months in a row."},
+    {claim:"XRP will replace SWIFT.", verdict:"unsupported",
+     true_part:"Ripple sells cross-border payment software, and only some of those flows use XRP as a bridge. SWIFT remains the main bank messaging network, and many Ripple bank partners never touch XRP.",
+     would_change:"Banks disclosing large, recurring payment volume settled through XRP."},
+    {claim:"Banks will hold XRP as collateral or a reserve asset.", verdict:"speculative",
+     true_part:"Collateral use comes up in crypto lending and prime brokerage, but confirmed bank holdings are rare and not disclosed at scale.",
+     would_change:"Capital rules that treat XRP favorably, or audited bank disclosures of holdings."},
+    {claim:"Tokenization on the XRP Ledger will drive XRP demand.", verdict:"partly",
+     true_part:"Tokenized assets on the ledger are growing. Each transaction burns a tiny fee and accounts lock a small reserve, so XRP demand grows far more slowly than the value tokenized.",
+     would_change:"Products that require holding meaningful XRP balances, such as XRP-denominated liquidity for tokenized assets."},
+    {claim:"XRP will reach $X by date Y.", verdict:"untestable",
+     true_part:"Price targets say nothing about cause. The terminal logs them as sentiment and leaves them out of impact scoring.",
+     would_change:"Nothing. A target is a prediction, not evidence."}
+  ];
+
+  return {
+    meta:{schema:"xrp-terminal/0.1", generated_at:ago(9), sample:true, last_x_scan:ago(9), last_news_scan:ago(9),
+          sources:["Grok x_search (sample)","CryptoPanic + primary RSS (sample)","ETF flows (sample)"]},
+    etf:{as_of:days[days.length-1], funds:fundsOut, daily},
+    items, themes, theories,
+    event_log:{logged:132, unlock_n:30}
+  };
+}
+
+/* =====================================================================
+   DATA LOADING
+   ===================================================================== */
+let DATA = null;
+async function loadData(){
+  if (location.protocol === "http:" || location.protocol === "https:"){
+    try {
+      const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), 6000);
+      const r = await fetch("data.json", {cache:"no-store", signal:ctl.signal});
+      clearTimeout(t);
+      if (r.ok){ const d = await r.json(); if (d && Array.isArray(d.items)) { d.meta = d.meta || {}; d.themes = d.themes || {}; return d; } }
+    } catch {}
+  }
+  return buildSample(Date.now());
+}
+
+/* =====================================================================
+   ETF PANEL
+   ===================================================================== */
+function etfStats(daily){
+  const flows = daily.map(d => d.net_flow_usd);
+  const last = daily[daily.length-1];
+  const prior = flows.slice(-31, -1);
+  const mean = prior.reduce((a,b)=>a+b,0) / prior.length;
+  const sd = Math.sqrt(prior.reduce((a,b)=>a+(b-mean)**2,0) / Math.max(1, prior.length-1)) || 1;
+  const z = (last.net_flow_usd - mean) / sd;
+  const sum = n => flows.slice(-n).reduce((a,b)=>a+b,0);
+  const s5 = sum(5), s20 = sum(20);
+  let streak = 0; const sg = Math.sign(last.net_flow_usd);
+  for (let i = flows.length-1; i >= 0 && sg !== 0 && Math.sign(flows[i]) === sg; i--) streak++;
+  // Denominator: fund assets when the source provides them, otherwise cumulative net inflows since launch
+  const hasAum = !!last.total_aum_usd;
+  const base = hasAum ? last.total_aum_usd : (last.cum_flow_usd > 0 ? last.cum_flow_usd : null);
+  const baseName = hasAum ? "of fund assets" : "of cum. inflows";
+  const pctAum = base ? last.net_flow_usd / base * 100 : null;
+  const pctSpot = last.spot_volume_usd ? last.net_flow_usd / last.spot_volume_usd * 100 : null;
+  const s20pct = base ? s20 / base * 100 : null;
+  let label, dir, hz, rule;
+  if (s20 > 0 && s5 > 0){ label="Steady accumulation"; dir="bullish"; hz="longer-term"; rule="20-day sum > 0 and 5-day sum > 0"; }
+  else if (s20 > 0 && s5 <= 0){ label="Uptrend pausing"; dir="neutral"; hz="short-term"; rule="20-day sum > 0 but 5-day sum ≤ 0"; }
+  else if (s20 <= 0 && s5 < 0){ label="Distribution"; dir="bearish"; hz="longer-term"; rule="20-day sum ≤ 0 and 5-day sum < 0"; }
+  else { label="Bounce in a downtrend"; dir="neutral"; hz="short-term"; rule="20-day sum ≤ 0 but 5-day sum ≥ 0"; }
+  const conf = s20pct == null ? "n/a" : Math.abs(s20pct) > 2 ? "high" : Math.abs(s20pct) > 0.5 ? "medium" : "low";
+  return {last, z, s5, s20, s20pct, streak, sg, pctAum, pctSpot, label, dir, hz, rule, conf, hasAum, baseName};
+}
+
+function renderEtf(){
+  const {etf} = DATA;
+  if (!etf || !Array.isArray(etf.daily) || etf.daily.length < 2){
+    $("#etf-asof").textContent = "";
+    $("#etf-kpis").innerHTML = "";
+    $("#etf-read").innerHTML = `<div class="empty">ETF flows aren't connected yet. They appear after the first nightly pull once the ETF data key is added.</div>`;
+    $("#etf-funds").innerHTML = "";
+    $(".etf-chart-wrap").hidden = true;
+    return;
+  }
+  $(".etf-chart-wrap").hidden = false;
+  const st = etfStats(etf.daily);
+  $("#etf-asof").textContent = "as of " + NY_MD.format(new Date(etf.as_of + "T16:00:00-04:00"));
+  const streakTxt = st.sg === 0 ? "flat" : st.streak + "d " + (st.sg > 0 ? "in" : "out");
+  const sizeKpi = st.hasAum
+    ? `<div class="kpi"><div class="k">Total AUM</div><div class="v">${fmtUsd(st.last.total_aum_usd, false)}</div><div class="s">cum. flow ${fmtUsd(st.last.cum_flow_usd, false)}</div></div>`
+    : `<div class="kpi"><div class="k">Cum. net flow</div><div class="v">${fmtUsd(st.last.cum_flow_usd, false)}</div><div class="s">since ${etf.flows_since ? NY_MD.format(new Date(etf.flows_since + "T16:00:00-04:00")) : "launch"}</div></div>`;
+  $("#etf-kpis").innerHTML = `
+    <div class="kpi"><div class="k">Last day net</div><div class="v big ${clsOf(st.last.net_flow_usd)}">${fmtUsd(st.last.net_flow_usd)}</div><div class="s">${st.pctAum == null ? "—" : fmtPct(st.pctAum) + " " + st.baseName}</div></div>
+    <div class="kpi"><div class="k">5 / 20 day</div><div class="v ${clsOf(st.s5)}">${fmtUsd(st.s5)}</div><div class="s ${clsOf(st.s20)}">${fmtUsd(st.s20)} 20d</div></div>
+    ${sizeKpi}
+    <div class="kpi"><div class="k">Streak</div><div class="v ${st.sg>0?"up":st.sg<0?"down":"flat"}">${streakTxt}</div><div class="s">z ${st.z>=0?"+":"−"}${Math.abs(st.z).toFixed(1)} vs 30d</div></div>`;
+
+  const pts = [];
+  pts.push(`Over 20 trading days funds took in ${fmtUsd(st.s20)}${st.s20pct == null ? "" : `, which is ${fmtPct(st.s20pct,1)} ${st.baseName}`}.`);
+  if (Math.abs(st.z) >= 2) pts.push(`The last print is unusual for this product (${st.z>0?"+":"−"}${Math.abs(st.z).toFixed(1)} standard deviations from the 30-day mean). Treat it as a short-term signal until it repeats.`);
+  else pts.push(`The last print is within the normal range (${st.z>=0?"+":"−"}${Math.abs(st.z).toFixed(1)} standard deviations from the 30-day mean), so it doesn't change the trend read on its own.`);
+  if (st.pctSpot != null){
+    const src = DATA.meta.spot_volume_source ? ` on ${DATA.meta.spot_volume_source}` : "";
+    pts.push(`Last day's net flow equals ${fmtPct(st.pctSpot)} of XRP's spot volume${src} that day. ${Math.abs(st.pctSpot) < 5 ? "Flows this size are easily absorbed by spot trading; persistence matters more than size." : "That is large relative to spot trading, so the flow itself can move price."}`);
+  }
+  const lastBy = st.last.by_fund || {};
+  const vals = Object.entries(lastBy).sort((a,b)=>Math.abs(b[1])-Math.abs(a[1]));
+  if (vals.length){
+    const tot = vals.reduce((a,[,v])=>a+Math.abs(v),0) || 1;
+    const share = Math.abs(vals[0][1]) / tot;
+    if (share > 0.6) pts.push(`${vals[0][0]} accounted for ${(share*100).toFixed(0)}% of last day's gross fund flow, so the print reflects one fund more than broad demand.`);
+  }
+  $("#etf-read").innerHTML = `
+    <div class="verdict"><span class="vchip ${st.dir}">${esc(st.label)}</span><span class="vchip ${st.dir}">${st.dir}</span><span class="vchip hz">${st.hz}</span><span class="vchip cf">trend strength ${st.conf}</span></div>
+    <ul>${pts.map(p=>`<li>${esc(p)}</li>`).join("")}</ul>
+    <div class="rule">Rule applied: ${esc(st.rule)}. Trend strength = 20-day sum as a share ${st.hasAum ? "of fund assets" : "of cumulative inflows"} (low &lt; 0.5%, high &gt; 2%).</div>`;
+
+  // fund table: sized by AUM when available, otherwise by cumulative net flow
+  const last5 = etf.daily.slice(-5);
+  const sizeKey = st.hasAum ? "aum_usd" : "cum_flow_usd";
+  const rows = (etf.funds || []).map(f => {
+    const day = (st.last.by_fund || {})[f.ticker];
+    const d5 = last5.reduce((a,d)=>a + ((d.by_fund||{})[f.ticker] || 0), 0);
+    return {...f, day, d5, size: Math.max(0, f[sizeKey] || 0)};
+  }).sort((a,b)=> b.size - a.size);
+  const totA = rows.reduce((a,r)=>a+r.size,0) || 1;
+  $("#etf-funds").innerHTML = `<thead><tr><th>Fund</th><th>Day</th><th>5D</th><th>${st.hasAum ? "AUM" : "Cum. flow"}</th><th>Share</th></tr></thead><tbody>` +
+    rows.map(r => `<tr><td><b>${esc(r.ticker)}</b><span>${esc(r.issuer)}</span></td>
+      <td class="${clsOf(r.day)}">${r.day == null ? "—" : fmtUsd(r.day)}</td><td class="${clsOf(r.d5)}">${fmtUsd(r.d5)}</td>
+      <td>${fmtUsd(r[sizeKey], false)}</td><td>${(r.size/totA*100).toFixed(0)}%<span class="sharebar"><i style="width:${(r.size/totA*100).toFixed(1)}%"></i></span></td></tr>`).join("") + `</tbody>`;
+}
+
+let etfChart = null;
+function drawEtfChart(){
+  if (!window.LightweightCharts || !DATA.etf || !Array.isArray(DATA.etf.daily) || DATA.etf.daily.length < 2) return;
+  const el = $("#etfchart"); el.innerHTML = "";
+  const up = cssv("--up"), down = cssv("--down"), amber = cssv("--amber");
+  etfChart = LightweightCharts.createChart(el, {
+    autoSize:true,
+    layout:{background:{type:"solid", color:cssv("--panel")}, textColor:cssv("--faint"), fontFamily:cssv("--f-mono"), fontSize:10, attributionLogo:false},
+    grid:{vertLines:{visible:false}, horzLines:{color:cssv("--line")}},
+    rightPriceScale:{borderVisible:false, scaleMargins:{top:0.18, bottom:0.06}},
+    leftPriceScale:{visible:false},
+    timeScale:{borderColor:cssv("--line"), fixLeftEdge:true, fixRightEdge:true},
+    crosshair:{vertLine:{color:cssv("--line-2"), labelBackgroundColor:cssv("--panel-2")}, horzLine:{color:cssv("--line-2"), labelBackgroundColor:cssv("--panel-2")}},
+    handleScroll:false, handleScale:false,
+    localization:{priceFormatter: v => fmtUsd(v)}
+  });
+  const bars = etfChart.addHistogramSeries({priceLineVisible:false, lastValueVisible:false, priceFormat:{type:"custom", formatter:v=>fmtUsd(v)}});
+  bars.setData(DATA.etf.daily.map(d => ({time:d.date, value:d.net_flow_usd, color: d.net_flow_usd >= 0 ? up : down})));
+  const cum = etfChart.addLineSeries({color:amber, lineWidth:2, priceScaleId:"cum", priceLineVisible:false, lastValueVisible:false, crosshairMarkerVisible:false});
+  cum.priceScale().applyOptions({scaleMargins:{top:0.12, bottom:0.4}, visible:false});
+  cum.setData(DATA.etf.daily.map(d => ({time:d.date, value:d.cum_flow_usd})));
+  etfChart.timeScale().fitContent();
+}
+
+/* =====================================================================
+   FEED
+   ===================================================================== */
+const F = Object.assign({kind:"all", sort:"newest", min:0, soft:false, themes:[]}, store.get("filters", {}));
+let openId = null;
+
+function filteredItems(){
+  let xs = (DATA.items || []).slice();
+  if (F.kind !== "all") xs = xs.filter(i => i.kind === F.kind);
+  if (F.soft) xs = xs.filter(i => i.status !== "rumor" && i.status !== "speculative");
+  xs = xs.filter(i => (IMPACT_RANK[i.impact?.tier] ?? 0) >= F.min);
+  if (F.themes.length) xs = xs.filter(i => (i.themes||[]).some(t => F.themes.includes(t)));
+  const t = i => new Date(i.published_at).getTime();
+  xs.sort((a,b) => F.sort === "impact" ? ((IMPACT_RANK[b.impact?.tier]??0) - (IMPACT_RANK[a.impact?.tier]??0)) || (t(b)-t(a)) : t(b)-t(a));
+  return xs;
+}
+
+function impactBlock(it){
+  const im = it.impact || {};
+  let basis;
+  if (im.basis === "base_rate" && im.p != null) basis = `<span class="basis br">p ${(im.p*100).toFixed(0)}% · n=${im.n}</span>`;
+  else basis = `<span class="basis">RUBRIC</span>`;
+  return `<span class="meter" aria-hidden="true"><i></i><i></i><i></i></span><span class="lvl">${IMPACT_LABEL[im.tier] || "—"}</span>${basis}`;
+}
+
+function reactionTable(rx){
+  if (!rx) return `<p>Fills in automatically 1, 4 and 24 hours after the item.</p>`;
+  const cell = v => v == null ? `<td class="flat">pending</td>` : `<td class="${clsOf(v)}">${fmtPct(v,1)}</td>`;
+  return `<table class="rx"><thead><tr><th></th><th>1h</th><th>4h</th><th>24h</th></tr></thead><tbody>
+    <tr><td>XRP</td>${cell(rx.xrp_1h)}${cell(rx.xrp_4h)}${cell(rx.xrp_24h)}</tr>
+    <tr><td>vs BTC</td>${cell(rx.vs_btc_1h)}${cell(rx.vs_btc_4h)}${cell(rx.vs_btc_24h)}</tr></tbody></table>`;
+}
+
+function itemHtml(it){
+  const open = it.id === openId;
+  const d = new Date(it.published_at);
+  const today = NY_MD.format(d) === NY_MD.format(new Date());
+  const src = it.source || {};
+  const themes = (it.themes||[]).map(t => THEMES[t] ? `<span class="tag">${THEMES[t].code}</span>` : "").join("");
+  const im = it.impact || {};
+  const url = safeUrl(src.url);
+  let basisTxt;
+  if (im.basis === "base_rate" && im.p != null){
+    basisTxt = `Across ${im.n} logged events of this type, ${(im.p*100).toFixed(0)}% were followed by a move of more than ±3% versus BTC within 24 hours.`;
+  } else {
+    const br = DATA.themes?.[it.themes?.[0]]?.base_rate;
+    basisTxt = `Rubric estimate. ${br && br.n != null ? `This theme has ${br.n} logged events; a base rate appears at ${DATA.event_log?.unlock_n ?? 30}.` : "No base rate for this theme."}`;
+  }
+  const factors = (im.factors||[]).map(f => `<span class="factor ${f.t==="+"?"plus":"minus"}">${f.t==="+"?"+":"−"} ${esc(f.label)}</span>`).join("");
+  return `<article class="item imp-${esc(im.tier||"noise")}${open?" sel-on":""}" id="it-${esc(it.id)}" data-id="${esc(it.id)}">
+    <button class="item-head" type="button" aria-expanded="${open}" aria-controls="ib-${esc(it.id)}">
+      <span class="i-time"><b>${today ? NY_HM.format(d) : NY_MD.format(d)}</b><i>${rel(it.published_at)}</i><span class="i-kind k-${esc(it.kind)}">${it.kind === "x" ? "X" : "NEWS"}</span></span>
+      <span class="i-main">
+        <span class="i-src">${esc(src.name)}${src.handle ? ` <span class="h">${esc(src.handle)}</span>` : ""}<span class="tier tier-${esc(src.tier)}">${TIER_LABEL[src.tier] || ""}</span>${DATA.meta.sample ? `<span class="smp">sample</span>` : ""}</span>
+        <span class="i-hl">${esc(it.headline)}</span>
+        <span class="i-tags"><span class="st st-${esc(it.status)}">${esc(it.status)}</span>${themes}<span class="dir d-${esc(it.direction)}">${DIR_ARROW[it.direction]||""} ${esc(it.direction)}</span><span class="hz">· ${HORIZON_LABEL[it.horizon] || esc(it.horizon)}</span></span>
+      </span>
+      <span class="i-imp">${impactBlock(it)}</span>
+    </button>
+    <div class="item-body" id="ib-${esc(it.id)}" ${open ? "" : "hidden"}>
+      <p class="ib-sum">${esc(it.summary)}</p>
+      <div class="ib-grid">
+        <div class="ib-box"><h4>Why this rating</h4><p>${esc(im.rationale)}</p><div class="factors">${factors}</div></div>
+        <div class="ib-box"><h4>Reality check</h4><p>${esc(it.reality_check)}</p></div>
+        <div class="ib-box"><h4>What price did after</h4>${reactionTable(it.reaction)}</div>
+      </div>
+      <div class="ib-foot"><span>${esc(basisTxt)}</span><span>${NY_MDHM.format(d)} ET</span>${url ? `<a href="${esc(url)}" target="_blank" rel="noopener">Open source ↗</a>` : `<span>${DATA.meta.sample ? "Sample item · no source link" : "No link"}</span>`}</div>
+    </div>
+  </article>`;
+}
+
+function renderFeed(){
+  const xs = filteredItems();
+  $("#feed").innerHTML = xs.length ? xs.map(itemHtml).join("") : `<div class="empty">No items match these filters.</div>`;
+  $("#feed-count").textContent = `${xs.length} of ${(DATA.items||[]).length}`;
+  const m = DATA.meta || {};
+  $("#feed-scan").textContent = m.last_x_scan ? `X scan ${NY_HM.format(new Date(m.last_x_scan))} · news ${m.last_news_scan ? NY_HM.format(new Date(m.last_news_scan)) : "—"} ET` : "";
+  $$("#f-kind button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === F.kind)));
+  $("#f-sort").value = F.sort; $("#f-min").value = String(F.min); $("#f-soft").checked = F.soft;
+  $$("#f-themes .chip").forEach(c => c.setAttribute("aria-pressed", String(F.themes.includes(c.dataset.t))));
+  $$("#themes .th-row").forEach(r => r.setAttribute("aria-pressed", String(F.themes.length === 1 && F.themes[0] === r.dataset.t)));
+  store.set("filters", F);
+  setMarkers();
+}
+
+function buildThemeChips(){
+  $("#f-themes").innerHTML = Object.entries(THEMES).map(([id,t]) => `<button type="button" class="chip" data-t="${id}" aria-pressed="false" title="${esc(t.name)}">${t.code}</button>`).join("");
+}
+
+function toggleItem(id, scroll){
+  openId = openId === id ? null : id;
+  renderFeed();
+  if (openId && scroll){ const el = document.getElementById("it-" + id); el && el.scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block:"center"}); }
+  if (openId) focusChartOn(openId);
+}
+
+/* =====================================================================
+   THEMES + THEORIES
+   ===================================================================== */
+function renderThemes(){
+  const weekAgo = Date.now() - 7*864e5;
+  const recent = (DATA.items||[]).filter(i => new Date(i.published_at).getTime() >= weekAgo);
+  const unlock = DATA.event_log?.unlock_n ?? 30;
+  const rows = Object.entries(THEMES).map(([id, t]) => {
+    const its = recent.filter(i => (i.themes||[]).includes(id));
+    const b = its.filter(i => i.direction === "bullish").length, r = its.filter(i => i.direction === "bearish").length, n = its.length - b - r;
+    const info = DATA.themes?.[id] || {};
+    const br = info.base_rate;
+    let brTxt;
+    if (!br) brTxt = `<span>not scored</span>`;
+    else if (br.n >= unlock && br.p != null) brTxt = `<span class="br">p ${(br.p*100).toFixed(0)}% · n=${br.n}</span>`;
+    else brTxt = `<span>n=${br.n} of ${unlock}</span>`;
+    const tot = Math.max(1, its.length);
+    return {id, t, its, b, r, n, info, brTxt, tot};
+  });
+  rows.sort((a,b) => b.its.length - a.its.length);
+  $("#themes").innerHTML = rows.map(x => `
+    <button type="button" class="th-row" data-t="${x.id}" aria-pressed="false">
+      <span class="th-code">${x.t.code}</span>
+      <span class="th-main"><span class="th-name">${esc(x.t.name)}</span><span class="th-state">${esc(x.info.state || "No items this week.")}</span></span>
+      <span class="th-side"><span>${x.its.length} item${x.its.length===1?"":"s"}</span>
+        <span class="balance" title="${x.b} bullish · ${x.r} bearish · ${x.n} neutral">${x.its.length ? `<i class="b" style="width:${x.b/x.tot*100}%"></i><i class="n" style="width:${x.n/x.tot*100}%"></i><i class="r" style="width:${x.r/x.tot*100}%"></i>` : ""}</span>
+        ${x.brTxt}</span>
+    </button>`).join("");
+}
+
+function renderTheories(){
+  const label = {supported:"Supported", partly:"Partly true", unsupported:"Unsupported", speculative:"Speculative", untestable:"Untestable"};
+  $("#theories").innerHTML = (DATA.theories||[]).map(t => `
+    <div class="theory">
+      <div class="claim"><q>${esc(t.claim)}</q><span class="vd vd-${esc(t.verdict)}">${label[t.verdict] || esc(t.verdict)}</span></div>
+      <p><b>On record</b>${esc(t.true_part)}</p>
+      <p><b>Would change it</b>${esc(t.would_change)}</p>
+    </div>`).join("") + (DATA.meta.sample ? `<div class="note">Sample analysis. The pipeline refreshes these weekly from the same sources as the feed.</div>` : "");
+}
+
+/* =====================================================================
+   PRICE CHART + LIVE FEED (Coinbase public API)
+   ===================================================================== */
+const PX = {g: store.get("gran", 3600), mode:"connecting", bars:[], ticks:[], last:null, ws:null, wsTries:0, open24:null, high24:null, low24:null};
+let chart = null, candles = null, vol = null, selectedMarker = null;
+
+function setPricePill(state, text){
+  const p = $("#pill-price"); p.className = "pill " + state; p.innerHTML = `<span class="dot"></span>${esc(text)}`;
+}
+function chartMsg(text){ const m = $("#chart-msg"); if (!text){ m.hidden = true; return; } m.hidden = false; m.firstElementChild.textContent = text; }
+
+function initChart(){
+  if (!window.LightweightCharts){ chartMsg("Chart library didn't load. Check your connection to cdn.jsdelivr.net and reload."); return false; }
+  const el = $("#chart");
+  const fmtTick = (time, type) => {
+    const d = new Date(time * 1000);
+    if (type === 3 || type === 4) return NY_HM.format(d);
+    return NY_MD.format(d);
+  };
+  chart = LightweightCharts.createChart(el, {
+    autoSize:true,
+    layout:{background:{type:"solid", color:cssv("--panel")}, textColor:cssv("--dim"), fontFamily:cssv("--f-mono"), fontSize:11, attributionLogo:false},
+    grid:{vertLines:{color:cssv("--line")}, horzLines:{color:cssv("--line")}},
+    rightPriceScale:{borderColor:cssv("--line"), scaleMargins:{top:0.08, bottom:0.22}},
+    timeScale:{borderColor:cssv("--line"), timeVisible:true, secondsVisible:false, rightOffset:6, tickMarkFormatter:fmtTick},
+    crosshair:{mode:0, vertLine:{color:cssv("--line-2"), labelBackgroundColor:cssv("--panel-2")}, horzLine:{color:cssv("--line-2"), labelBackgroundColor:cssv("--panel-2")}},
+    localization:{timeFormatter: t => NY_MDHM.format(new Date(t*1000)) + " ET", priceFormatter: p => fmtPx(p)},
+    handleScroll:{vertTouchDrag:false}
+  });
+  candles = chart.addCandlestickSeries({upColor:cssv("--up"), downColor:cssv("--down"), wickUpColor:cssv("--up"), wickDownColor:cssv("--down"), borderVisible:false,
+    priceFormat:{type:"price", precision:4, minMove:0.0001}});
+  vol = chart.addHistogramSeries({priceScaleId:"", priceFormat:{type:"volume"}, priceLineVisible:false, lastValueVisible:false});
+  vol.priceScale().applyOptions({scaleMargins:{top:0.82, bottom:0}});
+  chart.subscribeCrosshairMove(p => {
+    const b = p && p.time ? p.seriesData.get(candles) : null;
+    const bar = b || PX.bars[PX.bars.length-1];
+    if (!bar){ $("#ohlc").innerHTML = ""; return; }
+    const ch = (bar.close - bar.open) / bar.open * 100;
+    $("#ohlc").innerHTML = `O <b>${fmtPx(bar.open)}</b>H <b>${fmtPx(bar.high)}</b>L <b>${fmtPx(bar.low)}</b>C <b>${fmtPx(bar.close)}</b><span class="${clsOf(ch)}">${fmtPct(ch)}</span>`;
+  });
+  chart.subscribeClick(p => {
+    const id = p && p.hoveredObjectId;
+    if (id && typeof id === "string" && id.startsWith("ev:")){
+      const itemId = id.slice(3).split("|")[0];
+      if (openId !== itemId) toggleItem(itemId, true);
+    }
+  });
+  return true;
+}
+
+function setBars(bars){
+  PX.bars = bars;
+  if (!candles) return;
+  candles.setData(bars.map(b => ({time:b.time, open:b.open, high:b.high, low:b.low, close:b.close})));
+  vol.setData(bars.map(b => ({time:b.time, value:b.volume || 0, color: b.close >= b.open ? "rgba(53,201,139,.28)" : "rgba(239,94,94,.28)"})));
+  chart.timeScale().fitContent();
+  const n = bars.length; if (n > 160) chart.timeScale().setVisibleLogicalRange({from:n-160, to:n+4});
+  setMarkers();
+  const last = bars[n-1]; if (last){ const ch = (last.close-last.open)/last.open*100; $("#ohlc").innerHTML = `O <b>${fmtPx(last.open)}</b>H <b>${fmtPx(last.high)}</b>L <b>${fmtPx(last.low)}</b>C <b>${fmtPx(last.close)}</b><span class="${clsOf(ch)}">${fmtPct(ch)}</span>`; }
+}
+
+function bucket(tSec){ return Math.floor(tSec / PX.g) * PX.g; }
+
+function setMarkers(){
+  if (!candles || !PX.bars.length) return;
+  if (!$("#show-ev").checked){ candles.setMarkers([]); return; }
+  const first = PX.bars[0].time, lastT = PX.bars[PX.bars.length-1].time + PX.g;
+  const up = cssv("--up"), down = cssv("--down"), dim = cssv("--dim"), amber = cssv("--amber");
+  const byTime = new Map();
+  for (const it of filteredItems()){
+    const t = Math.floor(new Date(it.published_at).getTime()/1000);
+    if (t < first || t >= lastT) continue;
+    const bt = bucket(t);
+    if (!byTime.has(bt)) byTime.set(bt, []);
+    byTime.get(bt).push(it);
+  }
+  const ms = [];
+  for (const [bt, its] of byTime){
+    its.sort((a,b) => (IMPACT_RANK[b.impact?.tier]??0) - (IMPACT_RANK[a.impact?.tier]??0));
+    const top = its[0];
+    const sel = its.some(i => i.id === openId);
+    const dir = top.direction;
+    const codes = [...new Set(its.flatMap(i => (i.themes||[]).slice(0,1).map(t => THEMES[t]?.code || "")))].join("·");
+    ms.push({
+      time: bt,
+      position: dir === "bearish" ? "belowBar" : "aboveBar",
+      shape: dir === "bullish" ? "arrowUp" : dir === "bearish" ? "arrowDown" : "circle",
+      color: sel ? amber : dir === "bullish" ? up : dir === "bearish" ? down : dim,
+      size: sel ? 2 : (IMPACT_RANK[top.impact?.tier] >= 2 ? 1.4 : 1),
+      text: (sel || IMPACT_RANK[top.impact?.tier] >= 2) ? codes + (its.length > 1 ? ` +${its.length-1}` : "") : "",
+      id: "ev:" + top.id
+    });
+  }
+  ms.sort((a,b) => a.time - b.time);
+  candles.setMarkers(ms);
+}
+
+function focusChartOn(id){
+  if (!chart || !PX.bars.length) return;
+  const it = (DATA.items||[]).find(i => i.id === id); if (!it) return;
+  const bt = bucket(Math.floor(new Date(it.published_at).getTime()/1000));
+  const idx = PX.bars.findIndex(b => b.time === bt);
+  if (idx < 0) return;
+  const r = chart.timeScale().getVisibleLogicalRange();
+  if (r && idx > r.from + 3 && idx < r.to - 3) return;
+  chart.timeScale().setVisibleLogicalRange({from: Math.max(0, idx-90), to: Math.min(PX.bars.length+4, idx+60)});
+}
+
+async function fetchCandles(g){
+  const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), 7000);
+  try {
+    const r = await fetch(`https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=${g}`, {signal:ctl.signal});
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const a = await r.json();
+    if (!Array.isArray(a) || !a.length) throw new Error("empty");
+    return a.map(x => ({time:x[0], low:+x[1], high:+x[2], open:+x[3], close:+x[4], volume:+x[5]})).sort((p,q) => p.time - q.time);
+  } finally { clearTimeout(t); }
+}
+
+function sampleCandles(g){
+  const r = mulberry32(7 + g);
+  const n = 300, end = bucket(Math.floor(Date.now()/1000));
+  let p = 2.18;
+  const sig = 0.0065 * Math.sqrt(g/3600);
+  const bars = [];
+  for (let i = n-1; i >= 0; i--){
+    const o = p, c = Math.max(0.2, o * (1 + gauss(r)*sig + 0.00005));
+    const h = Math.max(o,c) * (1 + Math.abs(gauss(r))*sig*0.5), l = Math.min(o,c) * (1 - Math.abs(gauss(r))*sig*0.5);
+    bars.push({time:end - i*g, open:o, high:h, low:l, close:c, volume: 2e6 * (0.5 + r()) * (g/3600)});
+    p = c;
+  }
+  return bars;
+}
+
+function barsFromTicks(){
+  const m = new Map();
+  for (const [t, px] of PX.ticks){
+    const bt = bucket(t);
+    const b = m.get(bt);
+    if (!b) m.set(bt, {time:bt, open:px, high:px, low:px, close:px, volume:0});
+    else { b.high = Math.max(b.high, px); b.low = Math.min(b.low, px); b.close = px; }
+  }
+  return [...m.values()].sort((a,b) => a.time - b.time);
+}
+
+async function loadPrice(){
+  chartMsg(null);
+  if (PX.mode === "sample"){ setBars(sampleCandles(PX.g)); updateQuoteFromBars(); return; }
+  try {
+    const bars = await fetchCandles(PX.g);
+    PX.mode = "live"; setBars(bars);
+    $("#chart-src").textContent = "Coinbase · live";
+    if (!PX.ws) connectWs();
+    if (PX.last == null){
+      updateQuoteFromBars();
+      waitForTick(8000).then(ok => { if (!ok && PX.mode === "live") setPricePill("warn", "Price · candles only, no stream"); });
+    }
+  } catch (e) {
+    if (!PX.ws) connectWs();
+    // give the ticker a moment before deciding
+    const ok = await waitForTick(8000);
+    if (ok){
+      PX.mode = "ticks";
+      $("#chart-src").textContent = "Coinbase · live ticks only";
+      setBars(barsFromTicks());
+      chartMsg(PX.bars.length < 3 ? "Price history was blocked here, so the chart is building from live ticks since you opened the page." : null);
+      setPricePill("warn", "Price · ticks only");
+    } else {
+      PX.mode = "sample";
+      $("#chart-src").textContent = "sample prices";
+      setBars(sampleCandles(PX.g));
+      updateQuoteFromBars();
+      setPricePill("sample", "Price · sample");
+    }
+  }
+}
+
+function waitForTick(ms){
+  return new Promise(res => {
+    if (PX.last != null) return res(true);
+    const t0 = Date.now();
+    const iv = setInterval(() => { if (PX.last != null){ clearInterval(iv); res(true); } else if (Date.now()-t0 > ms){ clearInterval(iv); res(false); } }, 200);
+  });
+}
+
+function connectWs(){
+  if (!("WebSocket" in window)) return;
+  let ws;
+  try { ws = new WebSocket("wss://ws-feed.exchange.coinbase.com"); } catch { return; }
+  PX.ws = ws;
+  ws.onopen = () => { PX.wsTries = 0; ws.send(JSON.stringify({type:"subscribe", product_ids:["XRP-USD"], channels:["ticker"]})); };
+  let pending = null, raf = 0;
+  ws.onmessage = ev => {
+    let m; try { m = JSON.parse(ev.data); } catch { return; }
+    if (m.type !== "ticker" || m.product_id !== "XRP-USD") return;
+    pending = m;
+    if (!raf) raf = setTimeout(() => { raf = 0; onTick(pending); }, 250);
+  };
+  ws.onclose = () => {
+    PX.ws = null;
+    if (PX.mode === "sample") return;
+    PX.wsTries++;
+    setPricePill("warn", "Price · reconnecting");
+    setTimeout(connectWs, Math.min(30000, 1000 * 2 ** PX.wsTries));
+  };
+  ws.onerror = () => { try { ws.close(); } catch {} };
+}
+
+function onTick(m){
+  const px = +m.price; if (!isFinite(px)) return;
+  const prev = PX.last; PX.last = px;
+  PX.open24 = +m.open_24h || PX.open24; PX.high24 = +m.high_24h || PX.high24; PX.low24 = +m.low_24h || PX.low24;
+  const t = Math.floor(new Date(m.time || Date.now()).getTime()/1000);
+  PX.ticks.push([t, px]); if (PX.ticks.length > 20000) PX.ticks.splice(0, 5000);
+  if (PX.mode === "sample") return;
+  if (PX.mode === "live") setPricePill("live", "Price · live");
+  // quote
+  const el = $("#q-px"); el.textContent = fmtPx(px);
+  if (prev != null && px !== prev && !matchMedia("(prefers-reduced-motion: reduce)").matches){
+    el.classList.remove("tick-up","tick-down"); void el.offsetWidth; el.classList.add(px > prev ? "tick-up" : "tick-down");
+    setTimeout(() => el.classList.remove("tick-up","tick-down"), 600);
+  }
+  if (PX.open24){ const ch = (px - PX.open24)/PX.open24*100; const c = $("#q-chg"); c.textContent = fmtPct(ch) + " 24h"; c.className = "q-chg " + clsOf(ch); }
+  $("#q-h").textContent = fmtPx(PX.high24); $("#q-l").textContent = fmtPx(PX.low24);
+  document.title = fmtPx(px) + " · XRP News Terminal";
+  // chart
+  if (!candles) return;
+  if (PX.mode === "ticks"){ const was = PX.bars.length; setBars(barsFromTicks()); if (PX.bars.length >= 3 && was < 3) chartMsg(null); return; }
+  const bt = bucket(t), last = PX.bars[PX.bars.length-1];
+  if (!last || bt < last.time) return;
+  let bar;
+  if (bt === last.time){ bar = {...last, high:Math.max(last.high,px), low:Math.min(last.low,px), close:px}; PX.bars[PX.bars.length-1] = bar; }
+  else { bar = {time:bt, open:last.close, high:Math.max(last.close,px), low:Math.min(last.close,px), close:px, volume:0}; PX.bars.push(bar); }
+  candles.update({time:bar.time, open:bar.open, high:bar.high, low:bar.low, close:bar.close});
+}
+
+function updateQuoteFromBars(){
+  const b = PX.bars; if (!b.length) return;
+  const last = b[b.length-1].close;
+  const day = Math.floor(Date.now()/1000) - 86400;
+  const window24 = b.filter(x => x.time >= day);
+  const ref = (window24[0] || b[0]).open;
+  const hi = Math.max(...(window24.length ? window24 : b).map(x=>x.high)), lo = Math.min(...(window24.length ? window24 : b).map(x=>x.low));
+  $("#q-px").textContent = fmtPx(last);
+  const ch = (last-ref)/ref*100; const c = $("#q-chg"); c.textContent = fmtPct(ch) + " 24h"; c.className = "q-chg " + clsOf(ch);
+  $("#q-h").textContent = fmtPx(hi); $("#q-l").textContent = fmtPx(lo);
+}
+
+/* =====================================================================
+   CLOCK + MARKET STATUS
+   ===================================================================== */
+function tickClock(){
+  const now = new Date();
+  $("#clock").textContent = NY_HMS.format(now);
+  const parts = Object.fromEntries(NY_PARTS.formatToParts(now).map(p => [p.type, p.value]));
+  const wd = parts.weekday, mins = (+parts.hour % 24) * 60 + (+parts.minute);
+  const weekday = !["Sat","Sun"].includes(wd);
+  const el = $("#mkt");
+  if (weekday && mins >= 570 && mins < 960){ const left = 960 - mins; el.innerHTML = `US MKT <span class="up">OPEN</span> · close in ${Math.floor(left/60)}h${String(left%60).padStart(2,"0")}`; }
+  else if (weekday && mins >= 960) el.innerHTML = `US MKT CLOSED · ETF flows post tonight`;
+  else el.innerHTML = `US MKT CLOSED`;
+}
+
+/* =====================================================================
+   WIRING
+   ===================================================================== */
+function wire(){
+  $("#tf").addEventListener("click", e => {
+    const b = e.target.closest("button[data-g]"); if (!b) return;
+    PX.g = +b.dataset.g; store.set("gran", PX.g);
+    $$("#tf button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+    if (PX.mode === "ticks"){ setBars(barsFromTicks()); return; }
+    loadPrice();
+  });
+  $$("#tf button").forEach(x => x.setAttribute("aria-pressed", String(+x.dataset.g === PX.g)));
+  $("#show-ev").addEventListener("change", setMarkers);
+  $("#f-kind").addEventListener("click", e => { const b = e.target.closest("button[data-v]"); if (!b) return; F.kind = b.dataset.v; renderFeed(); });
+  $("#f-sort").addEventListener("change", e => { F.sort = e.target.value; renderFeed(); });
+  $("#f-min").addEventListener("change", e => { F.min = +e.target.value; renderFeed(); });
+  $("#f-soft").addEventListener("change", e => { F.soft = e.target.checked; renderFeed(); });
+  $("#f-themes").addEventListener("click", e => {
+    const c = e.target.closest(".chip"); if (!c) return;
+    const t = c.dataset.t; F.themes = F.themes.includes(t) ? F.themes.filter(x => x !== t) : [...F.themes, t]; renderFeed();
+  });
+  $("#themes").addEventListener("click", e => {
+    const r = e.target.closest(".th-row"); if (!r) return;
+    const t = r.dataset.t; F.themes = (F.themes.length === 1 && F.themes[0] === t) ? [] : [t]; renderFeed();
+    $("#p-feed").scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block:"start"});
+  });
+  $("#feed").addEventListener("click", e => {
+    if (e.target.closest("a")) return;
+    const h = e.target.closest(".item-head"); if (!h) return;
+    toggleItem(h.closest(".item").dataset.id, false);
+  });
+  document.addEventListener("keydown", e => {
+    if (e.target.closest("input,select,textarea") || e.metaKey || e.ctrlKey || e.altKey) return;
+    const a = $(`.keys a[data-k="${e.key}"]`);
+    if (a){ e.preventDefault(); document.querySelector(a.getAttribute("href")).scrollIntoView({block:"start"}); }
+    if (e.key === "Escape" && openId){ openId = null; renderFeed(); }
+  });
+  // highlight active key by scroll position
+  const secs = $$(".keys a").map(a => document.querySelector(a.getAttribute("href")));
+  const io = "IntersectionObserver" in window ? new IntersectionObserver(es => {
+    es.forEach(en => { if (en.isIntersecting){ $$(".keys a").forEach(a => a.classList.toggle("on", a.getAttribute("href") === "#" + en.target.id)); } });
+  }, {rootMargin:"-40% 0px -55% 0px"}) : null;
+  io && secs.forEach(s => s && io.observe(s));
+}
+
+async function main(){
+  buildThemeChips();
+  wire();
+  tickClock(); setInterval(tickClock, 1000);
+  const chartOk = initChart();
+  DATA = await loadData();
+  const sample = !!DATA.meta.sample;
+  $("#notice").hidden = !sample;
+  const pd = $("#pill-data"); pd.className = "pill " + (sample ? "sample" : "live");
+  pd.innerHTML = `<span class="dot"></span>Data · ${sample ? "sample" : "pipeline " + NY_HM.format(new Date(DATA.meta.generated_at)) + " ET"}`;
+  const m = DATA.meta;
+  const extra = [];
+  if (m.spend) extra.push(`Grok spend ${m.spend.month}: $${(+m.spend.usd).toFixed(2)} of $${m.spend.cap_usd} cap`);
+  if (m.feed_errors && m.feed_errors.length) extra.push(`Feeds failing: ${m.feed_errors.map(e => String(e).split(":")[0]).join(", ")}`);
+  $("#data-meta").textContent = `Schema ${m.schema || "?"} · generated ${m.generated_at ? NY_MDHM.format(new Date(m.generated_at)) + " ET" : "—"}${sample ? " · sample" : ""}${extra.length ? " · " + extra.join(" · ") : ""}`;
+  const unlock = DATA.event_log?.unlock_n ?? 30;
+  $("#unlock-n").textContent = unlock;
+  $("#log-status").textContent = DATA.event_log ? `Events logged so far: ${DATA.event_log.logged}${sample ? " (sample count)" : ""}.` : "";
+  renderEtf(); drawEtfChart(); renderFeed(); renderThemes(); renderTheories();
+  if (chartOk) loadPrice();
+  else { setPricePill("warn", "Price · chart offline"); connectWs(); }
+}
+main();
+</script>
+</body>
+</html>

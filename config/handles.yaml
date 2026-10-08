@@ -1,0 +1,63 @@
+# X accounts for the signal scan. Each group is one Grok request (max 20 handles).
+# tier: primary = the account IS the source (company, issuer, regulator, on-chain data)
+#       t1      = established analyst, reporter or outlet
+# DRAFT LIST — run the "verify handles" task once your xAI key is in, and edit freely.
+# Handles marked "# verify" are ones I'm less sure are exact.
+
+groups:
+  - name: Ripple & XRP Ledger
+    tier: primary
+    handles:
+      - Ripple
+      - RippleXDev
+      - bgarlinghouse      # Brad Garlinghouse, CEO
+      - JoelKatz           # David Schwartz
+      - s_alderoty         # Stuart Alderoty, CLO   # verify
+      - MonicaLongSF       # Monica Long, President # verify
+      - XRPLF              # XRP Ledger Foundation
+      - xrpl_commons       # verify
+
+  - name: ETF issuers
+    tier: primary
+    handles:
+      - BitwiseInvest
+      - Grayscale
+      - 21Shares
+      - CanaryFunds        # Canary Capital        # verify
+      - FTI_US             # Franklin Templeton US  # verify
+
+  - name: ETF analysts & flow data
+    tier: t1
+    handles:
+      - JSeyff             # James Seyffart
+      - EricBalchunas
+      - NateGeraci
+      - Matt_Hougan
+      - coinglass_com
+      - SoSoValueCrypto    # verify
+
+  - name: Regulators & policy reporters
+    tier: primary
+    handles:
+      - SECGov
+      - CFTC
+      - HesterPeirce
+    t1_handles:            # same request, but rated t1 rather than primary
+      - EleanorTerrett
+      - CGasparino
+
+  - name: Wires & on-chain
+    tier: t1
+    handles:
+      - WuBlockchain
+      - TheBlock__
+      - CoinDesk
+      - Cointelegraph
+      - DeItaone           # headline wire
+    primary_handles:       # on-chain data accounts count as primary records
+      - whale_alert
+      - lookonchain
+      - xrpscan            # verify
+
+# Up to 20 accounts kept out of the open discovery scan (hype, spam, engagement bait).
+blocked: []

@@ -1,0 +1,47 @@
+# XRP News Terminal — pipeline settings
+# Times are New York time. The workflow fires at both UTC hours that can map to
+# each slot (EDT and EST), and the pipeline runs a slot only once.
+
+schedule:
+  scan_hours_et: [7, 12, 17]      # X + news scans
+  etf_hour_et: 20                 # ETF flow pull, after flows post
+  late_window_hours: 1            # a delayed run still counts for its slot
+
+xai:
+  model: grok-4.7                 # any Grok model with x_search + structured outputs
+  base_url: https://api.x.ai/v1
+  timeout_s: 240
+  discovery_max_posts: 15         # asked for, not hard-enforced by the API
+  web_news_search: true           # one Grok web search per scan for articles RSS misses
+
+budget:
+  monthly_usd: 40                 # scans stop for the month once estimated spend hits this
+  # Prices used to estimate spend. Check https://docs.x.ai/developers/pricing
+  price_input_per_m: 2.00
+  price_cached_input_per_m: 0.50
+  price_output_per_m: 6.00
+  price_x_post: 0.005             # per post fetched
+  price_x_user: 0.010             # per profile fetched
+  price_web_search: 0.005         # per web search call
+
+feed:
+  window_days: 7                  # how far back the page's feed goes
+  keywords: [xrp, ripple, xrpl, "xrp ledger", rlusd, garlinghouse, "spot xrp", xrpc, xrpz, gxrp, toxr]
+
+rubric:
+  # Score = sum of factor points. Tier thresholds below. Same for every item.
+  source:   {primary: 2, t1: 1, t2: 0, crowd: -2}
+  status:   {confirmed: 2, reported: 1, rumor: -2, speculative: -3}
+  novelty:  {new: 1, known: -2, scheduled: -2}
+  size:     {large: 2, moderate: 1, small: 0, na: 0}
+  scope:    {direct: 1, indirect: 0, market_wide: 0}
+  tiers:    {high: 6, medium: 4, low: 1}   # score >= value; below low = noise
+
+base_rates:
+  unlock_n: 30                    # events per theme before a probability is shown
+  move_threshold_pct: 3.0         # |XRP 24h return minus BTC 24h return| above this counts as a move
+  min_tier: low                   # noise items are excluded from base rates
+
+etf:
+  provider: coinglass             # needs COINGLASS_API_KEY
+  spot_volume_source: Coinbase    # daily XRP-USD volume used for the "share of spot volume" line
