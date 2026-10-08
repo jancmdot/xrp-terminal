@@ -8,9 +8,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Martian+Mono:wght@500;700&display=swap">
 <style>
-/* Layout: sticky quote bar + function-key row, then a two-column desk:
-   left = price chart over the news/X feed, right = ETF flows, themes, theory checks.
-   Stacks to one column under 1100px. Deliberately dark-only, like a trading terminal. */
+/* Layout: sticky quote bar, then a desk of movable panels (top strip, two columns, bottom strip).
+   Stacks to one column under 1100px. Five color themes, picked in the top bar: four dark terminal
+   palettes and one light one. "--amber" is the accent token in every theme. */
 :root{
   color-scheme: dark;
   --bg:#080c11;
@@ -34,7 +34,46 @@
   --f-label:"Martian Mono", "JetBrains Mono", ui-monospace, monospace;
   --f-text:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --fs-xs:10.5px; --fs-s:12px; --fs-m:13.5px; --fs-l:16px; --fs-xl:22px; --fs-xxl:30px;
+  --shadow:rgba(0,0,0,.45);
 }
+/* Phosphor: green-screen terminal */
+:root[data-skin="phosphor"]{
+  --bg:#050a07; --panel:#09110c; --panel-2:#0d1811; --line:#16241b; --line-2:#22362a;
+  --fg:#d2ead9; --dim:#80a68c; --faint:#4f6b58;
+  --amber:#7ee8a0; --amber-ink:#03140a; --amber-wash:rgba(126,232,160,.10);
+  --up:#3fd28b; --down:#f2705f; --up-wash:rgba(63,210,139,.12); --down-wash:rgba(242,112,95,.12);
+  --warn:#e3d36a; --info:#7cc7e8;
+}
+/* Ice: navy with a cyan accent */
+:root[data-skin="ice"]{
+  --bg:#070b14; --panel:#0b1220; --panel-2:#101a2c; --line:#18243a; --line-2:#24344f;
+  --fg:#dbe6f5; --dim:#8597b3; --faint:#56657f;
+  --amber:#5cc8ff; --amber-ink:#031522; --amber-wash:rgba(92,200,255,.10);
+  --up:#34d1a0; --down:#ff6b81; --up-wash:rgba(52,209,160,.12); --down-wash:rgba(255,107,129,.12);
+  --warn:#f0c860; --info:#a99cff;
+}
+/* Graphite: neutral greys, white accent */
+:root[data-skin="graphite"]{
+  --bg:#0b0b0c; --panel:#131315; --panel-2:#1a1a1d; --line:#242428; --line-2:#34343a;
+  --fg:#e7e7ea; --dim:#9a9aa2; --faint:#66666d;
+  --amber:#f2f2f4; --amber-ink:#111113; --amber-wash:rgba(255,255,255,.07);
+  --up:#4cc38a; --down:#e5616a; --up-wash:rgba(76,195,138,.12); --down-wash:rgba(229,97,106,.12);
+  --warn:#d9c26a; --info:#8fb3ff;
+}
+/* Daylight: light theme for bright rooms */
+:root[data-skin="daylight"]{
+  color-scheme: light;
+  --bg:#eff1ec; --panel:#ffffff; --panel-2:#f5f6f2; --line:#e1e4dc; --line-2:#cdd2c7;
+  --fg:#15191d; --dim:#58616c; --faint:#8a929b;
+  --amber:#b4621a; --amber-ink:#ffffff; --amber-wash:rgba(180,98,26,.10);
+  --up:#128a54; --down:#c7353b; --up-wash:rgba(18,138,84,.10); --down-wash:rgba(199,53,59,.10);
+  --warn:#946f00; --info:#1f63c4; --shadow:rgba(20,30,40,.16);
+}
+.skins{display:inline-flex;gap:4px;align-items:center}
+.skins button{width:22px;height:22px;padding:2px;border:1px solid var(--line-2);background:none;cursor:pointer}
+.skins button i{display:block;width:100%;height:100%}
+.skins button[aria-pressed="true"]{border-color:var(--fg)}
+.skins button:hover{border-color:var(--dim)}
 *{box-sizing:border-box}
 html,body{margin:0}
 body{background:var(--bg);color:var(--fg);font:var(--fs-m)/1.5 var(--f-text);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
@@ -126,7 +165,7 @@ body.dragging{user-select:none;cursor:grabbing}
 #chart{position:absolute;inset:0}
 .ohlc{position:absolute;left:10px;top:8px;z-index:3;font:var(--fs-xs)/1.4 var(--f-mono);color:var(--dim);pointer-events:none;font-variant-numeric:tabular-nums;background:color-mix(in srgb,var(--panel) 82%,transparent);padding:2px 4px}
 .ohlc b{color:var(--fg);font-weight:500;margin-right:8px}
-.ev-tip{position:absolute;z-index:6;pointer-events:none;width:min(340px,calc(100% - 20px));background:var(--panel-2);border:1px solid var(--line-2);box-shadow:0 8px 24px rgba(0,0,0,.45);padding:9px 10px;display:grid;gap:9px}
+.ev-tip{position:absolute;z-index:6;pointer-events:none;width:min(340px,calc(100% - 20px));background:var(--panel-2);border:1px solid var(--line-2);box-shadow:0 8px 24px var(--shadow);padding:9px 10px;display:grid;gap:9px}
 .ev-tip .tip-it{display:grid;gap:4px}
 .ev-tip .tip-it+.tip-it{border-top:1px solid var(--line);padding-top:8px}
 .ev-tip .tip-meta{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center;font:var(--fs-xs)/1.3 var(--f-mono);color:var(--faint)}
@@ -296,6 +335,7 @@ table.funds{width:100%;border-collapse:collapse;font:var(--fs-s)/1.4 var(--f-mon
       <span class="pill" id="pill-data"><span class="dot"></span>Data · loading</span>
       <span class="mkt" id="mkt">US MKT —</span>
       <span class="clock">NY <b id="clock">--:--:--</b></span>
+      <div class="skins" id="skins" role="group" aria-label="Color theme"></div>
       <button type="button" class="tbtn" id="layout-btn" aria-pressed="false" title="Move and rearrange panels">Arrange</button>
     </div>
   </div>
@@ -519,10 +559,49 @@ const $$ = (s, el=document) => [...el.querySelectorAll(s)];
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const safeUrl = u => { try { const x = new URL(u); return (x.protocol === "https:" || x.protocol === "http:") ? x.href : null; } catch { return null; } };
 const cssv = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const SKINS = [
+  {id:"amber",    name:"Amber",    sw:["#0d131a", "#f1b13c"]},
+  {id:"phosphor", name:"Phosphor", sw:["#09110c", "#7ee8a0"]},
+  {id:"ice",      name:"Ice",      sw:["#0b1220", "#5cc8ff"]},
+  {id:"graphite", name:"Graphite", sw:["#131315", "#f2f2f4"]},
+  {id:"daylight", name:"Daylight", sw:["#ffffff", "#b4621a"]}
+];
 const store = {
   get(k, d){ try { const v = localStorage.getItem("xrpterm:" + k); return v == null ? d : JSON.parse(v); } catch { return d; } },
   set(k, v){ try { localStorage.setItem("xrpterm:" + k, JSON.stringify(v)); } catch {} }
 };
+(function applySavedSkin(){
+  const id = store.get("skin", "amber");
+  if (id !== "amber" && SKINS.some(s => s.id === id)) document.documentElement.dataset.skin = id;
+})();
+function rgba(hex, a){
+  const m = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec((hex || "").trim());
+  return m ? `rgba(${parseInt(m[1],16)},${parseInt(m[2],16)},${parseInt(m[3],16)},${a})` : hex;
+}
+function chartTheme(){
+  return {layout:{background:{type:"solid", color:cssv("--panel")}, textColor:cssv("--dim")},
+          grid:{vertLines:{color:cssv("--line")}, horzLines:{color:cssv("--line")}},
+          rightPriceScale:{borderColor:cssv("--line")}, timeScale:{borderColor:cssv("--line")},
+          crosshair:{vertLine:{color:cssv("--line-2"), labelBackgroundColor:cssv("--panel-2")},
+                     horzLine:{color:cssv("--line-2"), labelBackgroundColor:cssv("--panel-2")}}};
+}
+function buildSkinPicker(){
+  const cur = document.documentElement.dataset.skin || "amber";
+  $("#skins").innerHTML = SKINS.map(s => `<button type="button" data-skin="${s.id}" title="${s.name}" aria-label="${s.name} theme" aria-pressed="${s.id === cur}"><i style="background:linear-gradient(135deg, ${s.sw[0]} 50%, ${s.sw[1]} 50%)"></i></button>`).join("");
+  $("#skins").addEventListener("click", e => { const b = e.target.closest("button[data-skin]"); if (b) setSkin(b.dataset.skin); });
+}
+function setSkin(id){
+  if (id === "amber") delete document.documentElement.dataset.skin; else document.documentElement.dataset.skin = id;
+  store.set("skin", id);
+  $$("#skins button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.skin === id)));
+  if (chart){
+    chart.applyOptions(chartTheme());
+    candles.applyOptions({upColor:cssv("--up"), downColor:cssv("--down"), wickUpColor:cssv("--up"), wickDownColor:cssv("--down")});
+    setVolume(); setMarkers();
+  }
+  drawEtfChart();
+}
+
 function fmtUsd(n, sign=true){
   if (n == null || isNaN(n)) return "—";
   const a = Math.abs(n), s = n < 0 ? "−" : (sign && n > 0 ? "+" : "");
@@ -856,6 +935,7 @@ let etfChart = null;
 function drawEtfChart(){
   const rowsR = etfRows();
   if (!window.LightweightCharts || rowsR.length < 2) return;
+  if (etfChart){ etfChart.remove(); etfChart = null; }
   const el = $("#etfchart"); el.innerHTML = "";
   const up = cssv("--up"), down = cssv("--down"), amber = cssv("--amber");
   etfChart = LightweightCharts.createChart(el, {
@@ -1070,11 +1150,17 @@ function setBars(bars){
   PX.bars = bars;
   if (!candles) return;
   candles.setData(bars.map(b => ({time:b.time, open:b.open, high:b.high, low:b.low, close:b.close})));
-  vol.setData(bars.map(b => ({time:b.time, value:b.volume || 0, color: b.close >= b.open ? "rgba(53,201,139,.28)" : "rgba(239,94,94,.28)"})));
+  setVolume();
   chart.timeScale().fitContent();
   const n = bars.length; if (n > 160) chart.timeScale().setVisibleLogicalRange({from:n-160, to:n+4});
   setMarkers();
   const last = bars[n-1]; if (last){ const ch = (last.close-last.open)/last.open*100; $("#ohlc").innerHTML = `O <b>${fmtPx(last.open)}</b>H <b>${fmtPx(last.high)}</b>L <b>${fmtPx(last.low)}</b>C <b>${fmtPx(last.close)}</b><span class="${clsOf(ch)}">${fmtPct(ch)}</span>`; }
+}
+
+function setVolume(){
+  if (!vol) return;
+  const u = rgba(cssv("--up"), .28), d = rgba(cssv("--down"), .28);
+  vol.setData(PX.bars.map(b => ({time:b.time, value:b.volume || 0, color: b.close >= b.open ? u : d})));
 }
 
 function bucket(tSec){ return Math.floor(tSec / PX.g) * PX.g; }
@@ -1530,6 +1616,7 @@ function initLayout(){
 }
 
 async function main(){
+  buildSkinPicker();
   initLayout();
   buildThemeChips();
   wire();
