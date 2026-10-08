@@ -124,7 +124,7 @@ def run_verify(grok: Grok) -> None:
     save_json(DATA_DIR / "handle_check.json", {"checked_at": iso(now_utc()), "accounts": rows})
     print("\nHANDLE CHECK")
     for r in rows:
-        mark = "OK " if r["exists"] else "?? "
+        mark = {"found": "OK ", "not_found": "NO "}.get(r["status"], "?? ")
         print(f"  {mark}@{r['handle']:<18} {r['display_name'] or '-':<28} {r['description'] or ''}")
 
 

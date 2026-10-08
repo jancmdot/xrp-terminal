@@ -153,27 +153,51 @@ def discovery_scan(grok: Grok, handles_cfg: dict, since: dt.datetime, max_posts:
 ACCOUNTS_SCHEMA = {
     "type": "object",
     "properties": {"accounts": {"type": "array", "items": {"type": "object", "properties": {
-        "handle": {"type": "string"}, "exists": {"type": "boolean"},
+        "handle": {"type": "string"},
+        "status": {"type": "string", "enum": ["found", "not_found", "unclear"]},
         "display_name": {"type": ["string", "null"]}, "description": {"type": ["string", "null"]}},
-        "required": ["handle", "exists", "display_name", "description"], "additionalProperties": False}}},
+        "required": ["handle", "status", "display_name", "description"], "additionalProperties": False}}},
     "required": ["accounts"], "additionalProperties": False,
 }
 
+VERIFY_SYSTEM = ("You check X account identities for a data pipeline. Look each handle up with an X user search "
+                 "(not a post search). Only report what the profile results show. "
+                 "status: found = the profile came back; not_found = you searched and no such account exists; "
+                 "unclear = you couldn't check it.")
+
+
+def _verify_batch(grok: Grok, handles: list[str], label: str) -> dict:
+    user = ("Look up each of these X handles with a user search and report its display name and a one-line description "
+            f"of who runs it, from the profile bio. Handles: {', '.join('@' + h for h in handles)}")
+    data, _ = grok.respond(system=VERIFY_SYSTEM, user=user, schema=ACCOUNTS_SCHEMA, name="accounts",
+                           tools=[{"type": "x_search"}], label=label)
+    return {a["handle"].lstrip("@").lower(): a for a in data.get("accounts") or []}
+
 
 def verify_handles(grok: Grok, handles_cfg: dict) -> list[dict]:
-    """Confirm each configured handle exists and who it belongs to."""
+    """Confirm each configured handle exists and who it belongs to: small batches, then a one-by-one retry."""
+    order = [(g["name"], h) for g in groups_from_config(handles_cfg) for h in g["tiers"]]
+    found: dict[str, dict] = {}
+    handles = [h for _, h in order]
+    for i in range(0, len(handles), 6):
+        try:
+            found.update(_verify_batch(grok, handles[i:i + 6], f"verify:{i // 6 + 1}"))
+        except BudgetExceeded:
+            raise
+        except Exception as e:
+            log.warning("verify batch %d failed: %s", i // 6 + 1, e)
+    retry = [h for h in handles if (found.get(h.lower()) or {}).get("status") != "found"]
+    if len(retry) <= 15:
+        for h in retry:
+            try:
+                found.update(_verify_batch(grok, [h], f"verify:@{h[:12]}"))
+            except BudgetExceeded:
+                raise
+            except Exception as e:
+                log.warning("verify @%s failed: %s", h, e)
     rows = []
-    for g in groups_from_config(handles_cfg):
-        handles = list(g["tiers"])
-        user = ("For each of these X handles, use x_search to confirm the account exists. Give its display name and a "
-                "one-line description of who runs it, from its profile. If it doesn't exist or you can't find it, set exists to false. "
-                f"Handles: {', '.join('@' + h for h in handles)}")
-        data, _ = grok.respond(system="You check X account identities for a data pipeline. Only report what search results show.",
-                               user=user, schema=ACCOUNTS_SCHEMA, name="accounts",
-                               tools=[{"type": "x_search", "allowed_x_handles": handles}], label=f"verify:{g['name'][:12]}")
-        found = {a["handle"].lstrip("@").lower(): a for a in data.get("accounts") or []}
-        for h in handles:
-            a = found.get(h.lower()) or {"exists": False, "display_name": None, "description": "not returned"}
-            rows.append({"group": g["name"], "handle": h, "exists": a.get("exists"), "display_name": a.get("display_name"),
-                         "description": a.get("description")})
+    for group, h in order:
+        a = found.get(h.lower()) or {"status": "unclear", "display_name": None, "description": "no answer"}
+        rows.append({"group": group, "handle": h, "status": a.get("status"), "exists": a.get("status") == "found",
+                     "display_name": a.get("display_name"), "description": a.get("description")})
     return rows

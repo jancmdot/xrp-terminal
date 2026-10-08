@@ -106,8 +106,10 @@ def _xai(body):
         payload = json.loads(body["input"][1]["content"])
         return _wrap({"states": [{"theme": t, "state": f"Test state for {t}."} for t in payload["themes"]]}, [], _usage())
     if name == "accounts":
-        h = tools[0].get("allowed_x_handles") or []
-        return _wrap({"accounts": [{"handle": x, "exists": x != "xrpl_commons", "display_name": x, "description": "test"} for x in h]}, [], _usage())
+        txt = body["input"][1]["content"]
+        h = [x.strip().lstrip("@") for x in txt.split("Handles:")[-1].split(",")]
+        return _wrap({"accounts": [{"handle": x, "status": "unclear" if x == "xrpl_commons" else "found", "display_name": x,
+                                    "description": "test"} for x in h]}, [], _usage())
     raise HttpError("unknown fake xai request", 400)
 
 

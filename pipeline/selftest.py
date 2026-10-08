@@ -66,6 +66,13 @@ def main() -> int:
     log_b = run(tmp, "auto", (ny7 + dt.timedelta(minutes=50)).astimezone(dt.timezone.utc))
     check("slot runs only once", "tasks: reactions only" in log_b)
 
+    # handle check: unclear handles are reported, found ones confirmed
+    run(tmp, "verify_handles", t0)
+    hc = json.loads((tmp / "data" / "handle_check.json").read_text())["accounts"]
+    st = {a["handle"]: a["status"] for a in hc}
+    check("handle check covers every account", len(hc) >= 25 and st.get("Ripple") == "found")
+    check("handle check flags an unclear account", st.get("xrpl_commons") == "unclear")
+
     width = max(len(n) for n, _ in checks)
     for n, ok in checks:
         print(f"  {'PASS' if ok else 'FAIL'}  {n.ljust(width)}")
