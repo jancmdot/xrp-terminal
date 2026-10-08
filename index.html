@@ -9,8 +9,9 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Martian+Mono:wght@500;700&display=swap">
 <style>
 /* Layout: sticky quote bar, then a desk of movable panels (top strip, two columns, bottom strip).
-   Stacks to one column under 1100px. Five color themes, picked in the top bar: four dark terminal
-   palettes and one light one. "--amber" is the accent token in every theme. */
+   Stacks to one column under 1100px. Five dark color themes, picked in the top bar; "--amber" is the
+   accent token in every theme. An animated vector grid with linked particles runs behind the panels
+   in the theme's accent, and can be switched off (FX). */
 :root{
   color-scheme: dark;
   --bg:#080c11;
@@ -36,6 +37,14 @@
   --fs-xs:10.5px; --fs-s:12px; --fs-m:13.5px; --fs-l:16px; --fs-xl:22px; --fs-xxl:30px;
   --shadow:rgba(0,0,0,.45);
 }
+/* Obsidian: near-black, violet accent */
+:root[data-skin="obsidian"]{
+  --bg:#000000; --panel:#060708; --panel-2:#0b0c0e; --line:#15171b; --line-2:#22252b;
+  --fg:#c9ced6; --dim:#7b828d; --faint:#4b5059;
+  --amber:#a78bfa; --amber-ink:#0d0420; --amber-wash:rgba(167,139,250,.10);
+  --up:#2fbf83; --down:#e5555f; --up-wash:rgba(47,191,131,.11); --down-wash:rgba(229,85,95,.11);
+  --warn:#d6b85a; --info:#6aa8e8;
+}
 /* Phosphor: green-screen terminal */
 :root[data-skin="phosphor"]{
   --bg:#050a07; --panel:#09110c; --panel-2:#0d1811; --line:#16241b; --line-2:#22362a;
@@ -60,15 +69,9 @@
   --up:#4cc38a; --down:#e5616a; --up-wash:rgba(76,195,138,.12); --down-wash:rgba(229,97,106,.12);
   --warn:#d9c26a; --info:#8fb3ff;
 }
-/* Daylight: light theme for bright rooms */
-:root[data-skin="daylight"]{
-  color-scheme: light;
-  --bg:#eff1ec; --panel:#ffffff; --panel-2:#f5f6f2; --line:#e1e4dc; --line-2:#cdd2c7;
-  --fg:#15191d; --dim:#58616c; --faint:#8a929b;
-  --amber:#b4621a; --amber-ink:#ffffff; --amber-wash:rgba(180,98,26,.10);
-  --up:#128a54; --down:#c7353b; --up-wash:rgba(18,138,84,.10); --down-wash:rgba(199,53,59,.10);
-  --warn:#946f00; --info:#1f63c4; --shadow:rgba(20,30,40,.16);
-}
+#fx{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;display:block}
+.fx-on .panel{background:color-mix(in srgb,var(--panel) 80%,transparent)}
+.fx-on .bar{background:color-mix(in srgb,var(--bg) 78%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .skins{display:inline-flex;gap:4px;align-items:center}
 .skins button{width:22px;height:22px;padding:2px;border:1px solid var(--line-2);background:none;cursor:pointer}
 .skins button i{display:block;width:100%;height:100%}
@@ -321,6 +324,7 @@ table.funds{width:100%;border-collapse:collapse;font:var(--fs-s)/1.4 var(--f-mon
 </head>
 <body>
 
+<canvas id="fx" aria-hidden="true"></canvas>
 <header class="bar">
   <div class="bar-in">
     <div class="brand"><span class="mark">XRP</span><span class="t">NEWS TERMINAL</span></div>
@@ -336,6 +340,7 @@ table.funds{width:100%;border-collapse:collapse;font:var(--fs-s)/1.4 var(--f-mon
       <span class="mkt" id="mkt">US MKT —</span>
       <span class="clock">NY <b id="clock">--:--:--</b></span>
       <div class="skins" id="skins" role="group" aria-label="Color theme"></div>
+      <button type="button" class="tbtn" id="fx-btn" aria-pressed="true" title="Background animation">FX</button>
       <button type="button" class="tbtn" id="layout-btn" aria-pressed="false" title="Move and rearrange panels">Arrange</button>
     </div>
   </div>
@@ -561,25 +566,26 @@ const safeUrl = u => { try { const x = new URL(u); return (x.protocol === "https
 const cssv = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const SKINS = [
   {id:"amber",    name:"Amber",    sw:["#0d131a", "#f1b13c"]},
+  {id:"obsidian", name:"Obsidian", sw:["#000000", "#a78bfa"]},
   {id:"phosphor", name:"Phosphor", sw:["#09110c", "#7ee8a0"]},
   {id:"ice",      name:"Ice",      sw:["#0b1220", "#5cc8ff"]},
-  {id:"graphite", name:"Graphite", sw:["#131315", "#f2f2f4"]},
-  {id:"daylight", name:"Daylight", sw:["#ffffff", "#b4621a"]}
+  {id:"graphite", name:"Graphite", sw:["#131315", "#f2f2f4"]}
 ];
 const store = {
   get(k, d){ try { const v = localStorage.getItem("xrpterm:" + k); return v == null ? d : JSON.parse(v); } catch { return d; } },
   set(k, v){ try { localStorage.setItem("xrpterm:" + k, JSON.stringify(v)); } catch {} }
 };
 (function applySavedSkin(){
-  const id = store.get("skin", "amber");
-  if (id !== "amber" && SKINS.some(s => s.id === id)) document.documentElement.dataset.skin = id;
+  let id = store.get("skin", "amber");
+  if (!SKINS.some(s => s.id === id)){ id = "amber"; store.set("skin", id); }
+  if (id !== "amber") document.documentElement.dataset.skin = id;
 })();
 function rgba(hex, a){
   const m = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec((hex || "").trim());
   return m ? `rgba(${parseInt(m[1],16)},${parseInt(m[2],16)},${parseInt(m[3],16)},${a})` : hex;
 }
 function chartTheme(){
-  return {layout:{background:{type:"solid", color:cssv("--panel")}, textColor:cssv("--dim")},
+  return {layout:{background:{type:"solid", color:"rgba(0,0,0,0)"}, textColor:cssv("--dim")},
           grid:{vertLines:{color:cssv("--line")}, horzLines:{color:cssv("--line")}},
           rightPriceScale:{borderColor:cssv("--line")}, timeScale:{borderColor:cssv("--line")},
           crosshair:{vertLine:{color:cssv("--line-2"), labelBackgroundColor:cssv("--panel-2")},
@@ -600,6 +606,101 @@ function setSkin(id){
     setVolume(); setMarkers();
   }
   drawEtfChart();
+  fxColors();
+}
+
+/* =====================================================================
+   BACKGROUND: a vector grid with a slow light sweep, plus drifting
+   particles that link up when close (and to the pointer). Colors follow
+   the theme. Static under reduced motion; switch off with FX.
+   ===================================================================== */
+const FX = {on: store.get("fx", true), raf: 0, w: 0, h: 0, dpr: 1, parts: [], c: null, ctx: null, mx: -1e4, my: -1e4, col: {}};
+function fxColors(){
+  FX.col = {accent: cssv("--amber"), info: cssv("--info"), line: cssv("--line-2")};
+}
+function fxResize(){
+  const c = FX.c; if (!c) return;
+  FX.dpr = Math.min(1.5, window.devicePixelRatio || 1);
+  FX.w = innerWidth; FX.h = innerHeight;
+  c.width = Math.round(FX.w * FX.dpr); c.height = Math.round(FX.h * FX.dpr);
+  FX.ctx.setTransform(FX.dpr, 0, 0, FX.dpr, 0, 0);
+  const n = Math.max(28, Math.min(100, Math.round(FX.w * FX.h / 17000)));
+  const r = mulberry32(42);
+  FX.parts = Array.from({length: n}, () => {
+    const a = r() * Math.PI * 2, sp = 0.08 + r() * 0.22;
+    return {x: r() * FX.w, y: r() * FX.h, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, rad: 1 + r() * 1.6, hot: r() < 0.18};
+  });
+}
+function fxDraw(t){
+  const {ctx, w, h, col} = FX;
+  ctx.clearRect(0, 0, w, h);
+  // vector grid, drifting slowly diagonally
+  const gap = 56, off = (t * 0.006) % gap;
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = rgba(col.line, 0.6);
+  ctx.beginPath();
+  for (let x = -gap + off; x < w + gap; x += gap){ ctx.moveTo(x + 0.5, 0); ctx.lineTo(x + 0.5, h); }
+  for (let y = -gap + off; y < h + gap; y += gap){ ctx.moveTo(0, y + 0.5); ctx.lineTo(w, y + 0.5); }
+  ctx.stroke();
+  // grid nodes lit by a slow sweeping wave
+  for (let x = -gap + off; x < w + gap; x += gap){
+    for (let y = -gap + off; y < h + gap; y += gap){
+      const wv = Math.sin(x * 0.006 + y * 0.004 - t * 0.0005);
+      const a = 0.08 + 0.75 * Math.pow(Math.max(0, wv), 6);
+      if (a < 0.08) continue;
+      ctx.fillStyle = rgba(col.accent, a);
+      ctx.fillRect(x - 1.5, y - 1.5, 3, 3);
+    }
+  }
+  // particles + links
+  const P = FX.parts, L = 130, L2 = L * L;
+  for (const p of P){
+    p.x += p.vx; p.y += p.vy;
+    const dx = p.x - FX.mx, dy = p.y - FX.my, d2 = dx * dx + dy * dy;
+    if (d2 < 14400 && d2 > 1){ const f = 0.012 * (1 - d2 / 14400); p.x += dx * f; p.y += dy * f; }
+    if (p.x < -20) p.x = w + 20; else if (p.x > w + 20) p.x = -20;
+    if (p.y < -20) p.y = h + 20; else if (p.y > h + 20) p.y = -20;
+  }
+  for (let i = 0; i < P.length; i++){
+    const a = P[i];
+    for (let j = i + 1; j < P.length; j++){
+      const b = P[j], dx = a.x - b.x, dy = a.y - b.y, d2 = dx * dx + dy * dy;
+      if (d2 > L2) continue;
+      ctx.strokeStyle = rgba(a.hot || b.hot ? col.info : col.accent, (1 - Math.sqrt(d2) / L) * 0.42);
+      ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+    }
+    const dx = a.x - FX.mx, dy = a.y - FX.my, d2 = dx * dx + dy * dy;
+    if (d2 < 180 * 180){
+      ctx.strokeStyle = rgba(col.accent, (1 - Math.sqrt(d2) / 180) * 0.4);
+      ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(FX.mx, FX.my); ctx.stroke();
+    }
+  }
+  for (const p of P){
+    ctx.fillStyle = rgba(p.hot ? col.info : col.accent, p.hot ? 0.95 : 0.85);
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.rad, 0, Math.PI * 2); ctx.fill();
+  }
+}
+function fxLoop(t){ fxDraw(t); FX.raf = requestAnimationFrame(fxLoop); }
+function setFx(on){
+  FX.on = on; store.set("fx", on);
+  document.body.classList.toggle("fx-on", on);
+  $("#fx-btn").setAttribute("aria-pressed", String(on));
+  cancelAnimationFrame(FX.raf); FX.raf = 0;
+  if (!FX.ctx) return;
+  if (!on){ FX.ctx.clearRect(0, 0, FX.w, FX.h); return; }
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) fxDraw(20000);
+  else FX.raf = requestAnimationFrame(fxLoop);
+}
+function initFx(){
+  FX.c = $("#fx");
+  FX.ctx = FX.c.getContext && FX.c.getContext("2d");
+  if (!FX.ctx){ $("#fx-btn").hidden = true; return; }
+  fxColors(); fxResize();
+  addEventListener("resize", () => { fxResize(); if (FX.on && !FX.raf) fxDraw(20000); });
+  addEventListener("pointermove", e => { FX.mx = e.clientX; FX.my = e.clientY; }, {passive: true});
+  document.addEventListener("pointerleave", () => { FX.mx = FX.my = -1e4; });
+  $("#fx-btn").addEventListener("click", () => setFx(!FX.on));
+  setFx(FX.on);
 }
 
 function fmtUsd(n, sign=true){
@@ -940,7 +1041,7 @@ function drawEtfChart(){
   const up = cssv("--up"), down = cssv("--down"), amber = cssv("--amber");
   etfChart = LightweightCharts.createChart(el, {
     autoSize:true,
-    layout:{background:{type:"solid", color:cssv("--panel")}, textColor:cssv("--faint"), fontFamily:cssv("--f-mono"), fontSize:10, attributionLogo:false},
+    layout:{background:{type:"solid", color:"rgba(0,0,0,0)"}, textColor:cssv("--faint"), fontFamily:cssv("--f-mono"), fontSize:10, attributionLogo:false},
     grid:{vertLines:{visible:false}, horzLines:{color:cssv("--line")}},
     rightPriceScale:{borderVisible:false, scaleMargins:{top:0.18, bottom:0.06}},
     leftPriceScale:{visible:false},
@@ -1115,7 +1216,7 @@ function initChart(){
   };
   chart = LightweightCharts.createChart(el, {
     autoSize:true,
-    layout:{background:{type:"solid", color:cssv("--panel")}, textColor:cssv("--dim"), fontFamily:cssv("--f-mono"), fontSize:11, attributionLogo:false},
+    layout:{background:{type:"solid", color:"rgba(0,0,0,0)"}, textColor:cssv("--dim"), fontFamily:cssv("--f-mono"), fontSize:11, attributionLogo:false},
     grid:{vertLines:{color:cssv("--line")}, horzLines:{color:cssv("--line")}},
     rightPriceScale:{borderColor:cssv("--line"), scaleMargins:{top:0.08, bottom:0.22}},
     timeScale:{borderColor:cssv("--line"), timeVisible:true, secondsVisible:false, rightOffset:6, tickMarkFormatter:fmtTick},
@@ -1617,6 +1718,7 @@ function initLayout(){
 
 async function main(){
   buildSkinPicker();
+  initFx();
   initLayout();
   buildThemeChips();
   wire();
