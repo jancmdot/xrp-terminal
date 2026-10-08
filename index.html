@@ -126,6 +126,13 @@ body.dragging{user-select:none;cursor:grabbing}
 #chart{position:absolute;inset:0}
 .ohlc{position:absolute;left:10px;top:8px;z-index:3;font:var(--fs-xs)/1.4 var(--f-mono);color:var(--dim);pointer-events:none;font-variant-numeric:tabular-nums;background:color-mix(in srgb,var(--panel) 82%,transparent);padding:2px 4px}
 .ohlc b{color:var(--fg);font-weight:500;margin-right:8px}
+.ev-tip{position:absolute;z-index:6;pointer-events:none;width:min(340px,calc(100% - 20px));background:var(--panel-2);border:1px solid var(--line-2);box-shadow:0 8px 24px rgba(0,0,0,.45);padding:9px 10px;display:grid;gap:9px}
+.ev-tip .tip-it{display:grid;gap:4px}
+.ev-tip .tip-it+.tip-it{border-top:1px solid var(--line);padding-top:8px}
+.ev-tip .tip-meta{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center;font:var(--fs-xs)/1.3 var(--f-mono);color:var(--faint)}
+.ev-tip .tip-hl{font:500 var(--fs-s)/1.4 var(--f-text);color:var(--fg)}
+.ev-tip .tip-imp{display:flex;gap:8px;font:var(--fs-xs)/1.2 var(--f-mono);color:var(--dim)}
+.ev-tip .tip-foot{font:var(--fs-xs)/1.2 var(--f-mono);color:var(--faint)}
 .chart-msg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;z-index:4;font:var(--fs-s)/1.6 var(--f-mono);color:var(--dim);pointer-events:none}
 .chart-msg span{background:var(--panel);border:1px solid var(--line-2);padding:10px 14px;max-width:420px}
 .legend{display:flex;flex-wrap:wrap;gap:6px 14px;padding:8px 12px;border-top:1px solid var(--line);font:var(--fs-xs)/1.4 var(--f-mono);color:var(--faint)}
@@ -324,9 +331,11 @@ table.funds{width:100%;border-collapse:collapse;font:var(--fs-s)/1.4 var(--f-mon
         <span class="sub" id="chart-src">Coinbase · connecting</span>
         <span class="sp"></span>
         <div class="seg" role="group" aria-label="Timeframe" id="tf">
+          <button type="button" data-g="300">5M</button>
           <button type="button" data-g="900">15M</button>
           <button type="button" data-g="3600" aria-pressed="true">1H</button>
-          <button type="button" data-g="21600">6H</button>
+          <button type="button" data-g="14400">4H</button>
+          <button type="button" data-g="43200">12H</button>
           <button type="button" data-g="86400">1D</button>
         </div>
         <label class="chk"><input type="checkbox" id="show-ev" checked> Events</label>
@@ -335,6 +344,7 @@ table.funds{width:100%;border-collapse:collapse;font:var(--fs-s)/1.4 var(--f-mon
         <div class="ohlc" id="ohlc"></div>
         <div id="chart"></div>
         <div class="chart-msg" id="chart-msg" hidden><span></span></div>
+        <div class="ev-tip" id="ev-tip" hidden></div>
       </div>
       <div class="legend">
         <span><i class="up">▲</i>bullish item</span>
@@ -1006,7 +1016,8 @@ function renderTheories(){
 /* =====================================================================
    PRICE CHART + LIVE FEED (Coinbase public API)
    ===================================================================== */
-const PX = {g: store.get("gran", 3600), mode:"connecting", bars:[], ticks:[], last:null, ws:null, wsTries:0, open24:null, high24:null, low24:null};
+const GRANS = [300, 900, 3600, 14400, 43200, 86400];
+const PX = {g: GRANS.includes(store.get("gran", 3600)) ? store.get("gran", 3600) : 3600, mode:"connecting", bars:[], ticks:[], last:null, ws:null, wsTries:0, open24:null, high24:null, low24:null};
 let chart = null, candles = null, vol = null, selectedMarker = null;
 
 function setPricePill(state, text){
@@ -1039,16 +1050,18 @@ function initChart(){
   chart.subscribeCrosshairMove(p => {
     const b = p && p.time ? p.seriesData.get(candles) : null;
     const bar = b || PX.bars[PX.bars.length-1];
-    if (!bar){ $("#ohlc").innerHTML = ""; return; }
-    const ch = (bar.close - bar.open) / bar.open * 100;
-    $("#ohlc").innerHTML = `O <b>${fmtPx(bar.open)}</b>H <b>${fmtPx(bar.high)}</b>L <b>${fmtPx(bar.low)}</b>C <b>${fmtPx(bar.close)}</b><span class="${clsOf(ch)}">${fmtPct(ch)}</span>`;
+    if (bar){
+      const ch = (bar.close - bar.open) / bar.open * 100;
+      $("#ohlc").innerHTML = `O <b>${fmtPx(bar.open)}</b>H <b>${fmtPx(bar.high)}</b>L <b>${fmtPx(bar.low)}</b>C <b>${fmtPx(bar.close)}</b><span class="${clsOf(ch)}">${fmtPct(ch)}</span>`;
+    } else $("#ohlc").innerHTML = "";
+    const id = p && p.hoveredObjectId;
+    if (typeof id === "string" && MARKER_ITEMS.has(id) && p.point) showTip(MARKER_ITEMS.get(id), p.point);
+    else hideTip();
   });
   chart.subscribeClick(p => {
     const id = p && p.hoveredObjectId;
-    if (id && typeof id === "string" && id.startsWith("ev:")){
-      const itemId = id.slice(3).split("|")[0];
-      if (openId !== itemId) toggleItem(itemId, true);
-    }
+    const its = typeof id === "string" ? MARKER_ITEMS.get(id) : null;
+    if (its && its.length && openId !== its[0].id){ hideTip(); toggleItem(its[0].id, true); }
   });
   return true;
 }
@@ -1066,9 +1079,31 @@ function setBars(bars){
 
 function bucket(tSec){ return Math.floor(tSec / PX.g) * PX.g; }
 
+const MARKER_ITEMS = new Map();   // marker id -> items on that bar, most important first
+
+function showTip(its, pt){
+  const tip = $("#ev-tip"), show = its.slice(0, 3);
+  tip.innerHTML = show.map(it => {
+    const d = new Date(it.published_at), src = it.source || {};
+    return `<div class="tip-it">
+      <div class="tip-meta"><span>${NY_MDHM.format(d)} ET</span><span>${esc(src.handle || src.name || "")}</span><span class="st st-${esc(it.status)}">${esc(it.status)}</span></div>
+      <div class="tip-hl">${esc(it.headline)}</div>
+      <div class="tip-imp"><span class="d-${esc(it.direction)}">${DIR_ARROW[it.direction] || ""} ${esc(it.direction)}</span><span>impact ${IMPACT_LABEL[it.impact?.tier] || "—"}</span><span>${(it.themes||[]).map(t => THEMES[t]?.code || "").join(" ")}</span></div>
+    </div>`;
+  }).join("") + `<div class="tip-foot">${its.length > 3 ? `+${its.length - 3} more on this bar · ` : ""}Click the marker to open ${its.length > 1 ? "the top item" : "it"}</div>`;
+  tip.hidden = false;
+  const wrap = tip.parentElement, W = wrap.clientWidth, H = wrap.clientHeight, w = tip.offsetWidth, h = tip.offsetHeight;
+  let x = pt.x + 14, y = pt.y + 14;
+  if (x + w > W - 6) x = Math.max(6, pt.x - w - 14);
+  if (y + h > H - 6) y = Math.max(6, pt.y - h - 14);
+  tip.style.left = x + "px"; tip.style.top = y + "px";
+}
+function hideTip(){ const t = $("#ev-tip"); if (t && !t.hidden) t.hidden = true; }
+
 function setMarkers(){
   if (!candles || !PX.bars.length) return;
-  if (!$("#show-ev").checked){ candles.setMarkers([]); return; }
+  MARKER_ITEMS.clear();
+  if (!$("#show-ev").checked){ candles.setMarkers([]); hideTip(); return; }
   const first = PX.bars[0].time, lastT = PX.bars[PX.bars.length-1].time + PX.g;
   const up = cssv("--up"), down = cssv("--down"), dim = cssv("--dim"), amber = cssv("--amber");
   const byTime = new Map();
@@ -1093,8 +1128,9 @@ function setMarkers(){
       color: sel ? amber : dir === "bullish" ? up : dir === "bearish" ? down : dim,
       size: sel ? 2 : (IMPACT_RANK[top.impact?.tier] >= 2 ? 1.4 : 1),
       text: (sel || IMPACT_RANK[top.impact?.tier] >= 2) ? codes + (its.length > 1 ? ` +${its.length-1}` : "") : "",
-      id: "ev:" + top.id
+      id: "ev:" + bt
     });
+    MARKER_ITEMS.set("ev:" + bt, its);
   }
   ms.sort((a,b) => a.time - b.time);
   candles.setMarkers(ms);
@@ -1111,14 +1147,43 @@ function focusChartOn(id){
   chart.timeScale().setVisibleLogicalRange({from: Math.max(0, idx-90), to: Math.min(PX.bars.length+4, idx+60)});
 }
 
+const CB_BASE = {14400: 3600, 43200: 21600};   // timeframes Coinbase doesn't serve, built from smaller candles
+
+async function fetchCandlePage(g, startSec, endSec, signal){
+  let url = `https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=${g}`;
+  if (startSec != null) url += `&start=${new Date(startSec*1000).toISOString()}&end=${new Date(endSec*1000).toISOString()}`;
+  const r = await fetch(url, {signal});
+  if (!r.ok) throw new Error("HTTP " + r.status);
+  const a = await r.json();
+  if (!Array.isArray(a)) throw new Error("bad response");
+  return a.map(x => ({time:x[0], low:+x[1], high:+x[2], open:+x[3], close:+x[4], volume:+x[5]}));
+}
+
 async function fetchCandles(g){
-  const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), 7000);
+  const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), 9000);
   try {
-    const r = await fetch(`https://api.exchange.coinbase.com/products/XRP-USD/candles?granularity=${g}`, {signal:ctl.signal});
-    if (!r.ok) throw new Error("HTTP " + r.status);
-    const a = await r.json();
-    if (!Array.isArray(a) || !a.length) throw new Error("empty");
-    return a.map(x => ({time:x[0], low:+x[1], high:+x[2], open:+x[3], close:+x[4], volume:+x[5]})).sort((p,q) => p.time - q.time);
+    const base = CB_BASE[g];
+    if (!base){
+      const a = await fetchCandlePage(g, null, null, ctl.signal);
+      if (!a.length) throw new Error("empty");
+      return a.sort((p,q) => p.time - q.time);
+    }
+    // ~300 bars of g: g/base pages of 300 base candles each, fetched together
+    const pages = g / base, now = Math.floor(Date.now()/1000), span = 300 * base;
+    const reqs = [];
+    for (let i = 0; i < pages; i++){ const end = now - i*span; reqs.push(fetchCandlePage(base, end - span + base, end, ctl.signal)); }
+    const seen = new Map();
+    for (const page of await Promise.all(reqs)) for (const c of page) seen.set(c.time, c);
+    const src = [...seen.values()].sort((p,q) => p.time - q.time);
+    if (!src.length) throw new Error("empty");
+    const out = [], per = g / base;
+    for (const c of src){
+      const bt = Math.floor(c.time / g) * g, last = out[out.length-1];
+      if (last && last.time === bt){ last.high = Math.max(last.high, c.high); last.low = Math.min(last.low, c.low); last.close = c.close; last.volume += c.volume; last.n++; }
+      else out.push({time:bt, open:c.open, high:c.high, low:c.low, close:c.close, volume:c.volume, n:1});
+    }
+    if (out.length > 1 && out[0].n < per) out.shift();      // first bar only partly covered
+    return out;
   } finally { clearTimeout(t); }
 }
 
