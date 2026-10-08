@@ -1,0 +1,229 @@
+{
+ "checked_at": "2026-10-08T17:54:51Z",
+ "accounts": [
+  {
+   "group": "Ripple & XRP Ledger",
+   "handle": "Ripple",
+   "exists": true,
+   "display_name": "Ripple",
+   "description": "We're enabling the Internet of Value."
+  },
+  {
+   "group": "Ripple & XRP Ledger",
+   "handle": "RippleXDev",
+   "exists": true,
+   "display_name": "RippleX",
+   "description": "Empowering XRP Ledger developers with infrastructure, tools & support to drive solutions & innovation."
+  },
+  {
+   "group": "Ripple & XRP Ledger",
+   "handle": "bgarlinghouse",
+   "exists": true,
+   "display_name": "Brad Garlinghouse",
+   "description": "CEO at Ripple."
+  },
+  {
+   "group": "Ripple & XRP Ledger",
+   "handle": "JoelKatz",
+   "exists": true,
+   "display_name": "David 'JoelKatz' Schwartz",
+   "description": "CTO Emeritus at Ripple; one of the original architects of the XRP ledger."
+  },
+  {
+   "group": "Ripple & XRP Ledger",
+   "handle": "s_alderoty",
+   "exists": true,
+   "display_name": "Stuart Alderoty",
+   "description": "Chief Legal Officer at Ripple and President of NatCryptoAssoc."
+  },
+  {
+   "group": "Ripple & XRP Ledger",
+   "handle": "MonicaLongSF",
+   "exists": true,
+   "display_name": "Monica Long",
+   "description": "President of Ripple, on a mission to enable the Internet of Value."
+  },
+  {
+   "group": "Ripple & XRP Ledger",
+   "handle": "XRPLF",
+   "exists": true,
+   "display_name": "XRP Ledger Foundation",
+   "description": "Non-profit that contributes to, grows, and advocates for the XRP Ledger and its community."
+  },
+  {
+   "group": "Ripple & XRP Ledger",
+   "handle": "xrpl_commons",
+   "exists": true,
+   "display_name": "XRPL Commons",
+   "description": "Building the Commons with the XRP Ledger Community."
+  },
+  {
+   "group": "ETF issuers",
+   "handle": "BitwiseInvest",
+   "exists": false,
+   "display_name": null,
+   "description": null
+  },
+  {
+   "group": "ETF issuers",
+   "handle": "Grayscale",
+   "exists": true,
+   "display_name": "Grayscale",
+   "description": "Grayscale, the world’s largest digital asset-focused investment platform."
+  },
+  {
+   "group": "ETF issuers",
+   "handle": "21Shares",
+   "exists": true,
+   "display_name": "21shares",
+   "description": "Pioneering crypto investments; world’s largest crypto ETP provider (US: @21Shares_US; Capital Markets: @21sharesCM)."
+  },
+  {
+   "group": "ETF issuers",
+   "handle": "CanaryFunds",
+   "exists": true,
+   "display_name": "Canary Capital",
+   "description": "Institutional digital asset solutions; risk-managed single-asset trusts and hedge funds, plus research and market commentary."
+  },
+  {
+   "group": "ETF issuers",
+   "handle": "FTI_US",
+   "exists": false,
+   "display_name": null,
+   "description": null
+  },
+  {
+   "group": "ETF analysts & flow data",
+   "handle": "JSeyff",
+   "exists": false,
+   "display_name": null,
+   "description": null
+  },
+  {
+   "group": "ETF analysts & flow data",
+   "handle": "EricBalchunas",
+   "exists": false,
+   "display_name": null,
+   "description": null
+  },
+  {
+   "group": "ETF analysts & flow data",
+   "handle": "NateGeraci",
+   "exists": false,
+   "display_name": null,
+   "description": null
+  },
+  {
+   "group": "ETF analysts & flow data",
+   "handle": "Matt_Hougan",
+   "exists": false,
+   "display_name": null,
+   "description": null
+  },
+  {
+   "group": "ETF analysts & flow data",
+   "handle": "coinglass_com",
+   "exists": false,
+   "display_name": null,
+   "description": null
+  },
+  {
+   "group": "ETF analysts & flow data",
+   "handle": "SoSoValueCrypto",
+   "exists": false,
+   "display_name": null,
+   "description": null
+  },
+  {
+   "group": "Regulators & policy reporters",
+   "handle": "SECGov",
+   "exists": true,
+   "display_name": "U.S. Securities and Exchange Commission",
+   "description": "Protecting investors, maintaining fair, orderly, and efficient markets, and facilitating capital formation. Led by @SECPaulSAtkins, 34th Chairman of the SEC"
+  },
+  {
+   "group": "Regulators & policy reporters",
+   "handle": "CFTC",
+   "exists": true,
+   "display_name": "CFTC",
+   "description": "The CFTC is an independent federal regulatory agency tasked with overseeing the US derivatives markets. Hyperlinks are not endorsements."
+  },
+  {
+   "group": "Regulators & policy reporters",
+   "handle": "HesterPeirce",
+   "exists": true,
+   "display_name": "Hester Peirce",
+   "description": "SEC Commissioner since 1/2018. My tweets may not reflect the views of the SEC or any other SEC Commissioner."
+  },
+  {
+   "group": "Regulators & policy reporters",
+   "handle": "EleanorTerrett",
+   "exists": true,
+   "display_name": "Eleanor Terrett",
+   "description": "Journalist & Host @CryptoAmerica_ • Former @FoxBusiness • Citizen of 🇺🇸🇬🇧 • Mother of Cats🐈 • Breaker of News🗞️ • THIS IS MY ONLY X ACCOUNT!"
+  },
+  {
+   "group": "Regulators & policy reporters",
+   "handle": "CGasparino",
+   "exists": true,
+   "display_name": "Charles Gasparino",
+   "description": "Charles Gasparino is a FOX Biz Senior Correspondent, NY Post columnist & author of Go Woke Go Broke; The Inside Story of the Radicalization of Corporate America"
+  },
+  {
+   "group": "Wires & on-chain",
+   "handle": "WuBlockchain",
+   "exists": false,
+   "display_name": null,
+   "description": null
+  },
+  {
+   "group": "Wires & on-chain",
+   "handle": "TheBlock__",
+   "exists": false,
+   "display_name": null,
+   "description": null
+  },
+  {
+   "group": "Wires & on-chain",
+   "handle": "CoinDesk",
+   "exists": false,
+   "display_name": null,
+   "description": null
+  },
+  {
+   "group": "Wires & on-chain",
+   "handle": "Cointelegraph",
+   "exists": false,
+   "display_name": null,
+   "description": null
+  },
+  {
+   "group": "Wires & on-chain",
+   "handle": "DeItaone",
+   "exists": false,
+   "display_name": null,
+   "description": null
+  },
+  {
+   "group": "Wires & on-chain",
+   "handle": "whale_alert",
+   "exists": false,
+   "display_name": null,
+   "description": null
+  },
+  {
+   "group": "Wires & on-chain",
+   "handle": "lookonchain",
+   "exists": false,
+   "display_name": null,
+   "description": null
+  },
+  {
+   "group": "Wires & on-chain",
+   "handle": "xrpscan",
+   "exists": false,
+   "display_name": null,
+   "description": null
+  }
+ ]
+}
