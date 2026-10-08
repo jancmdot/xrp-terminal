@@ -1,8 +1,9 @@
 # X accounts for the signal scan. Each group is one Grok request (max 20 handles).
 # tier: primary = the account IS the source (company, issuer, regulator, on-chain data)
 #       t1      = established analyst, reporter or outlet
-# DRAFT LIST — run the "verify handles" task once your xAI key is in, and edit freely.
-# Handles marked "# verify" are ones I'm less sure are exact.
+# Checked with the verify_handles task on Oct 8, 2026 (results in data/handle_check.json).
+# Removed after that check: FTI_US, TheBlock__ (not found), xrpscan (couldn't be checked).
+# Franklin Templeton's XRP fund news still reaches the feed through the ETF analysts and RSS.
 
 groups:
   - name: Ripple & XRP Ledger
@@ -11,30 +12,29 @@ groups:
       - Ripple
       - RippleXDev
       - bgarlinghouse      # Brad Garlinghouse, CEO
-      - JoelKatz           # David Schwartz
-      - s_alderoty         # Stuart Alderoty, CLO   # verify
-      - MonicaLongSF       # Monica Long, President # verify
+      - JoelKatz           # David Schwartz, CTO emeritus
+      - s_alderoty         # Stuart Alderoty, CLO
+      - MonicaLongSF       # Monica Long, President
       - XRPLF              # XRP Ledger Foundation
-      - xrpl_commons       # verify
+      - xrpl_commons       # XRPL Commons
 
   - name: ETF issuers
     tier: primary
     handles:
-      - BitwiseInvest
+      - Bitwise            # @BitwiseInvest wasn't found; Matt Hougan's bio lists "CIO @Bitwise"
       - Grayscale
       - 21Shares
-      - CanaryFunds        # Canary Capital        # verify
-      - FTI_US             # Franklin Templeton US  # verify
+      - CanaryFunds        # Canary Capital
 
   - name: ETF analysts & flow data
     tier: t1
     handles:
-      - JSeyff             # James Seyffart
-      - EricBalchunas
+      - JSeyff             # James Seyffart, Bloomberg
+      - EricBalchunas      # Bloomberg
       - NateGeraci
-      - Matt_Hougan
+      - Matt_Hougan        # Bitwise CIO
       - coinglass_com
-      - SoSoValueCrypto    # verify
+      - SoSoValueCrypto
 
   - name: Regulators & policy reporters
     tier: primary
@@ -50,14 +50,12 @@ groups:
     tier: t1
     handles:
       - WuBlockchain
-      - TheBlock__
       - CoinDesk
       - Cointelegraph
-      - DeItaone           # headline wire
+      - DeItaone           # Walter Bloomberg, headline wire
     primary_handles:       # on-chain data accounts count as primary records
       - whale_alert
       - lookonchain
-      - xrpscan            # verify
 
 # Up to 20 accounts kept out of the open discovery scan (hype, spam, engagement bait).
 blocked: []
