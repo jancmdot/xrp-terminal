@@ -50,6 +50,11 @@ def evidence(evs: dict, tid: str, days: int | None = WINDOW_DAYS) -> list[dict]:
     return sorted(rows, key=lambda r: r["date"], reverse=True)
 
 
+def tracking_start(evs: dict) -> str:
+    logged = [e.get("logged_at") for e in evs.values() if e.get("theories") and e.get("logged_at")]
+    return min(logged) if logged else iso(now_utc())
+
+
 def week_of(iso_ts: str) -> str:
     """Monday (New York date) of the week containing the timestamp."""
     d = (parse_iso(iso_ts) or now_utc()).astimezone(NY).date()
@@ -103,7 +108,7 @@ def _allowed_change(cur: str, new: str | None, rows: list[dict], st: dict) -> tu
 def update(grok: Grok, theories: list[dict], state: dict, evs: dict, etf_context: str = "") -> None:
     """Refresh each tracked theory's weekly note, and apply verdict changes that pass the rules."""
     tstate = state.setdefault("theories", {})
-    state.setdefault("theories_since", iso(now_utc()))      # the evidence history starts with the first update
+    state.setdefault("theories_since", tracking_start(evs))     # the evidence history starts with the first linked item
     ctx = []
     for t in tracked(theories):
         st = tstate.setdefault(t["id"], {})
@@ -169,7 +174,7 @@ def build_output(theories: list[dict], state: dict, evs: dict) -> list[dict]:
             }
             if st.get("verdict") and st.get("base") == t["verdict"] and st.get("history"):
                 row["changed"] = st["history"][-1]
-            row["history"] = _history(t, st, evidence(evs, t["id"], None), state.get("theories_since"))
+            row["history"] = _history(t, st, evidence(evs, t["id"], None), state.get("theories_since") or tracking_start(evs))
         out.append(row)
     return out
 
