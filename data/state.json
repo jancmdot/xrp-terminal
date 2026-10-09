@@ -22,38 +22,47 @@
   "x:2108172937022828905": "2026-10-08T18:49:18Z",
   "x:2108143970891051340": "2026-10-08T18:49:18Z",
   "x:2108105256743686341": "2026-10-08T18:49:18Z",
-  "n:4db8aac990d6": "2026-10-08T18:49:18Z"
+  "n:4db8aac990d6": "2026-10-08T18:49:18Z",
+  "x:2108565425466282451": "2026-10-09T15:35:28Z",
+  "x:2108481216831758469": "2026-10-09T15:35:28Z",
+  "x:2108543220460449960": "2026-10-09T15:35:28Z",
+  "x:2108517532806393898": "2026-10-09T15:35:28Z",
+  "x:2108510583037317141": "2026-10-09T15:35:28Z",
+  "x:2108491823807406419": "2026-10-09T15:35:28Z",
+  "x:2108490149873008656": "2026-10-09T15:35:28Z",
+  "x:2108444247758442723": "2026-10-09T15:35:28Z",
+  "x:2108441440032555486": "2026-10-09T15:35:28Z",
+  "x:2108380452398764035": "2026-10-09T15:35:28Z",
+  "n:a0b0d7159c04": "2026-10-09T15:35:28Z",
+  "n:354bc2d83a80": "2026-10-09T15:35:28Z",
+  "n:5f12252fe9eb": "2026-10-09T15:35:28Z"
  },
  "slots_done": [
   "etf:2026-10-08:20"
  ],
  "spend": {
   "2026-10": {
-   "usd": 4.6973,
-   "calls": 42,
-   "x_posts": 139,
+   "usd": 5.6017,
+   "calls": 51,
+   "x_posts": 229,
    "x_users": 172,
-   "web_searches": 53
+   "web_searches": 57
   }
  },
  "last_etf_pull": "2026-10-09T01:10:32Z",
  "positioning": {
-  "as_of": "2026-10-09T01:10:33Z",
-  "funding_rate": -0.005886,
-  "funding_pctile_30d": 0.01,
-  "open_interest_usd": 3153695397,
-  "oi_change_24h_pct": -6.24
+  "as_of": "2026-10-09T15:30:31Z",
+  "funding_rate": 0.006625,
+  "funding_pctile_30d": 0.57,
+  "open_interest_usd": 3098692723,
+  "oi_change_24h_pct": 1.16
  },
  "feed_errors": [],
- "last_x_scan": "2026-10-08T18:40:46Z",
- "last_news_scan": "2026-10-08T18:40:46Z",
+ "last_x_scan": "2026-10-09T15:30:30Z",
+ "last_news_scan": "2026-10-09T15:30:30Z",
  "theme_states": {
-  "stb": "Trackers cited RLUSD burns of 10 million, 14.52 million and 20 million on XRPL, plus 10 million on Ethereum.",
-  "sup": "Ripple was reported to move 200 million XRP between its own addresses.",
-  "etf": "An outlet said spot XRP ETF inflows cooled as custody names grew.",
-  "pay": "XRPL payment volume was reported at 858 million XRP, near average.",
-  "corp": "Custody 1.43 was reported to support Canton assets; Ripple Prime, to finance leveraged U.S. stock ETFs.",
-  "col": "A Brevan Howard prime deal was reported to disclose no XRP allocation.",
-  "tok": "Meritz and Ripple were reported to review Korean custody, not a launch."
+  "stb": "Trackers cited 10M, 14.52M and 20M RLUSD burns on XRPL, plus a 10M RLUSD burn on Ethereum.",
+  "sup": "Ripple was reported to have moved 200 million XRP between its own addresses.",
+  "etf": "An outlet said spot XRP ETF inflows cooled as custody names grew; an inflow figure was unsourced."
  }
 }
