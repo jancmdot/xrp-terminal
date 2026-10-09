@@ -302,6 +302,22 @@ table.funds{width:100%;border-collapse:collapse;font:var(--fs-s)/1.4 var(--f-mon
 .vd-supported{color:var(--up)} .vd-partly{color:var(--warn)} .vd-unsupported{color:var(--down)} .vd-speculative{color:var(--info)} .vd-untestable{color:var(--faint)}
 .theory p{margin:0;font-size:var(--fs-s);line-height:1.55;color:var(--dim)}
 .theory p b{font:500 var(--fs-xs)/1 var(--f-label);letter-spacing:.06em;color:var(--faint);text-transform:uppercase;margin-right:6px}
+.vchange{font:var(--fs-xs)/1.5 var(--f-mono);color:var(--amber)}
+.tw{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font:var(--fs-xs)/1.3 var(--f-mono);color:var(--faint);margin-top:2px}
+.tw-lbl{font:500 var(--fs-xs)/1 var(--f-label);letter-spacing:.07em;text-transform:uppercase}
+.net{font:700 9.5px/1 var(--f-label);letter-spacing:.06em;padding:4px 6px 3px;text-transform:uppercase}
+.net-strengthens{background:var(--up-wash);color:var(--up)} .net-weakens{background:var(--down-wash);color:var(--down)}
+.net-mixed{background:var(--panel-2);color:var(--warn)} .net-none{background:var(--panel-2);color:var(--faint)}
+.theory p.tw-note{color:var(--fg)}
+.tw-items{list-style:none;margin:0;padding:0;display:grid;gap:1px}
+.tw-items button{display:flex;gap:8px;align-items:baseline;width:100%;text-align:left;background:none;border:0;padding:5px 0;color:var(--dim);font:var(--fs-s)/1.4 var(--f-text);cursor:pointer;min-width:0}
+.tw-items button:hover{color:var(--fg)}
+.tw-items button span.h{min-width:0;flex:1}
+.tw-items .d{font-family:var(--f-mono);font-size:var(--fs-xs);color:var(--faint);white-space:nowrap}
+.tw-items .claimonly{opacity:.65}
+.tw-items .claimonly .h::after{content:" · unverified claim";font:var(--fs-xs) var(--f-mono);color:var(--faint)}
+.tlink{font:500 9.5px/1 var(--f-mono);letter-spacing:.04em;padding:3px 5px;border:1px dashed var(--line-2);color:var(--dim);text-transform:uppercase;white-space:nowrap}
+@media (max-width:700px){.tw-items button{padding:8px 0}}
 
 /* ---------- footer ---------- */
 .method{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
@@ -494,7 +510,7 @@ table.funds{width:100%;border-collapse:collapse;font:var(--fs-s)/1.4 var(--f-mon
       <div class="ph">
         <h2>Theory check</h2>
         <span class="sp"></span>
-        <span class="sub">Popular claims, checked against what's on record</span>
+        <span class="sub">Popular claims, checked against this week's news</span>
       </div>
       <div id="theories"></div>
     </section>
@@ -563,7 +579,10 @@ table.funds{width:100%;border-collapse:collapse;font:var(--fs-s)/1.4 var(--f-mon
               reality_check,
               reaction?:{ xrp_1h, xrp_4h, xrp_24h, vs_btc_1h, vs_btc_4h, vs_btc_24h } }]  // % moves
    themes: { [theme id]: { state, base_rate:{ n, p|null } } }
-   theories: [{ claim, verdict:"supported"|"partly"|"unsupported"|"speculative"|"untestable",
+   items[].theories?: [{id, stance:"supports"|"contradicts"}]
+   theories: [{ id, short, claim, verdict:"supported"|"partly"|"unsupported"|"speculative"|"untestable",
+                tracked, changed?:{on, from, to, why},
+                week?:{supports, contradicts, claims, net:"strengthens"|"weakens"|"mixed"|"none", note, items:[{id, stance, counts}]},
                 true_part, would_change }]
    event_log: { logged:int, unlock_n:int }
    ===================================================================== */
@@ -810,7 +829,7 @@ function buildSample(now){
 
   const F = (t, label) => ({t, label});
   const items = [
-    { id:"s01", kind:"x", published_at:ago(14*60+20),
+    { id:"s01", theories:[{id:"supply-shock", stance:"supports"}], kind:"x", published_at:ago(14*60+20),
       headline:"Spot XRP ETFs back to net inflows after yesterday's single-fund redemption",
       summary:"Daily flow data shows a net inflow across US spot XRP funds, led by the largest fund. The prior day's outflow came almost entirely from one fund.",
       source:{name:"Example ETF Analyst", handle:"@example_etf_analyst", tier:"t1"},
@@ -818,7 +837,7 @@ function buildSample(now){
       impact:{tier:"low", basis:"rubric", factors:[F("+","verifiable flow data"),F("+","established analyst"),F("-","small vs fund assets"),F("-","reverses one day only")],
         rationale:"Inflow is real but under 1% of fund assets. It matters as trend confirmation, not as a catalyst."},
       reality_check:"One inflow day after one outflow day doesn't establish a trend. Watch the 5-day and 20-day sums in the ETF panel."},
-    { id:"s02", kind:"news", published_at:ago(70),
+    { id:"s02", theories:[{id:"tokenization", stance:"contradicts"}], kind:"news", published_at:ago(70),
       headline:"Bank consortium pilots tokenized deposit settlement on the XRP Ledger",
       summary:"A group of regional banks announced a limited pilot settling tokenized deposits between members on the XRP Ledger.",
       source:{name:"Sample Wire", tier:"t1"},
@@ -844,7 +863,7 @@ function buildSample(now){
         rationale:"Clarity is a long-term positive, but a proposal starts a months-long process. Near-term effect depends on details traders find in the text."},
       reality_check:"Proposed rules change before they're final. Most of the price effect of regulatory news historically comes at final adoption or enforcement, not at proposal.",
       reaction:{xrp_1h:0.4, xrp_4h:1.1, vs_btc_1h:0.1, vs_btc_4h:0.3}},
-    { id:"s05", kind:"x", published_at:ago(330),
+    { id:"s05", theories:[{id:"collateral", stance:"supports"}], kind:"x", published_at:ago(330),
       headline:"\"Insider says a top-10 bank will announce an XRP reserve next week\"",
       summary:"Anonymous account claims a bank will add XRP to its balance sheet. No document, name or second source.",
       source:{name:"Example Crowd Account", handle:"@example_xrp_crowd", tier:"crowd"},
@@ -898,7 +917,7 @@ function buildSample(now){
         rationale:"Closing a known deal adds little new information. Long-term relevance depends on whether XRP is used in the product."},
       reality_check:"Ripple corporate growth and XRP demand are related but not the same. Watch for product changes that use XRP directly.",
       reaction:{xrp_1h:0.3, xrp_4h:0.5, xrp_24h:0.9, vs_btc_1h:0.2, vs_btc_4h:0.3, vs_btc_24h:0.6}},
-    { id:"s11", kind:"news", published_at:ago(31*60),
+    { id:"s11", theories:[{id:"swift", stance:"supports"}], kind:"news", published_at:ago(31*60),
       headline:"Payments firm adds XRP-bridged corridor between the US and Mexico",
       summary:"A remittance company says it now routes part of its US–Mexico volume through an XRP bridge.",
       source:{name:"Sample Wire", tier:"t1"},
@@ -907,7 +926,7 @@ function buildSample(now){
         rationale:"Direct XRP use is the relevant kind of adoption, but without volume it can't be sized."},
       reality_check:"Bridge use holds XRP for seconds to minutes, so demand depends on volume, not on the number of corridors announced.",
       reaction:{xrp_1h:0.1, xrp_4h:0.4, xrp_24h:0.2, vs_btc_1h:0.0, vs_btc_4h:0.2, vs_btc_24h:0.2}},
-    { id:"s12", kind:"x", published_at:ago(38*60),
+    { id:"s12", theories:[{id:"supply-shock", stance:"contradicts"}], kind:"x", published_at:ago(38*60),
       headline:"One fund posts a $45M outflow; looks like a single large redemption",
       summary:"Flow data shows one fund accounted for nearly all of the day's net outflow. Other funds were flat to positive.",
       source:{name:"Example ETF Analyst", handle:"@example_etf_analyst", tier:"t1"},
@@ -932,19 +951,28 @@ function buildSample(now){
   };
 
   const theories = [
-    {claim:"ETF demand will create an XRP supply shock.", verdict:"partly",
+    {id:"supply-shock", short:"Supply shock", tracked:true, claim:"ETF demand will create an XRP supply shock.", verdict:"partly",
+     week:{supports:1, contradicts:1, claims:0, net:"mixed", note:"An inflow day followed a $45M one-fund redemption; the 20-day sum is positive but small next to circulating supply.",
+           items:[{id:"s01", stance:"supports", counts:true}, {id:"s12", stance:"contradicts", counts:true}]},
      true_part:"ETF flows are real and have been mostly positive, but fund holdings are a small share of circulating supply, and escrow releases and treasury sales add supply every month.",
      would_change:"ETF holdings rising faster than exchange balances fall, for several months in a row."},
-    {claim:"XRP will replace SWIFT.", verdict:"unsupported",
+    {id:"swift", short:"Replaces SWIFT", tracked:true, claim:"XRP will replace SWIFT.", verdict:"unsupported",
+     week:{supports:1, contradicts:0, claims:0, net:"none", note:"One corridor now routes part of its volume through an XRP bridge; no volume disclosed, far short of the would-change bar.",
+           items:[{id:"s11", stance:"supports", counts:true}]},
      true_part:"Ripple sells cross-border payment software, and only some of those flows use XRP as a bridge. SWIFT remains the main bank messaging network, and many Ripple bank partners never touch XRP.",
      would_change:"Banks disclosing large, recurring payment volume settled through XRP."},
-    {claim:"Banks will hold XRP as collateral or a reserve asset.", verdict:"speculative",
+    {id:"collateral", short:"Bank collateral", tracked:true, claim:"Banks will hold XRP as collateral or a reserve asset.", verdict:"speculative",
+     week:{supports:0, contradicts:0, claims:1, net:"none", note:"No confirmed or reported evidence in the last 7 days.",
+           items:[{id:"s05", stance:"supports", counts:false}]},
      true_part:"Collateral use comes up in crypto lending and prime brokerage, but confirmed bank holdings are rare and not disclosed at scale.",
      would_change:"Capital rules that treat XRP favorably, or audited bank disclosures of holdings."},
-    {claim:"Tokenization on the XRP Ledger will drive XRP demand.", verdict:"partly",
+    {id:"tokenization", short:"Tokenization demand", tracked:true, claim:"Tokenization on the XRP Ledger will drive XRP demand.", verdict:"partly",
+     changed:{on:ago(3*24*60), from:"speculative", to:"partly", why:"Sample: a fund launched XRP-denominated liquidity for tokenized treasuries."},
+     week:{supports:0, contradicts:1, claims:0, net:"weakens", note:"A bank pilot settles tokenized deposits on the ledger without holding XRP beyond fees and reserves.",
+           items:[{id:"s02", stance:"contradicts", counts:true}]},
      true_part:"Tokenized assets on the ledger are growing. Each transaction burns a tiny fee and accounts lock a small reserve, so XRP demand grows far more slowly than the value tokenized.",
      would_change:"Products that require holding meaningful XRP balances, such as XRP-denominated liquidity for tokenized assets."},
-    {claim:"XRP will reach $X by date Y.", verdict:"untestable",
+    {id:"price-target", short:"Price targets", tracked:false, claim:"XRP will reach $X by date Y.", verdict:"untestable",
      true_part:"Price targets say nothing about cause. The terminal logs them as sentiment and leaves them out of impact scoring.",
      would_change:"Nothing. A target is a prediction, not evidence."}
   ];
@@ -1161,6 +1189,7 @@ function itemHtml(it){
         <div class="ib-box"><h4>Reality check</h4><p>${esc(it.reality_check)}</p></div>
         <div class="ib-box"><h4>What price did after</h4>${reactionTable(it.reaction)}</div>
       </div>
+      ${(it.theories || []).length ? `<div class="i-tags">${it.theories.map(l => { const th = (DATA.theories || []).find(x => x.id === l.id); return th ? `<span class="tlink">${l.stance === "supports" ? "▲ supports" : "▼ against"}: ${esc(th.short || th.claim)}</span>` : ""; }).join("")}</div>` : ""}
       <div class="ib-foot"><span>${esc(basisTxt)}</span><span>${NY_MDHM.format(d)} ET</span>${url ? `<a href="${esc(url)}" target="_blank" rel="noopener">Open source ↗</a>` : `<span>${DATA.meta.sample ? "Sample item · no source link" : "No link"}</span>`}</div>
     </div>
   </article>`;
@@ -1228,14 +1257,40 @@ function renderThemes(){
     </button>`).join("");
 }
 
+const VERDICT_LABEL = {supported:"Supported", partly:"Partly true", unsupported:"Unsupported", speculative:"Speculative", untestable:"Untestable"};
+const NET_LABEL = {strengthens:"▲ Strengthens", weakens:"▼ Weakens", mixed:"◆ Mixed", none:"No new evidence"};
 function renderTheories(){
-  const label = {supported:"Supported", partly:"Partly true", unsupported:"Unsupported", speculative:"Speculative", untestable:"Untestable"};
-  $("#theories").innerHTML = (DATA.theories||[]).map(t => `
-    <div class="theory">
-      <div class="claim"><q>${esc(t.claim)}</q><span class="vd vd-${esc(t.verdict)}">${label[t.verdict] || esc(t.verdict)}</span></div>
+  const byId = new Map((DATA.items || []).map(i => [i.id, i]));
+  $("#theories").innerHTML = (DATA.theories||[]).map(t => {
+    const w = t.week;
+    let live = "";
+    if (t.changed){
+      live += `<div class="vchange">Changed from ${esc(VERDICT_LABEL[t.changed.from] || t.changed.from)} on ${NY_MD.format(new Date(t.changed.on))}${t.changed.why ? " · " + esc(t.changed.why) : ""}</div>`;
+    }
+    if (w){
+      const tot = Math.max(1, w.supports + w.contradicts);
+      const counts = [`${w.supports} for`, `${w.contradicts} against`].concat(w.claims ? [`${w.claims} unverified claim${w.claims === 1 ? "" : "s"}`] : []).join(" · ");
+      const rows = (w.items || []).map(x => {
+        const it = byId.get(x.id); if (!it) return "";
+        return `<li><button type="button" data-open="${esc(x.id)}" class="${x.counts ? "" : "claimonly"}"><i class="${x.stance === "supports" ? "up" : "down"}">${x.stance === "supports" ? "▲" : "▼"}</i><span class="h">${esc(it.headline)}</span><span class="d">${NY_MD.format(new Date(it.published_at))}</span></button></li>`;
+      }).join("");
+      live += `<div class="tw"><span class="tw-lbl">This week</span><span class="net net-${esc(w.net || "none")}">${NET_LABEL[w.net] || NET_LABEL.none}</span><span>${counts}</span>
+        <span class="balance" title="${w.supports} for · ${w.contradicts} against">${w.supports + w.contradicts ? `<i class="b" style="width:${w.supports/tot*100}%"></i><i class="r" style="width:${w.contradicts/tot*100}%"></i>` : ""}</span></div>`;
+      if (w.note) live += `<p class="tw-note">${esc(w.note)}</p>`;
+      if (rows) live += `<ul class="tw-items">${rows}</ul>`;
+    }
+    return `<div class="theory">
+      <div class="claim"><q>${esc(t.claim)}</q><span class="vd vd-${esc(t.verdict)}">${VERDICT_LABEL[t.verdict] || esc(t.verdict)}</span></div>
+      ${live}
       <p><b>On record</b>${esc(t.true_part)}</p>
       <p><b>Would change it</b>${esc(t.would_change)}</p>
-    </div>`).join("") + (DATA.meta.sample ? `<div class="note">Sample analysis. The pipeline refreshes these weekly from the same sources as the feed.</div>` : "");
+      ${t.tracked === false ? `<p><b>Not tracked</b>Predictions can't be checked against news, so this one stays fixed.</p>` : ""}
+    </div>`;
+  }).join("") + `<div class="note">${DATA.meta.sample ? "Sample analysis. " : ""}Each scan checks new items against these claims. Rumors and speculation are shown but don't count as evidence. A verdict moves one step at most, only on confirmed evidence from a primary or established source, and at most once a week.</div>`;
+}
+function openItem(id){
+  if (!filteredItems().some(i => i.id === id)){ Object.assign(F, {kind:"all", min:0, soft:false, themes:[]}); feedAll = true; }
+  openId = null; toggleItem(id, true);
 }
 
 /* =====================================================================
@@ -1588,6 +1643,9 @@ function wire(){
     const r = e.target.closest(".th-row"); if (!r) return;
     const t = r.dataset.t; F.themes = (F.themes.length === 1 && F.themes[0] === t) ? [] : [t]; renderFeed();
     $("#p-feed").scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block:"start"});
+  });
+  $("#theories").addEventListener("click", e => {
+    const b = e.target.closest("button[data-open]"); if (b) openItem(b.dataset.open);
   });
   $("#feed").addEventListener("click", e => {
     if (e.target.closest("#feed-more")){ feedAll = true; renderFeed(); return; }

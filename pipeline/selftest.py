@@ -66,7 +66,15 @@ def main() -> int:
     check("immaterial items capped at low", all(i["impact"]["tier"] in ("low", "noise") for i in data["items"] if "amendment" in i["headline"].lower()))
     check("spend recorded", data["meta"]["spend"]["usd"] > 0)
     check("theme states written", any(v["state"] for v in data["themes"].values()))
-    check("theories copied", len(data["theories"]) == 5)
+    th = {t["id"]: t for t in data["theories"]}
+    check("theories copied", len(th) == 5 and th["price-target"]["tracked"] is False and "week" not in th["price-target"])
+    check("items linked to theories", th["supply-shock"]["week"]["supports"] >= 1 and th["tokenization"]["week"]["supports"] >= 1)
+    check("rumors don't count as evidence", th["collateral"]["week"]["claims"] >= 1)
+    check("unknown theory ids dropped", all(l["id"] != "nonexistent" for i in data["items"] for l in i.get("theories", [])))
+    check("theory evidence search ran", any("basel" in i["headline"].lower() for i in data["items"]))
+    check("weekly note written", th["supply-shock"]["week"]["note"] == "Test note for supply-shock.")
+    check("verdict step allowed with confirmed evidence", th["supply-shock"]["verdict"] == "supported" and th["supply-shock"]["changed"]["from"] == "partly")
+    check("verdict change refused without confirmed evidence", th["tokenization"]["verdict"] == "partly")
 
     # schedule: a second scan in the same slot must not run
     first = yaml.safe_load((REPO / "config" / "settings.yaml").read_text())["schedule"]["scan_hours_et"][0]

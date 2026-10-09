@@ -22,7 +22,7 @@ All times New York. GitHub delays or drops scheduled triggers when busy, so the 
 | What | When |
 |---|---|
 | X scan (curated accounts + open discovery), RSS, rating | 8:00, 17:00 |
-| Web news search (Grok) | 8:00 scan only |
+| Web news search and theory-evidence search (Grok) | 8:00 scan only |
 | ETF flows, positioning | every hourly run (CoinGlass posts flows at varying times after the close) |
 | Price reactions, base rates, `data.json` rebuild | every run |
 
@@ -33,6 +33,10 @@ Change times in `config/settings.yaml`.
 Grok fills in categorical fields for each item: source tier, confirmation status, whether it's new or already known, size relative to the market, and whether it's specifically about XRP. The impact tier is then computed from those fields with fixed points (`rubric` in `config/settings.yaml`), the same way for every item.
 
 Every rated item is logged in `data/events.jsonl`. The pipeline later measures XRP's return and XRP minus BTC over 1h, 4h and 24h from Coinbase candles. Once a theme has 30 events with a 24h reaction, its items show the historical share that moved more than ±3% versus BTC within 24 hours. Events overlap in time, so treat these as rough base rates, not causal estimates.
+
+## Theory Check
+
+Each rated item is checked against the tracked theories in `config/theories.yaml` (supports, contradicts, or no link). Once a day a web search looks for evidence that may not mention XRP, such as bank capital rules or SWIFT news. After each scan, Grok writes a one-line note per theory on the week's evidence. Rumors and speculation are shown but don't count. A verdict moves one step at most, only when a confirmed item from a primary or established source backs the change, and at most once a week; every change is shown on the page with its reason. Editing a verdict in the config resets the automatic one.
 
 ## Cost control
 

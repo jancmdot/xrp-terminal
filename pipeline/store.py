@@ -68,6 +68,7 @@ def event_from_rated(c: dict) -> dict:
         "rubric": {k: r[k] for k in ("novelty", "size", "scope")}, "score": c["score"],
         "impact": {"tier": c["tier"], "basis": "rubric", "factors": r["factors"][:5], "rationale": r["rationale"]},
         "reality_check": r["reality_check"], "pass": c.get("pass"), "reaction": {},
+        "theories": r.get("theory_links", []),
     }
 
 
@@ -103,6 +104,8 @@ def build(evs: dict, state: dict, settings: dict, theories: list, theme_state: d
             continue
         it = {k: e[k] for k in ("id", "kind", "published_at", "headline", "summary", "source", "themes", "status",
                                  "direction", "horizon", "reality_check")}
+        if e.get("theories"):
+            it["theories"] = e["theories"]
         imp = dict(e["impact"])
         r = rates.get(e["themes"][0]) if e["themes"] else None
         if r and r["n"] >= unlock and r["p"] is not None:

@@ -127,3 +127,39 @@ def web_items(grok: Grok, since: dt.datetime, max_searches: int = 4) -> list[dic
                     "outlet": a.get("outlet") or domain(u), "posted_at": iso(t or now_utc()), "source_tier": domain_tier(u),
                     "pass": "web"})
     return out
+
+
+def theory_items(grok: Grok, since: dt.datetime, theories: list[dict], max_searches: int = 4) -> list[dict]:
+    """Daily search for evidence about the tracked theories, including news that doesn't mention XRP."""
+    tt = [t for t in theories if t.get("tracked") and t.get("search")]
+    if not tt:
+        return []
+    lines = "\n".join(f"- {t['claim']} Look for: {t['search']}" for t in tt)
+    user = (f"Find news published after {iso(since)} that is evidence for or against these claims about XRP:\n{lines}\n"
+            "Prefer primary sources (regulators, banks, SWIFT, Ripple, fund filings, on-chain data providers) and established outlets. "
+            f"Run at most {max_searches} web searches in total and don't open pages unless a result's date is unclear. "
+            "Skip opinion pieces and price predictions. Return at most 8 articles. For each give the URL, title, outlet, "
+            "publish time in ISO 8601 UTC, and one factual sentence in your own words about what it reports.")
+    try:
+        data, info = grok.respond(system="You find news articles for a market-data pipeline. Only return articles that appear in your search results. Never invent URLs.",
+                                  user=user, schema=ARTICLES_SCHEMA, name="articles",
+                                  tools=[{"type": "web_search"}], label="web:theories")
+    except BudgetExceeded:
+        raise
+    except Exception as e:
+        log.warning("theory evidence search failed: %s", e)
+        return []
+    cited = {norm_url(u) for u in info["citations"]}
+    out = []
+    for a in data.get("articles") or []:
+        u = norm_url(a.get("url", ""))
+        if not u.startswith("http") or (cited and u not in cited):
+            continue
+        t = parse_iso(a.get("published_at"))
+        if t and t < since - dt.timedelta(hours=2):
+            continue
+        out.append({"kind": "news", "url": u, "uid": url_id(u), "title": a.get("title", ""), "text": a.get("description", ""),
+                    "outlet": a.get("outlet") or domain(u), "posted_at": iso(t or now_utc()), "source_tier": domain_tier(u),
+                    "pass": "theory"})
+    log.info("theory evidence search: %d articles", len(out))
+    return out

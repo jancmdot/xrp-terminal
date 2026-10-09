@@ -21,7 +21,7 @@ THEME_GUIDE = """Themes (pick 1-3, most relevant first):
 - spec: speculation, price targets, unsourced theories"""
 
 FIELD_GUIDE = """Fields:
-- keep: false if the item is not actually about XRP or the themes above, or is spam. Everything else true.
+- keep: false if the item is spam, or is about neither XRP, the themes above, nor the theories below. Everything else true.
 - duplicate_of: if the item reports the same event as an item in RECENT or an earlier candidate, that id; otherwise null.
 - headline: neutral, factual, at most 110 characters, in your own words. No hype words, no emojis.
 - summary: 1-2 sentences, your own words, what happened and the key number if any.
@@ -112,9 +112,26 @@ def _candidate_line(cid: str, c: dict) -> dict:
     return d
 
 
-def rate(grok: Grok, candidates: list[dict], recent: list[dict], positioning: str, rubric: dict, batch: int = 20) -> tuple[list[dict], list[dict]]:
+def _schema_with_theories(ids: list[str]) -> dict:
+    if not ids:
+        return RATING_SCHEMA
+    s = json.loads(json.dumps(RATING_SCHEMA))
+    item = s["properties"]["items"]["items"]
+    item["properties"]["theory_links"] = {"type": "array", "items": {"type": "object", "properties": {
+        "theory": ENUM(*ids), "stance": ENUM("supports", "contradicts")},
+        "required": ["theory", "stance"], "additionalProperties": False}}
+    item["required"].append("theory_links")
+    return s
+
+
+def rate(grok: Grok, candidates: list[dict], recent: list[dict], positioning: str, rubric: dict,
+         theories: list[dict] | None = None, batch: int = 20) -> tuple[list[dict], list[dict]]:
     """Returns (rated, processed): rated candidates with ratings (keep=false and duplicates removed),
     and every candidate Grok actually returned a verdict for, so failed batches are retried next run."""
+    from .theories import rating_guide, tracked
+    tids = [t["id"] for t in tracked(theories or [])]
+    system = SYSTEM + ("\n\n" + rating_guide(theories) if tids else "")
+    schema = _schema_with_theories(tids)
     out, processed = [], []
     recent_lines = [{"id": r["id"], "time_utc": r["published_at"], "headline": r["headline"]} for r in recent][-60:]
     for i in range(0, len(candidates), batch):
@@ -127,7 +144,7 @@ def rate(grok: Grok, candidates: list[dict], recent: list[dict], positioning: st
             "instructions": "Rate every candidate. Return one entry per cid. If account_tier_from_config is given, use it as source_tier.",
         }, ensure_ascii=False)
         try:
-            data, _ = grok.respond(system=SYSTEM, user=user, schema=RATING_SCHEMA, name="ratings", label="rate", effort="low")
+            data, _ = grok.respond(system=system, user=user, schema=schema, name="ratings", label="rate", effort="low")
         except Exception as e:
             log.warning("rating batch failed: %s", e)
             if e.__class__.__name__ == "BudgetExceeded":
@@ -145,6 +162,11 @@ def rate(grok: Grok, candidates: list[dict], recent: list[dict], positioning: st
             if c.get("source_tier") and c.get("pass") != "discovery":
                 r["source_tier"] = c["source_tier"]        # config / feed tier wins over the model's guess
             r["themes"] = [t for t in dict.fromkeys(r.get("themes") or []) if t in THEME_IDS][:3] or ["spec"]
+            links, seen_t = [], set()
+            for l in r.get("theory_links") or []:
+                if l.get("theory") in tids and l["theory"] not in seen_t and l.get("stance") in ("supports", "contradicts"):
+                    links.append({"id": l["theory"], "stance": l["stance"]}); seen_t.add(l["theory"])
+            r["theory_links"] = links
             s, tier = score(r, rubric)
             out.append({**c, "rating": r, "score": s, "tier": tier})
     return out, processed

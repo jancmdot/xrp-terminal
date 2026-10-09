@@ -83,6 +83,10 @@ def _xai(body):
             return r
         return _wrap({"posts": posts}, cites, _usage(posts=12))
     if name == "articles":
+        if "evidence for or against" in body["input"][1]["content"]:
+            a = [{"url": "https://www.bis.org/press/test-crypto-capital", "title": "Basel Committee revisits bank crypto capital rules",
+                  "outlet": "BIS", "published_at": _ago(20), "description": "The committee opened a review of capital treatment for crypto assets."}]
+            return _wrap({"articles": a}, [a[0]["url"]], _usage(web=3))
         a = [{"url": "https://www.reuters.com/markets/ripple-test-article", "title": "Ripple expands payments license footprint",
               "outlet": "Reuters", "published_at": _ago(6), "description": "Ripple received an additional state money transmitter license."}]
         return _wrap({"articles": a}, [a[0]["url"]], _usage(web=2))
@@ -106,8 +110,21 @@ def _xai(body):
                 "novelty": "new", "size": "large" if whale else "moderate" if etf else "small",
                 "scope": "direct",
                 "factors": [{"t": "+", "label": "test factor"}, {"t": "-", "label": "test caveat"}],
-                "rationale": "Fake rationale.", "reality_check": "Fake reality check."})
+                "rationale": "Fake rationale.", "reality_check": "Fake reality check.",
+                "theory_links": ([{"theory": "supply-shock", "stance": "supports"}] if etf else
+                                 [{"theory": "tokenization", "stance": "supports"}] if "tokenized" in txt else
+                                 [{"theory": "collateral", "stance": "supports"}] if "basel" in txt else
+                                 [{"theory": "collateral", "stance": "supports"}, {"theory": "nonexistent", "stance": "supports"}] if spec else [])})
         return _wrap({"items": items}, [], _usage())
+    if name == "theory_update":
+        payload = json.loads(body["input"][1]["content"])
+        out = []
+        for t in payload["theories"]:
+            # supply-shock: confirmed t1 ETF evidence -> step up is allowed; tokenization: only reported -> must be refused
+            prop = {"supply-shock": "supported", "tokenization": "supported"}.get(t["id"])
+            out.append({"id": t["id"], "note": f"Test note for {t['id']}.", "net": "strengthens", "propose_verdict": prop,
+                        "why": "Test reason." if prop else None})
+        return _wrap({"theories": out}, [], _usage())
     if name == "states":
         payload = json.loads(body["input"][1]["content"])
         return _wrap({"states": [{"theme": t, "state": f"Test state for {t}."} for t in payload["themes"]]}, [], _usage())

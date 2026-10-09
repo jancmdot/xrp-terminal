@@ -1,23 +1,53 @@
 # Popular XRP claims and what's on record. Shown in the Theory Check panel.
-# verdict: supported | partly | unsupported | speculative | untestable
+# verdict: supported | partly | unsupported | speculative | untestable   (the starting verdict)
+# tracked: new items are checked against the theory and a weekly note is written (false = static)
+# search: hints for the daily theory-evidence web search, for news that may not mention XRP
+#
+# The pipeline can move a verdict one step (unsupported < speculative < partly < supported) when a
+# confirmed item from a primary or established source meets the "would_change" condition, at most
+# once a week per theory. Every change is shown on the page with its reason. Editing a verdict here
+# resets any automatic change for that theory.
 theories:
-  - claim: ETF demand will create an XRP supply shock.
+  - id: supply-shock
+    short: Supply shock
+    claim: ETF demand will create an XRP supply shock.
     verdict: partly
+    tracked: true
     true_part: ETF flows are real and have been mostly positive, but fund holdings are a small share of circulating supply, and escrow releases and treasury sales add supply every month.
     would_change: ETF holdings rising faster than exchange balances fall, for several months in a row.
-  - claim: XRP will replace SWIFT.
+    search: XRP exchange reserves or exchange balances trend; total XRP held by spot XRP ETFs; Ripple escrow sales
+
+  - id: swift
+    short: Replaces SWIFT
+    claim: XRP will replace SWIFT.
     verdict: unsupported
+    tracked: true
     true_part: Ripple sells cross-border payment software, and only some of those flows use XRP as a bridge. SWIFT remains the main bank messaging network, and many Ripple bank partners never touch XRP.
     would_change: Banks disclosing large, recurring payment volume settled through XRP.
-  - claim: Banks will hold XRP as collateral or a reserve asset.
+    search: SWIFT blockchain ledger or ISO 20022 settlement news; banks settling cross-border payments in XRP; Ripple payments volume
+
+  - id: collateral
+    short: Bank collateral
+    claim: Banks will hold XRP as collateral or a reserve asset.
     verdict: speculative
+    tracked: true
     true_part: Collateral use comes up in crypto lending and prime brokerage, but confirmed bank holdings are rare and not disclosed at scale.
     would_change: Capital rules that treat XRP favorably, or audited bank disclosures of holdings.
-  - claim: Tokenization on the XRP Ledger will drive XRP demand.
+    search: Basel crypto asset capital rules for banks; bank disclosures of XRP holdings; XRP accepted as collateral by banks or prime brokers
+
+  - id: tokenization
+    short: Tokenization demand
+    claim: Tokenization on the XRP Ledger will drive XRP demand.
     verdict: partly
+    tracked: true
     true_part: Tokenized assets on the ledger are growing. Each transaction burns a tiny fee and accounts lock a small reserve, so XRP demand grows far more slowly than the value tokenized.
     would_change: Products that require holding meaningful XRP balances, such as XRP-denominated liquidity for tokenized assets.
-  - claim: XRP will reach $X by date Y.
+    search: tokenized real-world assets on the XRP Ledger and their value; XRPL products that require holding XRP
+
+  - id: price-target
+    short: Price targets
+    claim: XRP will reach $X by date Y.
     verdict: untestable
+    tracked: false
     true_part: Price targets say nothing about cause. The terminal logs them as sentiment and leaves them out of impact scoring.
     would_change: Nothing. A target is a prediction, not evidence.

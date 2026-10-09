@@ -6,7 +6,7 @@ import datetime as dt
 import sys
 from concurrent.futures import ThreadPoolExecutor
 
-from . import classify, markets, news, store, xscan
+from . import classify, markets, news, store, theories, xscan
 from .util import DATA_DIR, NY, add_file_log, iso, load_json, load_yaml, log, now_utc, parse_iso, save_json, setup_logging
 from .xai import Budget, BudgetExceeded, Grok
 
@@ -37,7 +37,7 @@ def window_start(last: str | None, default_h: int = 12, max_h: int = 26) -> dt.d
     return max(t, now - dt.timedelta(hours=max_h))
 
 
-def run_scan(grok: Grok, state: dict, evs: dict, settings: dict, web: bool = True) -> None:
+def run_scan(grok: Grok, state: dict, evs: dict, settings: dict, theory_list: list, web: bool = True) -> None:
     if not grok.available:
         log.warning("XAI_API_KEY not set: skipping the X and news scan")
         return
@@ -50,19 +50,23 @@ def run_scan(grok: Grok, state: dict, evs: dict, settings: dict, web: bool = Tru
     x_since = window_start(state.get("last_x_scan"))
     n_since = window_start(state.get("last_news_scan"))
     # The account groups, the discovery search and the web news search are independent: run them together
-    with ThreadPoolExecutor(max_workers=3) as ex:
+    with ThreadPoolExecutor(max_workers=4) as ex:
         f_sig = ex.submit(xscan.signal_scan, grok, handles, x_since)
         f_dis = ex.submit(xscan.discovery_scan, grok, handles, x_since, settings["xai"]["discovery_max_posts"])
         f_web = ex.submit(news.web_items, grok, n_since, settings["xai"].get("web_news_max_searches", 4)) if web else None
+        f_thy = (ex.submit(news.theory_items, grok, now_utc() - dt.timedelta(hours=48), theory_list,
+                           settings["xai"].get("theory_max_searches", 4)) if web else None)
         rss, errors = news.rss_items(feeds, settings["feed"]["keywords"], n_since)
         try:
             cands += f_sig.result() + f_dis.result()
             x_ok = True
         except BudgetExceeded as e:
             log.warning("%s", e)
-        if f_web:
+        for f in (f_web, f_thy):
+            if not f:
+                continue
             try:
-                cands += f_web.result()
+                cands += f.result()
             except BudgetExceeded as e:
                 log.warning("%s", e)
     cands += rss
@@ -82,7 +86,7 @@ def run_scan(grok: Grok, state: dict, evs: dict, settings: dict, web: bool = Tru
     recent_cut = iso(now_utc() - dt.timedelta(hours=48))
     recent = [e for e in evs.values() if e["published_at"] >= recent_cut]
     try:
-        rated, processed = classify.rate(grok, fresh, recent, markets.positioning_text(state.get("positioning")), settings["rubric"])
+        rated, processed = classify.rate(grok, fresh, recent, markets.positioning_text(state.get("positioning")), settings["rubric"], theory_list)
     except BudgetExceeded as e:
         log.warning("%s", e)
         rated, processed = [], []
@@ -102,8 +106,19 @@ def run_scan(grok: Grok, state: dict, evs: dict, settings: dict, web: bool = Tru
         states = classify.theme_states(grok, week)
         if states:
             state["theme_states"] = states
+        theories.update(grok, theory_list, state, evs, etf_context())
     except BudgetExceeded as e:
         log.warning("%s", e)
+
+
+def etf_context() -> str:
+    etf = load_json(store.ETF, None)
+    rows = [d for d in (etf or {}).get("daily") or [] if d.get("reported", True) and d.get("net_flow_usd") is not None]
+    if len(rows) < 20:
+        return ""
+    s20 = sum(d["net_flow_usd"] for d in rows[-20:])
+    return (f"Spot XRP ETFs: net flow over the last 20 trading days ${s20/1e6:+.1f}M; cumulative net inflow since launch "
+            f"${rows[-1]['cum_flow_usd']/1e6:.0f}M (through {rows[-1]['date']}).")
 
 
 def run_etf(state: dict) -> None:
@@ -140,7 +155,7 @@ def main(argv: list[str] | None = None) -> int:
     setup_logging(to_file=False)
 
     settings = load_yaml("settings.yaml")
-    theories = (load_yaml("theories.yaml") or {}).get("theories", [])
+    theory_list = theories.load(load_yaml("theories.yaml") or {})
     state, evs = store.load_state(), store.load_events()
     grok = Grok(settings, Budget(state, settings))
 
@@ -154,7 +169,7 @@ def main(argv: list[str] | None = None) -> int:
         if "scan" in tasks:
             ny_h = now_utc().astimezone(NY).hour
             web = args.task == "scan" or any(h <= ny_h <= h + 1 for h in settings["xai"].get("web_news_hours_et", []))
-            run_scan(grok, state, evs, settings, web=web)
+            run_scan(grok, state, evs, settings, theory_list, web=web)
         if "etf" in tasks:
             run_etf(state)
     finally:
@@ -168,7 +183,7 @@ def main(argv: list[str] | None = None) -> int:
         except Exception as e:  # prices are retried next run
             log.warning("price reactions skipped: %s", e)
         if store.has_any_data(evs) and args.task != "verify_handles":
-            if store.write_output(store.build(evs, state, settings, theories, state.get("theme_states", {}))):
+            if store.write_output(store.build(evs, state, settings, theories.build_output(theory_list, state, evs), state.get("theme_states", {}))):
                 log.info("wrote data.json (%d events logged)", len(evs))
         store.save_events(evs)
         store.save_state(state)
