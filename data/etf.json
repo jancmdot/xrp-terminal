@@ -35,6 +35,7 @@
  "daily": [
   {
    "date": "2026-07-15",
+   "reported": true,
    "net_flow_usd": 0,
    "cum_flow_usd": 1400678861,
    "total_aum_usd": null,
@@ -50,6 +51,7 @@
   },
   {
    "date": "2026-07-16",
+   "reported": true,
    "net_flow_usd": 6784703,
    "cum_flow_usd": 1407463564,
    "total_aum_usd": null,
@@ -65,6 +67,7 @@
   },
   {
    "date": "2026-07-17",
+   "reported": true,
    "net_flow_usd": 0,
    "cum_flow_usd": 1407463564,
    "total_aum_usd": null,
@@ -80,6 +83,7 @@
   },
   {
    "date": "2026-07-20",
+   "reported": true,
    "net_flow_usd": 2490876,
    "cum_flow_usd": 1409954440,
    "total_aum_usd": null,
@@ -95,6 +99,7 @@
   },
   {
    "date": "2026-07-21",
+   "reported": true,
    "net_flow_usd": 5661721,
    "cum_flow_usd": 1415616161,
    "total_aum_usd": null,
@@ -110,6 +115,7 @@
   },
   {
    "date": "2026-07-22",
+   "reported": true,
    "net_flow_usd": 0,
    "cum_flow_usd": 1415616161,
    "total_aum_usd": null,
@@ -125,6 +131,7 @@
   },
   {
    "date": "2026-07-23",
+   "reported": true,
    "net_flow_usd": 0,
    "cum_flow_usd": 1415616161,
    "total_aum_usd": null,
@@ -140,6 +147,7 @@
   },
   {
    "date": "2026-07-24",
+   "reported": true,
    "net_flow_usd": 0,
    "cum_flow_usd": 1415616161,
    "total_aum_usd": null,
@@ -155,6 +163,7 @@
   },
   {
    "date": "2026-07-27",
+   "reported": true,
    "net_flow_usd": 592465,
    "cum_flow_usd": 1416208626,
    "total_aum_usd": null,
@@ -170,6 +179,7 @@
   },
   {
    "date": "2026-07-28",
+   "reported": true,
    "net_flow_usd": 0,
    "cum_flow_usd": 1416208626,
    "total_aum_usd": null,
@@ -185,6 +195,7 @@
   },
   {
    "date": "2026-07-29",
+   "reported": true,
    "net_flow_usd": 584706,
    "cum_flow_usd": 1416793332,
    "total_aum_usd": null,
@@ -200,6 +211,7 @@
   },
   {
    "date": "2026-07-30",
+   "reported": true,
    "net_flow_usd": 5983417,
    "cum_flow_usd": 1422776749,
    "total_aum_usd": null,
@@ -215,6 +227,7 @@
   },
   {
    "date": "2026-07-31",
+   "reported": true,
    "net_flow_usd": 7694898,
    "cum_flow_usd": 1430471647,
    "total_aum_usd": null,
@@ -230,6 +243,7 @@
   },
   {
    "date": "2026-08-03",
+   "reported": true,
    "net_flow_usd": 1146730,
    "cum_flow_usd": 1431618377,
    "total_aum_usd": null,
@@ -245,6 +259,7 @@
   },
   {
    "date": "2026-08-04",
+   "reported": true,
    "net_flow_usd": 0,
    "cum_flow_usd": 1431618377,
    "total_aum_usd": null,
@@ -260,6 +275,7 @@
   },
   {
    "date": "2026-08-05",
+   "reported": true,
    "net_flow_usd": -3584663,
    "cum_flow_usd": 1428033714,
    "total_aum_usd": null,
@@ -275,6 +291,7 @@
   },
   {
    "date": "2026-08-06",
+   "reported": true,
    "net_flow_usd": 3450608,
    "cum_flow_usd": 1431484322,
    "total_aum_usd": null,
@@ -290,6 +307,7 @@
   },
   {
    "date": "2026-08-07",
+   "reported": true,
    "net_flow_usd": 0,
    "cum_flow_usd": 1431484322,
    "total_aum_usd": null,
@@ -305,6 +323,7 @@
   },
   {
    "date": "2026-08-10",
+   "reported": true,
    "net_flow_usd": 0,
    "cum_flow_usd": 1431484322,
    "total_aum_usd": null,
@@ -320,6 +339,7 @@
   },
   {
    "date": "2026-08-11",
+   "reported": true,
    "net_flow_usd": 0,
    "cum_flow_usd": 1431484322,
    "total_aum_usd": null,
@@ -335,6 +355,7 @@
   },
   {
    "date": "2026-08-12",
+   "reported": true,
    "net_flow_usd": 0,
    "cum_flow_usd": 1431484322,
    "total_aum_usd": null,
@@ -350,6 +371,7 @@
   },
   {
    "date": "2026-08-13",
+   "reported": true,
    "net_flow_usd": 2253084,
    "cum_flow_usd": 1433737406,
    "total_aum_usd": null,
@@ -365,6 +387,7 @@
   },
   {
    "date": "2026-08-14",
+   "reported": true,
    "net_flow_usd": 0,
    "cum_flow_usd": 1433737406,
    "total_aum_usd": null,
@@ -380,6 +403,7 @@
   },
   {
    "date": "2026-08-17",
+   "reported": true,
    "net_flow_usd": 0,
    "cum_flow_usd": 1433737406,
    "total_aum_usd": null,
@@ -395,6 +419,7 @@
   },
   {
    "date": "2026-08-18",
+   "reported": true,
    "net_flow_usd": 5808841,
    "cum_flow_usd": 1439546247,
    "total_aum_usd": null,
@@ -410,6 +435,7 @@
   },
   {
    "date": "2026-08-19",
+   "reported": true,
    "net_flow_usd": 2351684,
    "cum_flow_usd": 1441897931,
    "total_aum_usd": null,
@@ -425,6 +451,7 @@
   },
   {
    "date": "2026-08-20",
+   "reported": true,
    "net_flow_usd": 13237074,
    "cum_flow_usd": 1455135005,
    "total_aum_usd": null,
@@ -440,6 +467,7 @@
   },
   {
    "date": "2026-08-21",
+   "reported": true,
    "net_flow_usd": 18383231,
    "cum_flow_usd": 1473518236,
    "total_aum_usd": null,
@@ -455,6 +483,7 @@
   },
   {
    "date": "2026-08-24",
+   "reported": true,
    "net_flow_usd": 13818242,
    "cum_flow_usd": 1487336478,
    "total_aum_usd": null,
@@ -470,6 +499,7 @@
   },
   {
    "date": "2026-08-25",
+   "reported": true,
    "net_flow_usd": 23871235,
    "cum_flow_usd": 1511207713,
    "total_aum_usd": null,
@@ -485,6 +515,7 @@
   },
   {
    "date": "2026-08-26",
+   "reported": true,
    "net_flow_usd": 28136664,
    "cum_flow_usd": 1539344377,
    "total_aum_usd": null,
@@ -500,6 +531,7 @@
   },
   {
    "date": "2026-08-27",
+   "reported": true,
    "net_flow_usd": 18470594,
    "cum_flow_usd": 1557814971,
    "total_aum_usd": null,
@@ -515,6 +547,7 @@
   },
   {
    "date": "2026-08-28",
+   "reported": true,
    "net_flow_usd": 26196378,
    "cum_flow_usd": 1584011349,
    "total_aum_usd": null,
@@ -530,6 +563,7 @@
   },
   {
    "date": "2026-08-31",
+   "reported": true,
    "net_flow_usd": 5644239,
    "cum_flow_usd": 1589655588,
    "total_aum_usd": null,
@@ -545,6 +579,7 @@
   },
   {
    "date": "2026-09-01",
+   "reported": true,
    "net_flow_usd": 14381153,
    "cum_flow_usd": 1604036741,
    "total_aum_usd": null,
@@ -560,6 +595,7 @@
   },
   {
    "date": "2026-09-02",
+   "reported": true,
    "net_flow_usd": -7202844,
    "cum_flow_usd": 1596833897,
    "total_aum_usd": null,
@@ -575,6 +611,7 @@
   },
   {
    "date": "2026-09-03",
+   "reported": true,
    "net_flow_usd": 6137628,
    "cum_flow_usd": 1602971525,
    "total_aum_usd": null,
@@ -590,6 +627,7 @@
   },
   {
    "date": "2026-09-04",
+   "reported": true,
    "net_flow_usd": 0,
    "cum_flow_usd": 1602971525,
    "total_aum_usd": null,
@@ -605,6 +643,7 @@
   },
   {
    "date": "2026-09-08",
+   "reported": true,
    "net_flow_usd": 1547775,
    "cum_flow_usd": 1604519300,
    "total_aum_usd": null,
@@ -620,6 +659,7 @@
   },
   {
    "date": "2026-09-09",
+   "reported": true,
    "net_flow_usd": 12285024,
    "cum_flow_usd": 1616804324,
    "total_aum_usd": null,
@@ -635,6 +675,7 @@
   },
   {
    "date": "2026-09-10",
+   "reported": true,
    "net_flow_usd": 5142562,
    "cum_flow_usd": 1621946886,
    "total_aum_usd": null,
@@ -650,6 +691,7 @@
   },
   {
    "date": "2026-09-11",
+   "reported": true,
    "net_flow_usd": 0,
    "cum_flow_usd": 1621946886,
    "total_aum_usd": null,
@@ -665,6 +707,7 @@
   },
   {
    "date": "2026-09-14",
+   "reported": true,
    "net_flow_usd": 11255039,
    "cum_flow_usd": 1633201925,
    "total_aum_usd": null,
@@ -680,6 +723,7 @@
   },
   {
    "date": "2026-09-15",
+   "reported": true,
    "net_flow_usd": 0,
    "cum_flow_usd": 1633201925,
    "total_aum_usd": null,
@@ -695,6 +739,7 @@
   },
   {
    "date": "2026-09-16",
+   "reported": true,
    "net_flow_usd": 3501316,
    "cum_flow_usd": 1636703241,
    "total_aum_usd": null,
@@ -710,6 +755,7 @@
   },
   {
    "date": "2026-09-17",
+   "reported": true,
    "net_flow_usd": -5153410,
    "cum_flow_usd": 1631549831,
    "total_aum_usd": null,
@@ -725,6 +771,7 @@
   },
   {
    "date": "2026-09-18",
+   "reported": true,
    "net_flow_usd": -43699,
    "cum_flow_usd": 1631506132,
    "total_aum_usd": null,
@@ -740,6 +787,7 @@
   },
   {
    "date": "2026-09-21",
+   "reported": true,
    "net_flow_usd": 0,
    "cum_flow_usd": 1631506132,
    "total_aum_usd": null,
@@ -755,6 +803,7 @@
   },
   {
    "date": "2026-09-22",
+   "reported": true,
    "net_flow_usd": 20021433,
    "cum_flow_usd": 1651527565,
    "total_aum_usd": null,
@@ -770,6 +819,7 @@
   },
   {
    "date": "2026-09-23",
+   "reported": true,
    "net_flow_usd": 18040892,
    "cum_flow_usd": 1669568457,
    "total_aum_usd": null,
@@ -785,6 +835,7 @@
   },
   {
    "date": "2026-09-24",
+   "reported": true,
    "net_flow_usd": 14885201,
    "cum_flow_usd": 1684453658,
    "total_aum_usd": null,
@@ -800,6 +851,7 @@
   },
   {
    "date": "2026-09-25",
+   "reported": true,
    "net_flow_usd": 22645546,
    "cum_flow_usd": 1707099204,
    "total_aum_usd": null,
@@ -815,6 +867,7 @@
   },
   {
    "date": "2026-09-28",
+   "reported": true,
    "net_flow_usd": 3958450,
    "cum_flow_usd": 1711057654,
    "total_aum_usd": null,
@@ -830,6 +883,7 @@
   },
   {
    "date": "2026-09-29",
+   "reported": true,
    "net_flow_usd": 0,
    "cum_flow_usd": 1711057654,
    "total_aum_usd": null,
@@ -845,6 +899,7 @@
   },
   {
    "date": "2026-09-30",
+   "reported": true,
    "net_flow_usd": 0,
    "cum_flow_usd": 1711057654,
    "total_aum_usd": null,
@@ -860,6 +915,7 @@
   },
   {
    "date": "2026-10-01",
+   "reported": true,
    "net_flow_usd": 4065458,
    "cum_flow_usd": 1715123112,
    "total_aum_usd": null,
@@ -875,6 +931,7 @@
   },
   {
    "date": "2026-10-02",
+   "reported": true,
    "net_flow_usd": -3280008,
    "cum_flow_usd": 1711843104,
    "total_aum_usd": null,
@@ -890,6 +947,7 @@
   },
   {
    "date": "2026-10-05",
+   "reported": true,
    "net_flow_usd": 0,
    "cum_flow_usd": 1711843104,
    "total_aum_usd": null,
@@ -905,6 +963,7 @@
   },
   {
    "date": "2026-10-06",
+   "reported": true,
    "net_flow_usd": 3140390,
    "cum_flow_usd": 1714983494,
    "total_aum_usd": null,
@@ -920,17 +979,18 @@
   },
   {
    "date": "2026-10-07",
+   "reported": true,
    "net_flow_usd": 0,
    "cum_flow_usd": 1714983494,
    "total_aum_usd": null,
    "price_usd": 1.496,
    "spot_volume_usd": 106930128,
    "by_fund": {
+    "XRP": 0,
     "TOXR": 0,
     "GXRP": 0,
-    "XRPZ": 0,
     "XRPC": 0,
-    "XRP": 0
+    "XRPZ": 0
    }
   }
  ],
