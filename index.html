@@ -25,6 +25,7 @@
   --amber:#f2f2f4; --amber-ink:#111113; --amber-wash:rgba(255,255,255,.07);
   --up:#4cc38a; --down:#e5616a; --up-wash:rgba(76,195,138,.12); --down-wash:rgba(229,97,106,.12);
   --warn:#d9c26a; --info:#8fb3ff;
+  --ev-bull:#5ab8ff; --ev-bear:#ffa94d;   /* news markers: bullish / bearish, distinct from candles */
   --f-mono:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --f-label:"Martian Mono", "JetBrains Mono", ui-monospace, monospace;
   --f-text:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -38,6 +39,7 @@
   --amber:#f1b13c; --amber-ink:#1a1204; --amber-wash:rgba(241,177,60,.10);
   --up:#35c98b; --down:#ef5e5e; --up-wash:rgba(53,201,139,.12); --down-wash:rgba(239,94,94,.12);
   --warn:#e5c45e; --info:#6fb4f6;
+  --ev-bull:#5ab8ff; --ev-bear:#ff6bd6;
 }
 /* Obsidian: near-black, violet accent */
 :root[data-skin="obsidian"]{
@@ -46,6 +48,7 @@
   --amber:#a78bfa; --amber-ink:#0d0420; --amber-wash:rgba(167,139,250,.10);
   --up:#2fbf83; --down:#e5555f; --up-wash:rgba(47,191,131,.11); --down-wash:rgba(229,85,95,.11);
   --warn:#d6b85a; --info:#6aa8e8;
+  --ev-bull:#4fd1ff; --ev-bear:#ffa94d;
 }
 /* Phosphor: green-screen terminal */
 :root[data-skin="phosphor"]{
@@ -54,6 +57,7 @@
   --amber:#7ee8a0; --amber-ink:#03140a; --amber-wash:rgba(126,232,160,.10);
   --up:#3fd28b; --down:#f2705f; --up-wash:rgba(63,210,139,.12); --down-wash:rgba(242,112,95,.12);
   --warn:#e3d36a; --info:#7cc7e8;
+  --ev-bull:#6cb6ff; --ev-bear:#ffb454;
 }
 /* Ice: navy with a cyan accent */
 :root[data-skin="ice"]{
@@ -62,6 +66,7 @@
   --amber:#5cc8ff; --amber-ink:#031522; --amber-wash:rgba(92,200,255,.10);
   --up:#34d1a0; --down:#ff6b81; --up-wash:rgba(52,209,160,.12); --down-wash:rgba(255,107,129,.12);
   --warn:#f0c860; --info:#a99cff;
+  --ev-bull:#b18cff; --ev-bear:#ffa94d;
 }
 #fx{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;display:block}
 .fx-on .panel{background:color-mix(in srgb,var(--panel) 80%,transparent)}
@@ -208,7 +213,7 @@ body.dragging{user-select:none;cursor:grabbing}
 .st-reported{color:var(--info);border-color:color-mix(in srgb,var(--info) 45%,transparent)}
 .st-rumor{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 50%,transparent)}
 .st-speculative{color:var(--faint);border-style:dashed}
-.d-bullish{color:var(--up)} .d-bearish{color:var(--down)} .d-neutral,.d-mixed{color:var(--dim)}
+.d-bullish,.ev-bull{color:var(--ev-bull)} .d-bearish,.ev-bear{color:var(--ev-bear)} .d-neutral,.d-mixed{color:var(--dim)}
 .dir,.hz{border-color:transparent;padding-inline:2px}
 .smp{color:var(--amber);border-color:color-mix(in srgb,var(--amber) 50%,transparent)}
 .i-imp{display:flex;flex-direction:column;align-items:flex-end;gap:4px;font:var(--fs-xs)/1.2 var(--f-mono);text-align:right}
@@ -436,8 +441,8 @@ table.funds{width:100%;border-collapse:collapse;font:var(--fs-s)/1.4 var(--f-mon
         <div class="ev-tip" id="ev-tip" hidden></div>
       </div>
       <div class="legend">
-        <span><i class="up">▲</i>bullish item</span>
-        <span><i class="down">▼</i>bearish item</span>
+        <span><i class="ev-bull">▲</i>bullish news</span>
+        <span><i class="ev-bear">▼</i>bearish news</span>
         <span><i class="flat">●</i>neutral / mixed</span>
         <span class="wrap">Theme code shown on medium and high impact items · click a marker to open it</span>
       </div>
@@ -1392,7 +1397,7 @@ function setMarkers(){
   MARKER_ITEMS.clear();
   if (!$("#show-ev").checked){ candles.setMarkers([]); hideTip(); return; }
   const first = PX.bars[0].time, lastT = PX.bars[PX.bars.length-1].time + PX.g;
-  const up = cssv("--up"), down = cssv("--down"), dim = cssv("--dim"), amber = cssv("--amber");
+  const up = cssv("--ev-bull"), down = cssv("--ev-bear"), dim = cssv("--dim"), amber = cssv("--amber");
   const byTime = new Map();
   for (const it of filteredItems()){
     const t = Math.floor(new Date(it.published_at).getTime()/1000);
