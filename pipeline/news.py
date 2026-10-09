@@ -85,7 +85,7 @@ def rss_items(feeds_cfg: dict, keywords: list[str], since: dt.datetime) -> tuple
                           "outlet": f["name"], "posted_at": iso(t or now_utc()), "source_tier": f.get("tier") or domain_tier(link),
                           "pass": "rss"})
             n += 1
-        log.info("feed %-20s %d matching items", f["name"], n)
+        log.info("feed %-20s %d entries, %d about XRP in the window", f["name"], len(parsed.entries), n)
     return items, errors
 
 

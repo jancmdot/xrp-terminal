@@ -17,13 +17,13 @@ Until `data.json` exists, the page runs on clearly labeled sample data.
 
 ## Schedule
 
-All times New York. The workflow fires at both UTC hours that can map to a slot, so daylight saving changes don't shift it.
+All times New York. GitHub delays or drops scheduled triggers when busy, so the workflow fires every hour at :23 and the pipeline runs each scan once, on the first trigger within 3 hours of its time. The page shows "Scan overdue" if a scan is missed anyway.
 
 | What | When |
 |---|---|
 | X scan (curated accounts + open discovery), RSS, rating | 8:00, 17:00 |
 | Web news search (Grok) | 8:00 scan only |
-| ETF flows, positioning | 20:00 (flows post after the US close) |
+| ETF flows, positioning | every hourly run (CoinGlass posts flows at varying times after the close) |
 | Price reactions, base rates, `data.json` rebuild | every run |
 
 Change times in `config/settings.yaml`.

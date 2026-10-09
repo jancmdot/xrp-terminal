@@ -752,6 +752,10 @@ const NY_HMS = new Intl.DateTimeFormat("en-US", {timeZone:"America/New_York", ho
 const NY_MD = new Intl.DateTimeFormat("en-US", {timeZone:"America/New_York", month:"short", day:"numeric"});
 const NY_MDHM = new Intl.DateTimeFormat("en-US", {timeZone:"America/New_York", month:"short", day:"numeric", hour:"2-digit", minute:"2-digit", hour12:false});
 const NY_PARTS = new Intl.DateTimeFormat("en-US", {timeZone:"America/New_York", weekday:"short", hour:"numeric", minute:"numeric", hour12:false});
+function scanWhen(iso){
+  const d = new Date(iso);
+  return (NY_MD.format(d) === NY_MD.format(new Date()) ? NY_HM.format(d) + " ET" : NY_MDHM.format(d) + " ET") + ` (${rel(iso)})`;
+}
 function rel(iso){
   const m = Math.max(0, (Date.now() - new Date(iso).getTime()) / 60000);
   if (m < 60) return Math.round(m) + "m ago";
@@ -1174,7 +1178,7 @@ function renderFeed(){
     : `<div class="empty">No items match these filters.</div>`;
   $("#feed-count").textContent = `${xs.length} of ${(DATA.items||[]).length}`;
   const m = DATA.meta || {};
-  $("#feed-scan").textContent = m.last_x_scan ? `X scan ${NY_HM.format(new Date(m.last_x_scan))} · news ${m.last_news_scan ? NY_HM.format(new Date(m.last_news_scan)) : "—"} ET` : "";
+  $("#feed-scan").textContent = m.last_x_scan ? `Last scan ${scanWhen(m.last_x_scan)}` : "";
   $$("#f-kind button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === F.kind)));
   $("#f-sort").value = F.sort; $("#f-min").value = String(F.min); $("#f-soft").checked = F.soft;
   $$("#f-themes .chip").forEach(c => c.setAttribute("aria-pressed", String(F.themes.includes(c.dataset.t))));
@@ -1798,8 +1802,16 @@ async function main(){
   DATA = await loadData();
   const sample = !!DATA.meta.sample;
   $("#notice").hidden = !sample;
-  const pd = $("#pill-data"); pd.className = "pill " + (sample ? "sample" : "live");
-  pd.innerHTML = `<span class="dot"></span>Data · ${sample ? "sample" : "pipeline " + NY_HM.format(new Date(DATA.meta.generated_at)) + " ET"}`;
+  const pd = $("#pill-data");
+  if (sample){ pd.className = "pill sample"; pd.innerHTML = `<span class="dot"></span>Data · sample`; }
+  else {
+    // Scans run at 8:00 and 17:00 ET, so the longest normal gap is 15h (overnight). Past 17h one was missed.
+    const last = DATA.meta.last_x_scan, hrs = last ? (Date.now() - new Date(last).getTime()) / 36e5 : Infinity;
+    const stale = hrs > 17;
+    pd.className = "pill " + (stale ? "warn" : "live");
+    pd.title = stale ? "No scan has run since the last scheduled time. The pipeline catches up on its next hourly run." : "";
+    pd.innerHTML = `<span class="dot"></span>${stale ? "Scan overdue · last " : "Scanned "}${last ? scanWhen(last) : "never"}`;
+  }
   const m = DATA.meta;
   const extra = [];
   if (m.spend) extra.push(`Grok spend ${m.spend.month}: $${(+m.spend.usd).toFixed(2)} of $${m.spend.cap_usd} cap`);

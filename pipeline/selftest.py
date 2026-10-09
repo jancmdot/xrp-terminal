@@ -73,7 +73,10 @@ def main() -> int:
     ny7 = t0.astimezone(ZoneInfo("America/New_York")).replace(hour=first, minute=10, second=0)
     run(tmp, "auto", ny7.astimezone(dt.timezone.utc))
     log_b = run(tmp, "auto", (ny7 + dt.timedelta(minutes=50)).astimezone(dt.timezone.utc))
-    check("slot runs only once", "tasks: reactions only" in log_b)
+    tasks_line = next((l for l in log_b.splitlines() if "tasks:" in l), "")
+    check("slot runs only once", "scan" not in tasks_line.split("tasks:")[-1])
+    late = run(tmp, "auto", (ny7.replace(minute=5) + dt.timedelta(days=1, hours=2)).astimezone(dt.timezone.utc))
+    check("missed slot caught up within the window", "missed its trigger" in late)
 
     # handle check: unclear handles are reported, found ones confirmed
     run(tmp, "verify_handles", t0)

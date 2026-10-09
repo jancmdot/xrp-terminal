@@ -24,15 +24,25 @@ UA = "xrp-news-terminal/0.1 (+https://github.com)"
 log = logging.getLogger("xrpterm")
 
 
-def setup_logging() -> None:
-    """Console plus data/last_run.log, which is committed so a run can be reviewed without the Actions UI."""
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
-    fmt = logging.Formatter("%(asctime)s %(levelname)s %(message)s", datefmt="%H:%M:%S")
+LOG_FMT = logging.Formatter("%(asctime)s %(levelname)s %(message)s", datefmt="%H:%M:%S")
+
+
+def setup_logging(to_file: bool = False) -> None:
     root = logging.getLogger()
     root.setLevel(logging.INFO)
-    for h in (logging.StreamHandler(), logging.FileHandler(DATA_DIR / "last_run.log", mode="w", encoding="utf-8")):
-        h.setFormatter(fmt)
-        root.addHandler(h)
+    h = logging.StreamHandler()
+    h.setFormatter(LOG_FMT)
+    root.addHandler(h)
+    if to_file:
+        add_file_log()
+
+
+def add_file_log() -> None:
+    """data/last_run.log, committed so a scan can be reviewed without the Actions UI."""
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    h = logging.FileHandler(DATA_DIR / "last_run.log", mode="w", encoding="utf-8")
+    h.setFormatter(LOG_FMT)
+    logging.getLogger().addHandler(h)
 
 
 # ---------------------------------------------------------------- time

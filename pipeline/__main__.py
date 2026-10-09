@@ -7,7 +7,7 @@ import sys
 from concurrent.futures import ThreadPoolExecutor
 
 from . import classify, markets, news, store, xscan
-from .util import DATA_DIR, NY, iso, load_yaml, log, now_utc, parse_iso, save_json, setup_logging
+from .util import DATA_DIR, NY, add_file_log, iso, load_json, load_yaml, log, now_utc, parse_iso, save_json, setup_logging
 from .xai import Budget, BudgetExceeded, Grok
 
 TASKS = ["auto", "scan", "etf", "reactions", "rebuild", "verify_handles"]
@@ -23,12 +23,11 @@ def plan(task: str, state: dict, settings: dict) -> tuple[list[str], list[str]]:
     tasks, slots = [], []
     for target in settings["schedule"]["scan_hours_et"]:
         key = f"scan:{d}:{target}"
-        if target <= h <= target + late and key not in state["slots_done"]:
+        if target <= h < target + late and key not in state["slots_done"]:
+            if h > target:
+                log.info("scan slot %02d:00 ET missed its trigger; running it now", target)
             tasks.append("scan"); slots.append(key); break
-    target = settings["schedule"]["etf_hour_et"]
-    key = f"etf:{d}:{target}"
-    if target <= h <= target + late and key not in state["slots_done"]:
-        tasks.append("etf"); slots.append(key)
+    tasks.append("etf")
     return tasks, slots
 
 
@@ -112,10 +111,12 @@ def run_etf(state: dict) -> None:
         log.warning("COINGLASS_API_KEY not set: skipping the ETF pull")
         return
     etf = markets.etf_flows()
-    if etf["daily"]:
+    if etf["daily"] and etf != load_json(store.ETF, None):
         save_json(store.ETF, etf)
         state["last_etf_pull"] = iso(now_utc())
-        log.info("ETF flows through %s (%d days)", etf["as_of"], len(etf["daily"]))
+        log.info("ETF flows updated, through %s (%d days)", etf["as_of"], len(etf["daily"]))
+    elif etf["daily"]:
+        log.info("ETF flows unchanged (through %s)", etf["as_of"])
     if not state.get("positioning") or (now_utc() - (parse_iso(state["positioning"].get("as_of")) or now_utc())).total_seconds() > 6 * 3600:
         state["positioning"] = markets.positioning() or state.get("positioning")
 
@@ -133,10 +134,10 @@ def run_verify(grok: Grok) -> None:
 
 
 def main(argv: list[str] | None = None) -> int:
-    setup_logging()
     ap = argparse.ArgumentParser(prog="pipeline")
     ap.add_argument("--task", default="auto", choices=TASKS)
     args = ap.parse_args(argv)
+    setup_logging(to_file=False)
 
     settings = load_yaml("settings.yaml")
     theories = (load_yaml("theories.yaml") or {}).get("theories", [])
@@ -144,6 +145,8 @@ def main(argv: list[str] | None = None) -> int:
     grok = Grok(settings, Budget(state, settings))
 
     tasks, slots = plan(args.task, state, settings)
+    if {"scan", "verify_handles"} & set(tasks):
+        add_file_log()
     log.info("New York %s · tasks: %s", now_utc().astimezone(NY).strftime("%a %H:%M"), ", ".join(tasks) or "reactions only")
     try:
         if "verify_handles" in tasks:
@@ -165,8 +168,8 @@ def main(argv: list[str] | None = None) -> int:
         except Exception as e:  # prices are retried next run
             log.warning("price reactions skipped: %s", e)
         if store.has_any_data(evs) and args.task != "verify_handles":
-            store.write_output(store.build(evs, state, settings, theories, state.get("theme_states", {})))
-            log.info("wrote data.json (%d events logged)", len(evs))
+            if store.write_output(store.build(evs, state, settings, theories, state.get("theme_states", {}))):
+                log.info("wrote data.json (%d events logged)", len(evs))
         store.save_events(evs)
         store.save_state(state)
     return 0

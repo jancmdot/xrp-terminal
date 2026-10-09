@@ -135,5 +135,10 @@ def build(evs: dict, state: dict, settings: dict, theories: list, theme_state: d
     }
 
 
-def write_output(data: dict) -> None:
+def write_output(data: dict) -> bool:
+    """Write data.json unless only generated_at would change. Returns True if written."""
+    old = load_json(OUT, None)
+    if old and {**old, "meta": {**old.get("meta", {}), "generated_at": None}} == {**data, "meta": {**data["meta"], "generated_at": None}}:
+        return False
     save_json(OUT, data, indent=None)
+    return True

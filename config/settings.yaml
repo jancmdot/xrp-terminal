@@ -4,8 +4,8 @@
 
 schedule:
   scan_hours_et: [8, 17]          # X + news scans
-  etf_hour_et: 20                 # ETF flow pull, after flows post
-  late_window_hours: 1            # a delayed run still counts for its slot
+  late_window_hours: 3            # a scan missed at its hour runs on the next trigger within this window
+  # ETF flows are checked on every hourly run (CoinGlass posts them at varying times after the close)
 
 xai:
   model: grok-4.7                 # any Grok model with x_search + structured outputs

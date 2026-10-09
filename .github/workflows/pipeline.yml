@@ -1,12 +1,12 @@
 name: pipeline
 
-# Fires at both UTC hours that can map to each New York slot (EDT and EST).
-# The pipeline decides from New York time what's due and runs each slot once:
-#   scans at 8:00 and 17:00 ET · ETF pull at 20:00 ET (see config/settings.yaml)
-# Every run also fills price reactions and rebuilds data.json.
+# GitHub delays or drops scheduled triggers when it's busy (on Oct 8-9 it ran 1 of 6), so this
+# fires every hour at :23, away from the top-of-the-hour rush. The pipeline decides from New York
+# time what's due: a scan slot (8:00, 17:00 ET) runs once, on the first trigger within 3 hours of
+# its time. Every run also checks ETF flows and fills price reactions (no Grok cost).
 on:
   schedule:
-    - cron: "7 0,1,12,13,21,22 * * *"
+    - cron: "23 * * * *"
   workflow_dispatch:
     inputs:
       task:
