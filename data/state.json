@@ -43,60 +43,74 @@
   "x:2108587507415973957": "2026-10-09T16:07:31Z",
   "n:3432d54323ca": "2026-10-09T16:07:31Z",
   "n:400d65aeae73": "2026-10-09T16:07:31Z",
-  "n:a998a3671595": "2026-10-09T16:07:31Z"
+  "n:a998a3671595": "2026-10-09T16:07:31Z",
+  "x:2108603835363020947": "2026-10-09T21:26:01Z",
+  "x:2108662458693177655": "2026-10-09T21:26:01Z",
+  "x:2108660687300178023": "2026-10-09T21:26:01Z",
+  "x:2108627267299795442": "2026-10-09T21:26:01Z",
+  "x:2108605517933449315": "2026-10-09T21:26:01Z",
+  "x:2108604307180511474": "2026-10-09T21:26:01Z"
  },
  "slots_done": [
-  "etf:2026-10-08:20"
+  "etf:2026-10-08:20",
+  "scan:2026-10-09:17"
  ],
  "spend": {
   "2026-10": {
-   "usd": 6.4887,
-   "calls": 62,
-   "x_posts": 291,
-   "x_users": 172,
+   "usd": 7.0948,
+   "calls": 71,
+   "x_posts": 344,
+   "x_users": 178,
    "web_searches": 69
   }
  },
  "last_etf_pull": "2026-10-09T18:36:17Z",
  "positioning": {
-  "as_of": "2026-10-09T16:04:06Z",
-  "funding_rate": 0.004296,
-  "funding_pctile_30d": 0.4,
-  "open_interest_usd": 3105836338,
-  "oi_change_24h_pct": -0.54
+  "as_of": "2026-10-09T21:23:13Z",
+  "funding_rate": 0.003146,
+  "funding_pctile_30d": 0.3,
+  "open_interest_usd": 3101488024,
+  "oi_change_24h_pct": -0.89
  },
  "feed_errors": [],
- "last_x_scan": "2026-10-09T16:04:05Z",
- "last_news_scan": "2026-10-09T16:04:05Z",
+ "last_x_scan": "2026-10-09T21:23:12Z",
+ "last_news_scan": "2026-10-09T21:23:12Z",
  "theme_states": {
   "etf": "Spot XRP ETFs held $1.7 billion after a $4 million week; an outlet said inflows cooled.",
-  "tok": "An outlet said XRPL led 2026 tokenized-commodity inflows; a post said permissions activated Oct. 8.",
-  "stb": "Trackers cited 10M, 14.52M and 20M RLUSD burns on XRPL and 10M on Ethereum; one account said cap topped $2B.",
-  "pay": "XRPL payment volume printed 858 million XRP, near average, while XRPL Commons opened an NYC hackathon.",
+  "stb": "Trackers cited several RLUSD burns on XRPL; an account said market cap crossed $2 billion.",
   "sup": "Ripple moved 200 million XRP between its own addresses; payment volume was 858 million XRP, near average.",
-  "corp": "Schwartz is set to speak at Ripple Swell on Oct. 28; Custody 1.43 was reported to support Canton assets.",
-  "col": "A Brevan Howard prime deal disclosed no XRP allocation; an unverified post cited an Oct. 12 XRPN start."
+  "tok": "An outlet said the XRPL led 2026 tokenized commodity inflows; a developer said Batch logged 1,275 transactions.",
+  "pay": "XRPL payment volume printed 858 million XRP, near average; Mastercard was reported joining an XRPL hackathon.",
+  "corp": "Ripple Custody 1.43 was reported to support Canton assets; Schwartz is set to speak at Swell on Oct. 28.",
+  "col": "No confirmed XRP collateral use; a Brevan Howard prime deal disclosed no XRP allocation."
  },
  "theories": {
   "supply-shock": {
-   "note": "Reported data put spot XRP ETFs at $1.7B after a $4M week, with no confirmed holdings rise outpacing falling exchange balances.",
+   "note": "Strongest item is a reported note that spot XRP ETFs held $1.7B after a $4M week, not a confirmed holdings-vs-balance shock.",
    "net": "weakens",
-   "updated_at": "2026-10-09T16:08:54Z"
+   "updated_at": "2026-10-09T21:27:04Z",
+   "weeks": {
+    "2026-10-05": {
+     "note": "Strongest item is a reported note that spot XRP ETFs held $1.7B after a $4M week, not a confirmed holdings-vs-balance shock.",
+     "net": "weakens"
+    }
+   }
   },
   "swift": {
    "note": "No confirmed or reported evidence in the last 7 days.",
    "net": "none",
-   "updated_at": "2026-10-09T16:08:43Z"
+   "updated_at": "2026-10-09T21:26:25Z"
   },
   "collateral": {
    "note": "No confirmed or reported evidence in the last 7 days.",
    "net": "none",
-   "updated_at": "2026-10-09T16:08:43Z"
+   "updated_at": "2026-10-09T21:26:25Z"
   },
   "tokenization": {
    "note": "No confirmed or reported evidence in the last 7 days.",
    "net": "none",
-   "updated_at": "2026-10-09T16:08:43Z"
+   "updated_at": "2026-10-09T21:26:25Z"
   }
- }
+ },
+ "theories_since": "2026-10-09T16:07:31Z"
 }
