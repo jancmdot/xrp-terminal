@@ -35,34 +35,68 @@
   "x:2108380452398764035": "2026-10-09T15:35:28Z",
   "n:a0b0d7159c04": "2026-10-09T15:35:28Z",
   "n:354bc2d83a80": "2026-10-09T15:35:28Z",
-  "n:5f12252fe9eb": "2026-10-09T15:35:28Z"
+  "n:5f12252fe9eb": "2026-10-09T15:35:28Z",
+  "x:2108588879716749390": "2026-10-09T16:07:31Z",
+  "x:2108588579744018554": "2026-10-09T16:07:31Z",
+  "x:2108588309416906990": "2026-10-09T16:07:31Z",
+  "x:2108588304551514522": "2026-10-09T16:07:31Z",
+  "x:2108587507415973957": "2026-10-09T16:07:31Z",
+  "n:3432d54323ca": "2026-10-09T16:07:31Z",
+  "n:400d65aeae73": "2026-10-09T16:07:31Z",
+  "n:a998a3671595": "2026-10-09T16:07:31Z"
  },
  "slots_done": [
   "etf:2026-10-08:20"
  ],
  "spend": {
   "2026-10": {
-   "usd": 5.6017,
-   "calls": 51,
-   "x_posts": 229,
+   "usd": 6.4887,
+   "calls": 62,
+   "x_posts": 291,
    "x_users": 172,
-   "web_searches": 57
+   "web_searches": 69
   }
  },
  "last_etf_pull": "2026-10-09T01:10:32Z",
  "positioning": {
-  "as_of": "2026-10-09T15:30:31Z",
-  "funding_rate": 0.006625,
-  "funding_pctile_30d": 0.57,
-  "open_interest_usd": 3098692723,
-  "oi_change_24h_pct": 1.16
+  "as_of": "2026-10-09T16:04:06Z",
+  "funding_rate": 0.004296,
+  "funding_pctile_30d": 0.4,
+  "open_interest_usd": 3105836338,
+  "oi_change_24h_pct": -0.54
  },
  "feed_errors": [],
- "last_x_scan": "2026-10-09T15:30:30Z",
- "last_news_scan": "2026-10-09T15:30:30Z",
+ "last_x_scan": "2026-10-09T16:04:05Z",
+ "last_news_scan": "2026-10-09T16:04:05Z",
  "theme_states": {
-  "stb": "Trackers cited 10M, 14.52M and 20M RLUSD burns on XRPL, plus a 10M RLUSD burn on Ethereum.",
-  "sup": "Ripple was reported to have moved 200 million XRP between its own addresses.",
-  "etf": "An outlet said spot XRP ETF inflows cooled as custody names grew; an inflow figure was unsourced."
+  "etf": "Spot XRP ETFs held $1.7 billion after a $4 million week; an outlet said inflows cooled.",
+  "tok": "An outlet said XRPL led 2026 tokenized-commodity inflows; a post said permissions activated Oct. 8.",
+  "stb": "Trackers cited 10M, 14.52M and 20M RLUSD burns on XRPL and 10M on Ethereum; one account said cap topped $2B.",
+  "pay": "XRPL payment volume printed 858 million XRP, near average, while XRPL Commons opened an NYC hackathon.",
+  "sup": "Ripple moved 200 million XRP between its own addresses; payment volume was 858 million XRP, near average.",
+  "corp": "Schwartz is set to speak at Ripple Swell on Oct. 28; Custody 1.43 was reported to support Canton assets.",
+  "col": "A Brevan Howard prime deal disclosed no XRP allocation; an unverified post cited an Oct. 12 XRPN start."
+ },
+ "theories": {
+  "supply-shock": {
+   "note": "Reported data put spot XRP ETFs at $1.7B after a $4M week, with no confirmed holdings rise outpacing falling exchange balances.",
+   "net": "weakens",
+   "updated_at": "2026-10-09T16:08:54Z"
+  },
+  "swift": {
+   "note": "No confirmed or reported evidence in the last 7 days.",
+   "net": "none",
+   "updated_at": "2026-10-09T16:08:43Z"
+  },
+  "collateral": {
+   "note": "No confirmed or reported evidence in the last 7 days.",
+   "net": "none",
+   "updated_at": "2026-10-09T16:08:43Z"
+  },
+  "tokenization": {
+   "note": "No confirmed or reported evidence in the last 7 days.",
+   "net": "none",
+   "updated_at": "2026-10-09T16:08:43Z"
+  }
  }
 }
