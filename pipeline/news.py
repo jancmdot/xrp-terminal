@@ -137,13 +137,13 @@ def theory_items(grok: Grok, since: dt.datetime, theories: list[dict], max_searc
     lines = "\n".join(f"- {t['claim']} Look for: {t['search']}" for t in tt)
     user = (f"Find news published after {iso(since)} that is evidence for or against these claims about XRP:\n{lines}\n"
             "Prefer primary sources (regulators, banks, SWIFT, Ripple, fund filings, on-chain data providers) and established outlets. "
-            f"Run at most {max_searches} web searches in total and don't open pages unless a result's date is unclear. "
+            f"Run one web search per claim ({max_searches} searches in total), then stop; don't open pages. "
             "Skip opinion pieces and price predictions. Return at most 8 articles. For each give the URL, title, outlet, "
             "publish time in ISO 8601 UTC, and one factual sentence in your own words about what it reports.")
     try:
         data, info = grok.respond(system="You find news articles for a market-data pipeline. Only return articles that appear in your search results. Never invent URLs.",
                                   user=user, schema=ARTICLES_SCHEMA, name="articles",
-                                  tools=[{"type": "web_search"}], label="web:theories")
+                                  tools=[{"type": "web_search"}], label="web:theories", effort="low")
     except BudgetExceeded:
         raise
     except Exception as e:
