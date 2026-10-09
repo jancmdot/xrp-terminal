@@ -4,7 +4,7 @@ from __future__ import annotations
 import datetime as dt
 import json
 
-from .util import iso, log, now_utc, parse_iso
+from .util import NY, iso, log, now_utc, parse_iso
 from .xai import BudgetExceeded, Grok
 
 ORDER = ["unsupported", "speculative", "partly", "supported"]      # levels of support, low to high
@@ -34,17 +34,33 @@ def current_verdict(t: dict, st: dict) -> str:
     return t["verdict"]
 
 
-def evidence(evs: dict, tid: str, days: int = WINDOW_DAYS) -> list[dict]:
-    cut = iso(now_utc() - dt.timedelta(days=days))
+def evidence(evs: dict, tid: str, days: int | None = WINDOW_DAYS) -> list[dict]:
+    """Items linked to a theory, newest first: the last `days` days, or everything logged when days is None."""
+    cut = iso(now_utc() - dt.timedelta(days=days)) if days else ""
     rows = []
     for e in evs.values():
         if e["published_at"] < cut:
             continue
         for link in e.get("theories") or []:
             if link.get("id") == tid:
+                src = e.get("source") or {}
                 rows.append({"id": e["id"], "stance": link["stance"], "date": e["published_at"], "headline": e["headline"],
-                             "status": e["status"], "tier": e["source"]["tier"], "counts": e["status"] in EVIDENCE_STATUS})
+                             "status": e["status"], "tier": src.get("tier"), "counts": e["status"] in EVIDENCE_STATUS,
+                             "source": src.get("handle") or src.get("name"), "url": src.get("url"), "logged": e.get("logged_at")})
     return sorted(rows, key=lambda r: r["date"], reverse=True)
+
+
+def week_of(iso_ts: str) -> str:
+    """Monday (New York date) of the week containing the timestamp."""
+    d = (parse_iso(iso_ts) or now_utc()).astimezone(NY).date()
+    return (d - dt.timedelta(days=d.weekday())).isoformat()
+
+
+def _tally(rows: list[dict]) -> dict:
+    counted = [r for r in rows if r["counts"]]
+    return {"supports": sum(r["stance"] == "supports" for r in counted),
+            "contradicts": sum(r["stance"] == "contradicts" for r in counted),
+            "claims": sum(not r["counts"] for r in rows)}
 
 
 UPDATE_SCHEMA = {
@@ -87,6 +103,7 @@ def _allowed_change(cur: str, new: str | None, rows: list[dict], st: dict) -> tu
 def update(grok: Grok, theories: list[dict], state: dict, evs: dict, etf_context: str = "") -> None:
     """Refresh each tracked theory's weekly note, and apply verdict changes that pass the rules."""
     tstate = state.setdefault("theories", {})
+    state.setdefault("theories_since", iso(now_utc()))      # the evidence history starts with the first update
     ctx = []
     for t in tracked(theories):
         st = tstate.setdefault(t["id"], {})
@@ -99,6 +116,7 @@ def update(grok: Grok, theories: list[dict], state: dict, evs: dict, etf_context
             continue
         ctx.append({"id": t["id"], "claim": t["claim"], "current_verdict": current_verdict(t, st), "on_record": t["true_part"],
                     "would_change_if": t["would_change"],
+                    "evidence_since_tracking_began": {"since": state["theories_since"][:10], **_tally(evidence(evs, t["id"], None))},
                     "evidence_this_week": [{"date": r["date"][:10], "stance": r["stance"], "status": r["status"],
                                             "source_tier": r["tier"], "headline": r["headline"]} for r in counted[:15]]})
     if not ctx:
@@ -121,6 +139,7 @@ def update(grok: Grok, theories: list[dict], state: dict, evs: dict, etf_context
             continue
         st = tstate.setdefault(t["id"], {})
         st.update(note=(r.get("note") or "")[:220], net=r.get("net") or "none", updated_at=iso(now_utc()))
+        st.setdefault("weeks", {})[week_of(iso(now_utc()))] = {"note": st["note"], "net": st["net"]}   # the week's last note is kept
         cur = current_verdict(t, st)
         ok, reason = _allowed_change(cur, r.get("propose_verdict"), evidence(evs, t["id"]), st)
         if ok:
@@ -150,8 +169,27 @@ def build_output(theories: list[dict], state: dict, evs: dict) -> list[dict]:
             }
             if st.get("verdict") and st.get("base") == t["verdict"] and st.get("history"):
                 row["changed"] = st["history"][-1]
+            row["history"] = _history(t, st, evidence(evs, t["id"], None), state.get("theories_since"))
         out.append(row)
     return out
+
+
+def _history(t: dict, st: dict, rows: list[dict], since: str | None) -> dict:
+    """Every linked item since tracking began, by week, with each week's note and every verdict change."""
+    since = since or (rows[-1]["date"] if rows else iso(now_utc()))
+    weeks: dict[str, list] = {}
+    for r in rows:      # an older article found later is filed under the week tracking began, not before it
+        weeks.setdefault(week_of(max(r["date"], since)), []).append(r)
+    notes = st.get("weeks") or {}
+    keys = sorted(set(weeks) | set(notes), reverse=True)
+    return {
+        "since": since, **_tally(rows),
+        "weeks": [{"week": k, **_tally(weeks.get(k, [])), "note": (notes.get(k) or {}).get("note"),
+                   "net": (notes.get(k) or {}).get("net")} for k in keys],
+        "items": [{**{k: r[k] for k in ("id", "date", "stance", "counts", "headline", "status", "source", "url")},
+                   "week": week_of(max(r["date"], since))} for r in rows[:300]],
+        "changes": st.get("history") or [],
+    }
 
 
 def rating_guide(theories: list[dict]) -> str:

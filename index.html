@@ -322,7 +322,18 @@ table.funds{width:100%;border-collapse:collapse;font:var(--fs-s)/1.4 var(--f-mon
 .tw-items .claimonly{opacity:.65}
 .tw-items .claimonly .h::after{content:" · unverified claim";font:var(--fs-xs) var(--f-mono);color:var(--faint)}
 .tlink{font:500 9.5px/1 var(--f-mono);letter-spacing:.04em;padding:3px 5px;border:1px dashed var(--line-2);color:var(--dim);text-transform:uppercase;white-space:nowrap}
-@media (max-width:700px){.tw-items button{padding:8px 0}}
+.th-hist{border-top:1px dashed var(--line);padding-top:7px;display:grid;gap:8px}
+.th-more{margin-left:auto}
+.hist{display:grid;gap:12px;padding-top:2px}
+.hw{display:grid;gap:4px}
+.hw-h{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center;font:var(--fs-xs)/1.3 var(--f-mono);color:var(--faint)}
+.hw-h b{font:500 var(--fs-xs)/1 var(--f-label);letter-spacing:.07em;text-transform:uppercase;color:var(--dim)}
+.hchg{font:var(--fs-xs)/1.5 var(--f-mono);color:var(--amber)}
+.tw-items a{display:flex;gap:8px;align-items:baseline;padding:5px 0;color:var(--dim);font:var(--fs-s)/1.4 var(--f-text);text-decoration:none;min-width:0}
+.tw-items a:hover{color:var(--fg)}
+.tw-items a span.h{min-width:0;flex:1}
+.tw-items .src{font:var(--fs-xs) var(--f-mono);color:var(--faint);white-space:nowrap}
+@media (max-width:700px){.tw-items button,.tw-items a{padding:8px 0}}
 
 /* ---------- footer ---------- */
 .method{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
@@ -431,6 +442,10 @@ table.funds{width:100%;border-collapse:collapse;font:var(--fs-s)/1.4 var(--f-mon
           <button type="button" data-g="14400">4H</button>
           <button type="button" data-g="43200">12H</button>
           <button type="button" data-g="86400">1D</button>
+        </div>
+        <div class="seg" role="group" aria-label="Candle style" id="cstyle" title="Heikin Ashi smooths the candles; the price line and the O/H/L/C readout always show actual prices">
+          <button type="button" data-c="ha">HA</button>
+          <button type="button" data-c="candles">CANDLES</button>
         </div>
         <label class="chk"><input type="checkbox" id="show-ev" checked> Events</label>
       </div>
@@ -587,6 +602,8 @@ table.funds{width:100%;border-collapse:collapse;font:var(--fs-s)/1.4 var(--f-mon
    items[].theories?: [{id, stance:"supports"|"contradicts"}]
    theories: [{ id, short, claim, verdict:"supported"|"partly"|"unsupported"|"speculative"|"untestable",
                 tracked, changed?:{on, from, to, why},
+                history?:{since, supports, contradicts, claims, weeks:[{week, supports, contradicts, claims, note, net}],
+                          items:[{id, date, week, stance, counts, headline, status, source, url}], changes:[{on, from, to, why}]},
                 week?:{supports, contradicts, claims, net:"strengthens"|"weakens"|"mixed"|"none", note, items:[{id, stance, counts}]},
                 true_part, would_change }]
    event_log: { logged:int, unlock_n:int }
@@ -655,6 +672,7 @@ function setSkin(id){
   if (chart){
     chart.applyOptions(chartTheme());
     candles.applyOptions({upColor:cssv("--up"), downColor:cssv("--down"), wickUpColor:cssv("--up"), wickDownColor:cssv("--down")});
+    updatePriceLine();
     setVolume(); setMarkers();
   }
   drawEtfChart();
@@ -982,6 +1000,36 @@ function buildSample(now){
      would_change:"Nothing. A target is a prediction, not evidence."}
   ];
 
+  // sample evidence history: this week's linked items plus a few older example entries
+  const nyDate = ms => { const q = Object.fromEntries(new Intl.DateTimeFormat("en-CA", {timeZone:"America/New_York", year:"numeric", month:"2-digit", day:"2-digit"}).formatToParts(new Date(ms)).map(x => [x.type, x.value])); return new Date(`${q.year}-${q.month}-${q.day}T12:00:00Z`); };
+  const weekOf = ms => { const d = nyDate(ms); d.setUTCDate(d.getUTCDate() - ((d.getUTCDay() + 6) % 7)); return d.toISOString().slice(0, 10); };
+  const since = now - 16 * 864e5;
+  const OLDER = {
+    "supply-shock": [{d:9, stance:"supports", headline:"Spot XRP ETFs extend their inflow streak to 12 days", source:"Sample Wire"},
+                     {d:12, stance:"contradicts", headline:"Monthly escrow sales exceed ETF net inflows", source:"Example Crypto Daily"}],
+    "swift": [{d:11, stance:"contradicts", headline:"Bank network picks a non-XRP ledger for its settlement pilot", source:"Sample Wire"}],
+    "collateral": [{d:10, stance:"supports", counts:false, headline:"Unsourced post says a global bank holds XRP", source:"@example_xrp_crowd"}],
+    "tokenization": [{d:8, stance:"supports", headline:"Fund launches XRP-denominated liquidity for tokenized treasuries", source:"Sample Wire"}]
+  };
+  const OLD_NOTES = {"supply-shock":["A 12-day inflow streak, still small next to circulating supply.", "Escrow sales outpaced ETF inflows for the month."],
+                     "swift":["A bank settlement pilot chose a different ledger."], "collateral":["Only unverified claims this week."],
+                     "tokenization":["An XRP-denominated liquidity product launched for tokenized treasuries."]};
+  const netOf = c => c.supports > c.contradicts ? "strengthens" : c.contradicts > c.supports ? "weakens" : c.supports ? "mixed" : "none";
+  const tally = rows => ({supports: rows.filter(r => r.counts && r.stance === "supports").length,
+                          contradicts: rows.filter(r => r.counts && r.stance === "contradicts").length, claims: rows.filter(r => !r.counts).length});
+  for (const t of theories){
+    if (!t.tracked) continue;
+    const recent = (t.week?.items || []).map(x => { const it = items.find(i => i.id === x.id);
+      return {id:x.id, date:it.published_at, stance:x.stance, counts:x.counts, headline:it.headline, status:it.status, source:it.source.handle || it.source.name, url:null}; });
+    const old = (OLDER[t.id] || []).map((o, i) => ({id:`old-${t.id}-${i}`, date:ago(o.d * 1440), stance:o.stance, counts:o.counts !== false,
+      headline:o.headline, status:o.counts === false ? "rumor" : "reported", source:o.source, url:null}));
+    const all = [...recent, ...old].sort((a, b) => b.date.localeCompare(a.date)).map(x => ({...x, week: weekOf(Math.max(Date.parse(x.date), since))}));
+    const keys = [...new Set(all.map(x => x.week))].sort().reverse();
+    t.history = {since:new Date(since).toISOString(), ...tally(all), changes: t.changed ? [t.changed] : [], items: all,
+      weeks: keys.map((k, i) => { const c = tally(all.filter(x => x.week === k));
+        return {week:k, ...c, note: i === 0 ? t.week.note : (OLD_NOTES[t.id] || [])[i - 1] || null, net: i === 0 ? t.week.net : netOf(c)}; })};
+  }
+
   return {
     meta:{schema:"xrp-terminal/0.1", generated_at:ago(9), sample:true, last_x_scan:ago(9), last_news_scan:ago(9),
           sources:["Grok x_search (sample)","CryptoPanic + primary RSS (sample)","ETF flows (sample)"]},
@@ -1284,6 +1332,7 @@ function renderTheories(){
       if (w.note) live += `<p class="tw-note">${esc(w.note)}</p>`;
       if (rows) live += `<ul class="tw-items">${rows}</ul>`;
     }
+    if (t.history) live += historyHtml(t, byId);
     return `<div class="theory">
       <div class="claim"><q>${esc(t.claim)}</q><span class="vd vd-${esc(t.verdict)}">${VERDICT_LABEL[t.verdict] || esc(t.verdict)}</span></div>
       ${live}
@@ -1292,6 +1341,38 @@ function renderTheories(){
       ${t.tracked === false ? `<p><b>Not tracked</b>Predictions can't be checked against news, so this one stays fixed.</p>` : ""}
     </div>`;
   }).join("") + `<div class="note">${DATA.meta.sample ? "Sample analysis. " : ""}Each scan checks new items against these claims. Rumors and speculation are shown but don't count as evidence. A verdict moves one step at most, only on confirmed evidence from a primary or established source, and at most once a week.</div>`;
+}
+const openHist = new Set();
+const sinceLabel = iso => NY_MD.format(new Date(iso));
+function evRow(x, byId){
+  const arrow = `<i class="${x.stance === "supports" ? "up" : "down"}">${x.stance === "supports" ? "▲" : "▼"}</i>`;
+  const cls = x.counts ? "" : "claimonly";
+  const date = `<span class="d">${NY_MD.format(new Date(x.date))}</span>`;
+  if (byId.has(x.id)) return `<li><button type="button" data-open="${esc(x.id)}" class="${cls}">${arrow}<span class="h">${esc(x.headline)}</span>${date}</button></li>`;
+  const url = safeUrl(x.url);
+  const inner = `${arrow}<span class="h">${esc(x.headline)}</span><span class="src">${esc(x.source || "")}</span>${date}`;
+  return `<li>${url ? `<a href="${esc(url)}" target="_blank" rel="noopener" class="${cls}">${inner}</a>` : `<a class="${cls}">${inner}</a>`}</li>`;
+}
+function historyHtml(t, byId){
+  const h = t.history, open = openHist.has(t.id), n = (h.items || []).length;
+  const tot = Math.max(1, h.supports + h.contradicts);
+  const counts = [`${h.supports} for`, `${h.contradicts} against`].concat(h.claims ? [`${h.claims} unverified`] : []).join(" · ");
+  let body = "";
+  if (open){
+    const changes = (h.changes || []).slice().reverse().map(c => `<div class="hchg">${NY_MD.format(new Date(c.on))}: ${esc(VERDICT_LABEL[c.from] || c.from)} → ${esc(VERDICT_LABEL[c.to] || c.to)}${c.why ? " · " + esc(c.why) : ""}</div>`).join("");
+    const byWeek = new Map();
+    for (const x of h.items || []){ if (!byWeek.has(x.week)) byWeek.set(x.week, []); byWeek.get(x.week).push(x); }
+    const weeks = (h.weeks || []).map(w => {
+      const its = byWeek.get(w.week) || [];
+      const wlabel = new Intl.DateTimeFormat("en-US", {month:"short", day:"numeric", timeZone:"UTC"}).format(new Date(w.week + "T12:00:00Z"));
+      return `<div class="hw"><div class="hw-h"><b>Week of ${wlabel}</b>${w.net ? `<span class="net net-${esc(w.net)}">${NET_LABEL[w.net] || ""}</span>` : ""}<span>${w.supports} for · ${w.contradicts} against${w.claims ? ` · ${w.claims} unverified` : ""}</span></div>
+        ${w.note ? `<p>${esc(w.note)}</p>` : ""}${its.length ? `<ul class="tw-items">${its.map(x => evRow(x, byId)).join("")}</ul>` : ""}</div>`;
+    }).join("");
+    body = `<div class="hist">${changes}${weeks || `<p>No linked items yet.</p>`}</div>`;
+  }
+  return `<div class="th-hist"><div class="tw"><span class="tw-lbl">Since ${sinceLabel(h.since)}</span><span>${counts}</span>
+      <span class="balance" title="${h.supports} for · ${h.contradicts} against since ${sinceLabel(h.since)}">${h.supports + h.contradicts ? `<i class="b" style="width:${h.supports/tot*100}%"></i><i class="r" style="width:${h.contradicts/tot*100}%"></i>` : ""}</span>
+      <button type="button" class="tbtn th-more" data-hist="${esc(t.id)}" aria-expanded="${open}">${open ? "Hide history" : `History (${n})`}</button></div>${body}</div>`;
 }
 function openItem(id){
   if (!filteredItems().some(i => i.id === id)){ Object.assign(F, {kind:"all", min:0, soft:false, themes:[]}); feedAll = true; }
@@ -1302,7 +1383,8 @@ function openItem(id){
    PRICE CHART + LIVE FEED (Coinbase public API)
    ===================================================================== */
 const GRANS = [300, 900, 3600, 14400, 43200, 86400];
-const PX = {g: GRANS.includes(store.get("gran", 3600)) ? store.get("gran", 3600) : 3600, mode:"connecting", bars:[], ticks:[], last:null, ws:null, wsTries:0, open24:null, high24:null, low24:null};
+const PX = {style: store.get("cstyle", "ha") === "candles" ? "candles" : "ha", ha:[], byTime:new Map(), pline:null,
+  g: GRANS.includes(store.get("gran", 3600)) ? store.get("gran", 3600) : 3600, mode:"connecting", bars:[], ticks:[], last:null, ws:null, wsTries:0, open24:null, high24:null, low24:null};
 let chart = null, candles = null, vol = null, selectedMarker = null;
 
 function setPricePill(state, text){
@@ -1329,12 +1411,12 @@ function initChart(){
     handleScroll:{vertTouchDrag:false}
   });
   candles = chart.addCandlestickSeries({upColor:cssv("--up"), downColor:cssv("--down"), wickUpColor:cssv("--up"), wickDownColor:cssv("--down"), borderVisible:false,
-    priceFormat:{type:"price", precision:4, minMove:0.0001}});
+    lastValueVisible:false, priceLineVisible:false, priceFormat:{type:"price", precision:4, minMove:0.0001}});
+  PX.pline = candles.createPriceLine({price:0, color:cssv("--up"), lineWidth:1, lineStyle:2, axisLabelVisible:true, title:""});
   vol = chart.addHistogramSeries({priceScaleId:"", priceFormat:{type:"volume"}, priceLineVisible:false, lastValueVisible:false});
   vol.priceScale().applyOptions({scaleMargins:{top:0.82, bottom:0}});
   chart.subscribeCrosshairMove(p => {
-    const b = p && p.time ? p.seriesData.get(candles) : null;
-    const bar = b || PX.bars[PX.bars.length-1];
+    const bar = (p && p.time ? PX.byTime.get(p.time) : null) || PX.bars[PX.bars.length-1];
     if (bar){
       const ch = (bar.close - bar.open) / bar.open * 100;
       $("#ohlc").innerHTML = `O <b>${fmtPx(bar.open)}</b>H <b>${fmtPx(bar.high)}</b>L <b>${fmtPx(bar.low)}</b>C <b>${fmtPx(bar.close)}</b><span class="${clsOf(ch)}">${fmtPct(ch)}</span>`;
@@ -1351,10 +1433,33 @@ function initChart(){
   return true;
 }
 
+/* Heikin Ashi: close = average of O/H/L/C; open = midpoint of the previous HA candle's body;
+   high/low stretch to include both. Built from the actual candles, which stay in PX.bars. */
+function haNext(b, prev){
+  const close = (b.open + b.high + b.low + b.close) / 4;
+  const open = prev ? (prev.open + prev.close) / 2 : (b.open + b.close) / 2;
+  return {time:b.time, open, high:Math.max(b.high, open, close), low:Math.min(b.low, open, close), close};
+}
+function heikinAshi(bars){ const out = []; for (const b of bars) out.push(haNext(b, out[out.length-1])); return out; }
+const plain = b => ({time:b.time, open:b.open, high:b.high, low:b.low, close:b.close});
+function displayBars(){ return PX.style === "ha" ? PX.ha : PX.bars.map(plain); }
+function updatePriceLine(){
+  const last = PX.bars[PX.bars.length-1]; if (!PX.pline || !last) return;
+  PX.pline.applyOptions({price:last.close, color: last.close >= last.open ? cssv("--up") : cssv("--down")});
+}
+function setCandleStyle(style){
+  PX.style = style === "candles" ? "candles" : "ha"; store.set("cstyle", PX.style);
+  $$("#cstyle button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.c === PX.style)));
+  if (candles && PX.bars.length){ candles.setData(displayBars()); setMarkers(); }
+}
+
 function setBars(bars){
   PX.bars = bars;
+  PX.ha = heikinAshi(bars);
+  PX.byTime = new Map(bars.map(b => [b.time, b]));
   if (!candles) return;
-  candles.setData(bars.map(b => ({time:b.time, open:b.open, high:b.high, low:b.low, close:b.close})));
+  candles.setData(displayBars());
+  updatePriceLine();
   setVolume();
   chart.timeScale().fitContent();
   const n = bars.length, vis = isPhone() ? 70 : 160;
@@ -1593,7 +1698,11 @@ function onTick(m){
   let bar;
   if (bt === last.time){ bar = {...last, high:Math.max(last.high,px), low:Math.min(last.low,px), close:px}; PX.bars[PX.bars.length-1] = bar; }
   else { bar = {time:bt, open:last.close, high:Math.max(last.close,px), low:Math.min(last.close,px), close:px, volume:0}; PX.bars.push(bar); }
-  candles.update({time:bar.time, open:bar.open, high:bar.high, low:bar.low, close:bar.close});
+  PX.byTime.set(bar.time, bar);
+  const n = PX.bars.length;
+  PX.ha[n-1] = haNext(bar, n > 1 ? PX.ha[n-2] : null);
+  candles.update(PX.style === "ha" ? PX.ha[n-1] : plain(bar));
+  updatePriceLine();
 }
 
 function updateQuoteFromBars(){
@@ -1636,6 +1745,8 @@ function wire(){
   });
   $$("#tf button").forEach(x => x.setAttribute("aria-pressed", String(+x.dataset.g === PX.g)));
   $("#show-ev").addEventListener("change", setMarkers);
+  $("#cstyle").addEventListener("click", e => { const b = e.target.closest("button[data-c]"); if (b) setCandleStyle(b.dataset.c); });
+  $$("#cstyle button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.c === PX.style)));
   $("#f-kind").addEventListener("click", e => { const b = e.target.closest("button[data-v]"); if (!b) return; F.kind = b.dataset.v; renderFeed(); });
   $("#f-sort").addEventListener("change", e => { F.sort = e.target.value; renderFeed(); });
   $("#f-min").addEventListener("change", e => { F.min = +e.target.value; renderFeed(); });
@@ -1650,6 +1761,8 @@ function wire(){
     $("#p-feed").scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block:"start"});
   });
   $("#theories").addEventListener("click", e => {
+    const hb = e.target.closest("button[data-hist]");
+    if (hb){ const id = hb.dataset.hist; openHist.has(id) ? openHist.delete(id) : openHist.add(id); renderTheories(); return; }
     const b = e.target.closest("button[data-open]"); if (b) openItem(b.dataset.open);
   });
   $("#feed").addEventListener("click", e => {

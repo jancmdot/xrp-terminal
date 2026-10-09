@@ -75,6 +75,8 @@ def main() -> int:
     check("weekly note written", th["supply-shock"]["week"]["note"] == "Test note for supply-shock.")
     check("verdict step allowed with confirmed evidence", th["supply-shock"]["verdict"] == "supported" and th["supply-shock"]["changed"]["from"] == "partly")
     check("verdict change refused without confirmed evidence", th["tokenization"]["verdict"] == "partly")
+    h = th["supply-shock"]["history"]
+    check("theory history kept", h["supports"] >= 1 and h["items"] and h["weeks"] and h["weeks"][0]["note"] and h["changes"])
 
     # schedule: a second scan in the same slot must not run
     first = yaml.safe_load((REPO / "config" / "settings.yaml").read_text())["schedule"]["scan_hours_et"][0]
@@ -85,6 +87,11 @@ def main() -> int:
     check("slot runs only once", "scan" not in tasks_line.split("tasks:")[-1])
     late = run(tmp, "auto", (ny7.replace(minute=5) + dt.timedelta(days=1, hours=2)).astimezone(dt.timezone.utc))
     check("missed slot caught up within the window", "missed its trigger" in late)
+
+    # ten days later the weekly window is empty but the history is still there
+    run(tmp, "rebuild", t0 + dt.timedelta(days=10))
+    later = {t["id"]: t for t in json.loads((tmp / "data.json").read_text())["theories"]}["supply-shock"]
+    check("history survives past the 7-day window", later["week"]["supports"] == 0 and later["history"]["supports"] >= 1)
 
     # handle check: unclear handles are reported, found ones confirmed
     run(tmp, "verify_handles", t0)

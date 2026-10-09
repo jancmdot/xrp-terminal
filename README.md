@@ -36,7 +36,7 @@ Every rated item is logged in `data/events.jsonl`. The pipeline later measures X
 
 ## Theory Check
 
-Each rated item is checked against the tracked theories in `config/theories.yaml` (supports, contradicts, or no link). Once a day a web search looks for evidence that may not mention XRP, such as bank capital rules or SWIFT news. After each scan, Grok writes a one-line note per theory on the week's evidence. Rumors and speculation are shown but don't count. A verdict moves one step at most, only when a confirmed item from a primary or established source backs the change, and at most once a week; every change is shown on the page with its reason. Editing a verdict in the config resets the automatic one.
+Each rated item is checked against the tracked theories in `config/theories.yaml` (supports, contradicts, or no link). Linked items are kept for good: the panel shows this week's evidence and a running history since tracking began (Oct 9, 2026), grouped by week with each week's note. Once a day a web search looks for evidence that may not mention XRP, such as bank capital rules or SWIFT news. After each scan, Grok writes a one-line note per theory on the week's evidence. Rumors and speculation are shown but don't count. A verdict moves one step at most, only when a confirmed item from a primary or established source backs the change, and at most once a week; every change is shown on the page with its reason. Editing a verdict in the config resets the automatic one.
 
 ## Cost control
 
