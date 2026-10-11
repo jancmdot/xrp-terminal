@@ -76,54 +76,59 @@
   "n:f3e82ce9d0bb": "2026-10-11T12:25:26Z",
   "n:4f9d043995e9": "2026-10-11T12:25:26Z",
   "n:e7f90857c400": "2026-10-11T12:25:26Z",
-  "n:61eeb1c25999": "2026-10-11T12:25:26Z"
+  "n:61eeb1c25999": "2026-10-11T12:25:26Z",
+  "x:2109387797584892359": "2026-10-11T21:25:53Z",
+  "x:2109334265083441320": "2026-10-11T21:25:53Z",
+  "x:2109333395725598850": "2026-10-11T21:25:53Z",
+  "x:2109282793360658727": "2026-10-11T21:25:53Z",
+  "x:2109392061397082151": "2026-10-11T21:25:53Z",
+  "x:2109390633601536450": "2026-10-11T21:25:53Z",
+  "x:2109387581188120939": "2026-10-11T21:25:53Z",
+  "x:2109387061979648357": "2026-10-11T21:25:53Z",
+  "x:2109386642393858235": "2026-10-11T21:25:53Z",
+  "n:f28c853391d2": "2026-10-11T21:25:53Z"
  },
  "slots_done": [
   "etf:2026-10-08:20",
   "scan:2026-10-09:17",
   "scan:2026-10-10:8",
   "scan:2026-10-10:17",
-  "scan:2026-10-11:8"
+  "scan:2026-10-11:8",
+  "scan:2026-10-11:17"
  ],
  "spend": {
   "2026-10": {
-   "usd": 10.224,
-   "calls": 102,
-   "x_posts": 577,
+   "usd": 10.7855,
+   "calls": 111,
+   "x_posts": 633,
    "x_users": 190,
    "web_searches": 102
   }
  },
  "last_etf_pull": "2026-10-10T00:56:34Z",
  "positioning": {
-  "as_of": "2026-10-11T19:23:13Z",
-  "funding_rate": 0.007668,
-  "funding_pctile_30d": 0.6,
-  "open_interest_usd": 3070464691,
-  "oi_change_24h_pct": -0.94
+  "as_of": "2026-10-11T21:23:14Z",
+  "funding_rate": 0.006307,
+  "funding_pctile_30d": 0.53,
+  "open_interest_usd": 3049628566,
+  "oi_change_24h_pct": -1.61
  },
  "feed_errors": [],
- "last_x_scan": "2026-10-11T12:23:15Z",
- "last_news_scan": "2026-10-11T12:23:15Z",
+ "last_x_scan": "2026-10-11T21:23:14Z",
+ "last_news_scan": "2026-10-11T21:23:14Z",
  "theme_states": {
-  "sup": "A tracker put 21.97 billion XRP in exchange wallets; Ripple moved 200 million XRP between its own addresses.",
-  "etf": "Spot XRP ETFs held $1.7 billion after a $4 million week, while an outlet said inflows cooled.",
-  "corp": "Cointelegraph said Evernorth's SPAC closed with a large XRP stake; an Oct. 14 premiere is set.",
-  "pay": "XRPL payment volume printed 858 million XRP, near average, as NYC hackathon plans continued.",
-  "spec": "Only an unsourced crowd post claimed another week of XRP ETF inflows.",
-  "col": "Clearpool will discuss XRPL lending at Swell; a prime deal disclosed no XRP allocation.",
-  "stb": "An account said RLUSD market cap crossed $2 billion as trackers cited several RLUSD burns.",
-  "tok": "An outlet said XRPL led 2026 tokenized-commodity inflows; Korean custody is under review, not launched.",
-  "reg": "An outlet said Basel weights still make bank crypto holdings costly."
+  "stb": "Confirmed trackers cited RLUSD burns on XRPL and Ethereum; a report said RLUSD market cap crossed $2 billion.",
+  "sup": "A tracker put 21.97 billion XRP in exchange wallets, and Ripple moved 200 million XRP between its own addresses.",
+  "etf": "Spot XRP ETFs were reported holding $1.7 billion after a $4 million week as inflows were said to have cooled."
  },
  "theories": {
   "supply-shock": {
-   "note": "Reported data put spot XRP ETFs at $1.7B after a $4M week, too small an add to show holdings outrunning sellable supply.",
+   "note": "The strongest item, a reported $1.7 billion ETF holding after a $4 million week, does not show holdings rising faster than exchange balances.",
    "net": "weakens",
-   "updated_at": "2026-10-11T12:25:52Z",
+   "updated_at": "2026-10-11T21:26:18Z",
    "weeks": {
     "2026-10-05": {
-     "note": "Reported data put spot XRP ETFs at $1.7B after a $4M week, too small an add to show holdings outrunning sellable supply.",
+     "note": "The strongest item, a reported $1.7 billion ETF holding after a $4 million week, does not show holdings rising faster than exchange balances.",
      "net": "weakens"
     }
    }
@@ -131,26 +136,26 @@
   "swift": {
    "note": "No confirmed or reported evidence in the last 7 days.",
    "net": "none",
-   "updated_at": "2026-10-11T12:25:36Z"
+   "updated_at": "2026-10-11T21:26:08Z"
   },
   "collateral": {
-   "note": "Reported coverage says Basel weights still make bank crypto holdings costly, with no favorable rules or audited bank holdings.",
+   "note": "The strongest item is a reported note that Basel weights still make bank crypto holdings costly, not a favorable rule or audited disclosure.",
    "net": "weakens",
-   "updated_at": "2026-10-11T12:25:52Z",
+   "updated_at": "2026-10-11T21:26:18Z",
    "weeks": {
     "2026-10-05": {
-     "note": "Reported coverage says Basel weights still make bank crypto holdings costly, with no favorable rules or audited bank holdings.",
+     "note": "The strongest item is a reported note that Basel weights still make bank crypto holdings costly, not a favorable rule or audited disclosure.",
      "net": "weakens"
     }
    }
   },
   "tokenization": {
-   "note": "A reported item says a proposed XRPL sponsor model could hold user reserves, so tokenization need not lock meaningful XRP.",
+   "note": "The strongest item is a reported proposal that an XRPL sponsor model could hold user reserves, not a product requiring meaningful XRP balances.",
    "net": "weakens",
-   "updated_at": "2026-10-11T12:25:52Z",
+   "updated_at": "2026-10-11T21:26:18Z",
    "weeks": {
     "2026-10-05": {
-     "note": "A reported item says a proposed XRPL sponsor model could hold user reserves, so tokenization need not lock meaningful XRP.",
+     "note": "The strongest item is a reported proposal that an XRPL sponsor model could hold user reserves, not a product requiring meaningful XRP balances.",
      "net": "weakens"
     }
    }
