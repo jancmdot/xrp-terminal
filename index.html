@@ -350,6 +350,7 @@ table.funds{width:100%;border-collapse:collapse;font:var(--fs-s)/1.4 var(--f-mon
 .vc-supported{background:var(--up)} .vc-misleading{background:var(--warn)} .vc-false{background:var(--down)}
 .vc-unverified{background:var(--faint)} .vc-opinion{background:var(--line-2)} .vc-prediction{background:var(--info)}
 .cb-calls{font:var(--fs-xs)/1.3 var(--f-mono);color:var(--dim);text-align:right;white-space:nowrap}
+.cb-quiet{padding:8px 12px;border-bottom:1px solid var(--line);font-size:var(--fs-xs);line-height:1.5;color:var(--faint)}
 .cl{padding:11px 12px;border-bottom:1px solid var(--line);display:grid;gap:5px}
 .cl-meta{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;font:var(--fs-xs)/1.3 var(--f-mono);color:var(--faint)}
 .cl-meta .who{color:var(--dim)}
@@ -363,7 +364,7 @@ table.funds{width:100%;border-collapse:collapse;font:var(--fs-s)/1.4 var(--f-mon
 .vp-supported{color:var(--up)} .vp-misleading{color:var(--warn)} .vp-false{color:var(--down)}
 .vp-unverified{color:var(--faint)} .vp-opinion{color:var(--dim);border-style:dashed} .vp-prediction{color:var(--info)}
 .oc-hit,.oc-came_true{color:var(--up)} .oc-missed,.oc-did_not_happen{color:var(--down)} .oc-pending,.oc-open-ended,.oc-unclear{color:var(--dim)}
-@media (max-width:700px){.cb-row{grid-template-columns:minmax(0,1fr) 34px 64px;padding:10px 12px}.mix{width:64px}.cb-calls{grid-column:1/-1;text-align:left}.cb-head .cb-calls{display:none}}
+@media (max-width:700px){.cb-row{grid-template-columns:minmax(0,1fr) 52px 60px;padding:10px 12px}.mix{width:60px}.cb-calls{grid-column:1/-1;text-align:left}.cb-calls.none,.cb-head .cb-calls{display:none}}
 
 /* ---------- footer ---------- */
 .method{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
@@ -1421,12 +1422,12 @@ const CL_TYPE = {price_prediction:"Price call", adoption:"Adoption", regulation_
                  insider_rumor:"Insider", macro:"Macro", other:"Other"};
 const CL_OUT = {hit:"Hit", missed:"Missed", pending:"Pending", "open-ended":"No date given", came_true:"Came true", did_not_happen:"Didn't happen", unclear:"Unclear"};
 const CLF = {mode:"all", account:null, all:false};
-function callsText(c){
+function callsText(c, bare){
   const parts = [];
   if (c.hit + c.missed) parts.push(`${c.hit}/${c.hit + c.missed} price calls hit`);
   if (c.came_true + c.did_not_happen) parts.push(`${c.came_true}/${c.came_true + c.did_not_happen} other calls`);
   if (c.pending) parts.push(`${c.pending} pending`);
-  return parts.join(" · ") || "no dated calls yet";
+  return parts.join(" · ") || (bare ? "" : "no dated calls yet");
 }
 function renderClaims(){
   const C = DATA.claims;
@@ -1439,13 +1440,16 @@ function renderClaims(){
   $$("#cl-filter button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === CLF.mode)));
   const order = ["supported","misleading","false","unverified","opinion","prediction"];
   $("#claims-board").innerHTML = `<div class="cb-row cb-head"><span>Account</span><span class="cb-n">Claims</span><span>Verdicts</span><span class="cb-calls">Dated calls</span></div>` +
-    C.accounts.map(a => {
+    C.accounts.filter(a => a.total).map(a => {
       const tot = Math.max(1, a.total);
       const mix = order.map(v => a[v] ? `<i class="vc-${v}" style="width:${a[v] / tot * 100}%" title="${a[v]} ${CL_VERDICT[v].toLowerCase()}"></i>` : "").join("");
       return `<button type="button" class="cb-row" data-acct="${esc(a.handle)}" aria-pressed="${CLF.account === a.handle}">
         <span class="cb-name"><b>${esc(a.name)}</b><span>${esc(a.handle)}</span></span><span class="cb-n">${a.total}</span>
-        <span class="mix">${mix}</span><span class="cb-calls">${esc(callsText(a.calls))}</span></button>`;
-    }).join("");
+        <span class="mix">${mix}</span>${(t => `<span class="cb-calls${t ? "" : " none"}">${esc(t || "no dated calls yet")}</span>`)(callsText(a.calls, true))}</button>`;
+    }).join("") + (() => {
+      const quiet = C.accounts.filter(a => !a.total);
+      return quiet.length ? `<div class="cb-quiet">No claims logged yet: ${quiet.map(a => `<span title="${esc(a.handle)}">${esc(a.name)}</span>`).join(", ")}</div>` : "";
+    })();
   let xs = (C.items || []).slice();
   if (CLF.account) xs = xs.filter(c => c.handle === CLF.account);
   if (CLF.mode === "calls") xs = xs.filter(c => c.prediction);
