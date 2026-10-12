@@ -108,6 +108,10 @@ def main() -> int:
     check("all-time-high call gets the Coinbase record as its target", ath["target_price"] and ath["target_price"] > 2.3
           and ath["direction"] == "above" and ath["outcome"] == "pending" and "record high" in ath["basis"])
     check("scorecard per account", {a["handle"] for a in cl["accounts"]} == {"@ExInfluencerA", "@ExInfluencerB"})
+    feed_ids = {i["id"] for i in json.loads((tmp / "data.json").read_text())["items"]}
+    two = by["XRP will trade at $2 or higher within a week"]
+    check("claim linked to a feed item", any(l["via"] == "match" and l["item"] in feed_ids for l in two.get("links") or []))
+    check("links only point at items on the page", all(l["item"] in feed_ids for c in cl["items"] for l in c.get("links") or []))
     q = json.loads((tmp / "data" / "state.json").read_text()).get("claims_queue") or []
     check("post the checker skipped is queued for the next run", [p["text"] for p in q] == ["Good morning XRP family!"])
     run(tmp, "claims", t0 + dt.timedelta(days=5))
@@ -117,6 +121,30 @@ def main() -> int:
     check("dated price call scored missed", by["XRP will trade at $10 within a month"]["prediction"]["outcome"] == "missed")
     a = next(x for x in cl["accounts"] if x["handle"] == "@ExInfluencerB")
     check("scorecard counts outcomes", a["calls"]["missed"] == 1 and a["calls"]["pending"] == 1 and a["total"] == 2)
+
+    # cited-source and same-post links, matched by URL and X status id
+    from pipeline import alerts, links
+    cs = {"c:111": {"id": "c:111", "verdict": "false", "evidence_url": "https://Example.com/a/?utm_source=x"},
+          "c:222": {"id": "c:222", "verdict": "supported", "evidence_url": "https://twitter.com/foo/status/333"}}
+    its = [{"id": "n:aaa", "source": {"url": "https://example.com/a"}}, {"id": "x:111", "source": {"url": "https://x.com/u/status/111"}},
+           {"id": "x:333", "source": {"url": "https://x.com/foo/status/333"}}]
+    links.deterministic(cs, its)
+    check("cited source linked with the verdict's direction", {"item": "n:aaa", "rel": "contradicts", "via": "cited"} in cs["c:111"]["links"])
+    check("claim's own post in the feed linked", any(l["item"] == "x:111" and l["via"] == "same_post" for l in cs["c:111"]["links"]))
+    check("cited X post matched by status id", cs["c:222"]["links"] == [{"item": "x:333", "rel": "supports", "via": "cited"}])
+
+    # budget outlook: projected pause from the last full days, heads-up opened once
+    os.environ["XRPTERM_FAKE"] = "1"
+    now = dt.datetime.now(dt.timezone.utc)
+    days = {(now - dt.timedelta(days=k)).strftime("%Y-%m-%d"): 3.0 for k in range(1, 8)}
+    st = {"spend": {now.strftime("%Y-%m"): {"usd": 38.0, "by_day": days}}}
+    sets = {"budget": {"monthly_usd": 40}}
+    o = alerts.budget_outlook(st, sets)
+    check("budget outlook projects the pause date", o["daily_usd"] == 3.0 and not o["paused"] and (o["pause_on"] is not None or now.day >= 28))
+    os.environ.update(GITHUB_TOKEN="fake", GITHUB_REPOSITORY="test/repo")
+    alerts.notify(st, sets)
+    alerts.notify(st, sets)
+    check("budget heads-up sent once", list(st.get("alerts", {})) == [f"budget-warn:{now.strftime('%Y-%m')}"] or o["pause_on"] is None)
 
     # handle check: unclear handles are reported, found ones confirmed
     run(tmp, "verify_handles", t0)

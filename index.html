@@ -112,6 +112,8 @@ a{color:var(--info)}
 .notice{max-width:1560px;margin:12px auto 0;padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px))}
 .notice-in{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--amber);background:var(--amber-wash);padding:9px 12px;font-size:var(--fs-s);line-height:1.5}
 .notice-in b{font:700 var(--fs-xs)/1.6 var(--f-label);letter-spacing:.08em;color:var(--amber);white-space:nowrap}
+.notice.budget .notice-in{border-color:var(--warn);background:color-mix(in srgb,var(--warn) 9%,transparent)} .notice.budget b{color:var(--warn)}
+.notice.budget.paused .notice-in{border-color:var(--down);background:var(--down-wash)} .notice.budget.paused b{color:var(--down)}
 
 /* ---------- desk ---------- */
 .desk{max-width:1560px;margin:0 auto;padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px));padding-block:12px calc(40px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px}
@@ -360,6 +362,37 @@ table.funds{width:100%;border-collapse:collapse;font:var(--fs-s)/1.4 var(--f-mon
 .cl p b{font:500 var(--fs-xs)/1 var(--f-label);letter-spacing:.06em;color:var(--faint);text-transform:uppercase;margin-right:6px}
 .cl-pred{font:var(--fs-xs)/1.5 var(--f-mono);color:var(--dim)}
 .cl-links{display:flex;gap:14px;font:var(--fs-xs)/1.3 var(--f-mono)}
+.cl-feed{display:flex;flex-wrap:wrap;gap:6px;align-items:center;min-width:0}
+.cl-feed > span,.ib-claims h4{font:500 var(--fs-xs)/1 var(--f-label);letter-spacing:.06em;color:var(--faint);text-transform:uppercase;margin:0 2px 0 0}
+.ib-claims{display:flex;flex-direction:column;align-items:flex-start;gap:6px;margin-top:10px}
+
+/* ---------- claim <-> feed strings ---------- */
+#lk-svg{position:absolute;left:0;top:0;height:0;pointer-events:none;z-index:12;overflow:visible}
+.arranging #lk-svg{display:none}
+.lk{--c:var(--info)} .lk.r-supports{--c:var(--up)} .lk.r-contradicts{--c:var(--down)}
+.lk path{fill:none;stroke:var(--c);stroke-linejoin:round}
+.lk .core{stroke-width:1;opacity:.3;transition:opacity .25s}
+.lk .glow{stroke-width:7;opacity:0;transition:opacity .25s}
+.lk .node{fill:var(--panel);stroke:var(--c);stroke-width:1;opacity:.6}
+.lk .pulse{fill:var(--c)}
+.lk.hot .core{opacity:1;stroke-width:1.5;stroke-dasharray:5 4;animation:lkflow 1s linear infinite}
+.lk.hot .glow{opacity:.14}
+.lk.hot .node{fill:var(--c);opacity:1}
+.lk.dim .core{opacity:.06} .lk.dim .node{opacity:.12}
+@keyframes lkflow{to{stroke-dashoffset:18}}
+.lk-chip{--c:var(--info);display:inline-flex;align-items:center;gap:7px;max-width:100%;min-width:0;background:none;border:1px solid color-mix(in srgb,var(--c) 40%,var(--line-2));color:var(--dim);font:var(--fs-xs)/1.3 var(--f-mono);padding:4px 8px;cursor:pointer;text-align:left}
+.lk-chip.r-supports{--c:var(--up)} .lk-chip.r-contradicts{--c:var(--down)}
+.lk-chip i{width:6px;height:6px;flex:none;background:var(--c);transform:rotate(45deg)}
+.lk-chip b{font-weight:500;color:var(--c);white-space:nowrap}
+.lk-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.lk-chip:hover{color:var(--fg);border-color:var(--c)}
+.lk-chip[aria-pressed="true"]{color:var(--fg);border-color:var(--c);background:color-mix(in srgb,var(--c) 12%,transparent)}
+.lk-tag{color:var(--info);white-space:nowrap;font:var(--fs-xs)/1 var(--f-mono)}
+.cl.lk-hot,.item.lk-hot{background:color-mix(in srgb,var(--info) 6%,transparent);box-shadow:inset 2px 0 0 var(--info)}
+.lk-flash{animation:lkflash 1.4s ease-out}
+@keyframes lkflash{0%,30%{box-shadow:inset 0 0 0 1px var(--info),0 0 0 3px color-mix(in srgb,var(--info) 30%,transparent)}100%{box-shadow:inset 0 0 0 1px transparent,0 0 0 3px transparent}}
+@media (prefers-reduced-motion:reduce){.lk.hot .core,.lk-flash{animation:none}}
+@media (max-width:700px){.lk-chip{padding:7px 9px}}
 .vp{font:700 9.5px/1 var(--f-label);letter-spacing:.06em;padding:3px 5px 2px;text-transform:uppercase;border:1px solid}
 .vp-supported{color:var(--up)} .vp-misleading{color:var(--warn)} .vp-false{color:var(--down)}
 .vp-unverified{color:var(--faint)} .vp-opinion{color:var(--dim);border-style:dashed} .vp-prediction{color:var(--info)}
@@ -439,6 +472,10 @@ table.funds{width:100%;border-collapse:collapse;font:var(--fs-s)/1.4 var(--f-mon
 
 <div class="notice" id="notice" hidden>
   <div class="notice-in"><b>SAMPLE MODE</b><span id="notice-text">News, X, ETF, theme and theory panels are showing example content in the exact shape the daily pipeline will write. None of it is real news or real fund data.</span></div>
+</div>
+
+<div class="notice budget" id="budget-note" hidden>
+  <div class="notice-in"><b>BUDGET</b><span id="budget-text"></span></div>
 </div>
 
 <div class="layoutbar" id="layoutbar" hidden>
@@ -576,6 +613,7 @@ table.funds{width:100%;border-collapse:collapse;font:var(--fs-s)/1.4 var(--f-mon
           <button type="button" data-v="calls">CALLS</button>
           <button type="button" data-v="flag">FLAGGED</button>
         </div>
+        <button type="button" class="tbtn" id="lk-toggle" aria-pressed="true" title="Draw every link between a claim and the feed. Hover or click one to follow it.">STRINGS</button>
       </div>
       <div id="claims-board"></div>
       <div id="claims-list"></div>
@@ -1097,6 +1135,10 @@ function buildSample(now){
     cl("@example_voice_c", "Example Commentator C", 1500, "The XRP Ledger processed more payments last month than the month before", "adoption", "neutral", "supported",
        "Ledger explorer data shows a month-over-month rise in payment transactions.")
   ];
+  claimsItems[0].links = [{item:"s02", rel:"context", via:"match"}];
+  claimsItems[2].links = [{item:"s01", rel:"contradicts", via:"cited"}, {item:"s12", rel:"context", via:"match"}];
+  claimsItems[3].links = [{item:"s07", rel:"contradicts", via:"match"}];
+  claimsItems[5].links = [{item:"s11", rel:"supports", via:"match"}];
   const acc = (h, n) => { const its = claimsItems.filter(c => c.handle === h); const r = {handle:h, name:n, total:its.length,
     supported:0, misleading:0, false:0, unverified:0, opinion:0, prediction:0, calls:{hit:0, missed:0, pending:0, came_true:0, did_not_happen:0, "open-ended":0, unclear:0}};
     its.forEach(c => { r[c.verdict]++; if (c.prediction) r.calls[c.prediction.outcome]++; }); return r; };
@@ -1262,10 +1304,11 @@ function filteredItems(){
   if (F.soft) xs = xs.filter(i => i.status !== "rumor" && i.status !== "speculative");
   xs = xs.filter(i => (IMPACT_RANK[i.impact?.tier] ?? 0) >= F.min);
   if (F.themes.length) xs = xs.filter(i => (i.themes||[]).some(t => F.themes.includes(t)));
-  const t = i => new Date(i.published_at).getTime();
-  xs.sort((a,b) => F.sort === "impact" ? ((IMPACT_RANK[b.impact?.tier]??0) - (IMPACT_RANK[a.impact?.tier]??0)) || (t(b)-t(a)) : t(b)-t(a));
+  xs.sort(cmpItems);
   return xs;
 }
+const itemTime = i => new Date(i.published_at).getTime();
+const cmpItems = (a, b) => F.sort === "impact" ? ((IMPACT_RANK[b.impact?.tier]??0) - (IMPACT_RANK[a.impact?.tier]??0)) || (itemTime(b) - itemTime(a)) : itemTime(b) - itemTime(a);
 
 function impactBlock(it){
   const im = it.impact || {};
@@ -1305,7 +1348,7 @@ function itemHtml(it){
       <span class="i-main">
         <span class="i-src">${esc(src.name)}${src.handle ? ` <span class="h">${esc(src.handle)}</span>` : ""}<span class="tier tier-${esc(src.tier)}">${TIER_LABEL[src.tier] || ""}</span>${DATA.meta.sample ? `<span class="smp">sample</span>` : ""}</span>
         <span class="i-hl">${esc(it.headline)}</span>
-        <span class="i-tags"><span class="st st-${esc(it.status)}">${esc(it.status)}</span>${themes}<span class="dir d-${esc(it.direction)}">${DIR_ARROW[it.direction]||""} ${esc(it.direction)}</span><span class="hz">· ${HORIZON_LABEL[it.horizon] || esc(it.horizon)}</span></span>
+        <span class="i-tags"><span class="st st-${esc(it.status)}">${esc(it.status)}</span>${themes}<span class="dir d-${esc(it.direction)}">${DIR_ARROW[it.direction]||""} ${esc(it.direction)}</span><span class="hz">· ${HORIZON_LABEL[it.horizon] || esc(it.horizon)}</span>${LK.byItem.has(it.id) ? `<span class="lk-tag" title="Linked to the Claim Tracker">◆ ${LK.byItem.get(it.id).length} claim${LK.byItem.get(it.id).length > 1 ? "s" : ""}</span>` : ""}</span>
       </span>
       <span class="i-imp">${impactBlock(it)}</span>
     </button>
@@ -1317,6 +1360,7 @@ function itemHtml(it){
         <div class="ib-box"><h4>What price did after</h4>${reactionTable(it.reaction)}</div>
       </div>
       ${(it.theories || []).length ? `<div class="i-tags">${it.theories.map(l => { const th = (DATA.theories || []).find(x => x.id === l.id); return th ? `<span class="tlink">${l.stance === "supports" ? "▲ supports" : "▼ against"}: ${esc(th.short || th.claim)}</span>` : ""; }).join("")}</div>` : ""}
+      ${LK.byItem.has(it.id) ? `<div class="ib-claims"><h4>Linked claims</h4>${LK.byItem.get(it.id).map(l => { const c = claimById(l.cid); return c ? chipHtml(l, `cl-${l.cid}`, `${c.name}: ${c.claim}`) : ""; }).join("")}</div>` : ""}
       <div class="ib-foot"><span>${esc(basisTxt)}</span><span>${NY_MDHM.format(d)} ET</span>${url ? `<a href="${esc(url)}" target="_blank" rel="noopener">Open source ↗</a>` : `<span>${DATA.meta.sample ? "Sample item · no source link" : "No link"}</span>`}</div>
     </div>
   </article>`;
@@ -1329,6 +1373,9 @@ function renderFeed(){
   const cap = isPhone() && !feedAll && xs.length > 6 ? 6 : xs.length;
   let shown = xs.slice(0, cap);
   if (openId && !shown.some(i => i.id === openId)){ const o = xs.find(i => i.id === openId); if (o) shown = [...shown, o]; }
+  // items linked to a pinned claim are always shown, even past the phone cap or outside the filters
+  const forced = pinnedItemIds().filter(id => !shown.some(i => i.id === id)).map(id => (DATA.items || []).find(i => i.id === id)).filter(Boolean);
+  if (forced.length) shown = [...shown, ...forced].sort(cmpItems);
   $("#feed").innerHTML = xs.length
     ? shown.map(itemHtml).join("") + (cap < xs.length ? `<button type="button" class="feed-more" id="feed-more">Show all ${xs.length} items</button>` : "")
     : `<div class="empty">No items match these filters.</div>`;
@@ -1341,6 +1388,7 @@ function renderFeed(){
   $$("#themes .th-row").forEach(r => r.setAttribute("aria-pressed", String(F.themes.length === 1 && F.themes[0] === r.dataset.t)));
   store.set("filters", F);
   setMarkers();
+  scheduleStrings();
 }
 
 function buildThemeChips(){
@@ -1454,7 +1502,8 @@ function renderClaims(){
   if (CLF.account) xs = xs.filter(c => c.handle === CLF.account);
   if (CLF.mode === "calls") xs = xs.filter(c => c.prediction);
   if (CLF.mode === "flag") xs = xs.filter(c => c.verdict === "false" || c.verdict === "misleading");
-  const shown = CLF.all ? xs : xs.slice(0, 12);
+  let shown = CLF.all ? xs : xs.slice(0, 12);
+  if (LK.pin && !shown.some(c => c.id === LK.pin)){ const p = (C.items || []).find(c => c.id === LK.pin); if (p) shown = [...shown, p]; }
   $("#claims-list").innerHTML = (xs.length ? shown.map(c => {
     const pr = c.prediction;
     let pline = "";
@@ -1465,7 +1514,8 @@ function renderClaims(){
       pline = `<div class="cl-pred">${tgt}${by}${pr.basis ? ` (${esc(pr.basis)})` : ""} · <span class="oc-${esc(pr.outcome)}">${CL_OUT[pr.outcome] || esc(pr.outcome)}${peak}</span>${pr.note ? " · " + esc(pr.note) : ""}</div>`;
     }
     const post = safeUrl(c.url), ev = safeUrl(c.evidence_url);
-    return `<article class="cl">
+    const lks = (LK.byClaim.get(c.id) || []).map(l => { const it = itemById(l.item); return it ? chipHtml(l, `it-${l.item}`, it.headline) : ""; }).join("");
+    return `<article class="cl" id="cl-${esc(c.id)}" data-cid="${esc(c.id)}">
       <div class="cl-meta"><span>${NY_MDHM.format(new Date(c.published_at))} ET</span><span class="who">${esc(c.name)} ${esc(c.handle)}</span>
         <span class="vp vp-${esc(c.verdict)}">${CL_VERDICT[c.verdict] || esc(c.verdict)}</span><span class="tag">${CL_TYPE[c.type] || esc(c.type)}</span>
         <span class="dir d-${esc(c.stance)}">${DIR_ARROW[c.stance] || ""} ${esc(c.stance)}</span></div>
@@ -1473,10 +1523,13 @@ function renderClaims(){
       <p class="cl-said" title="${esc(c.text)}"><b>Posted</b>“${esc(c.text)}”${c.quoted_text ? ` · quoting “${esc(c.quoted_text)}”` : ""}</p>
       <p><b>On record</b>${esc(c.on_record)}</p>${pline}
       <div class="cl-links">${post ? `<a href="${esc(post)}" target="_blank" rel="noopener">Post ↗</a>` : ""}${ev ? `<a href="${esc(ev)}" target="_blank" rel="noopener">Source ↗</a>` : ""}</div>
+      ${lks ? `<div class="cl-feed"><span>In the feed</span>${lks}</div>` : ""}
     </article>`;
   }).join("") : `<div class="empty">No claims match.</div>`) +
     (!CLF.all && xs.length > 12 ? `<button type="button" class="feed-more" id="cl-more">Show all ${xs.length}</button>` : "") +
-    `<div class="note">${DATA.meta.sample ? "Sample accounts and claims. " : ""}Each claim is checked against the record. Supported, misleading and contradicted all need a cited source; without one a claim stays unverified. Dated price calls are scored from Coinbase prices after the deadline. Assessing the claim, not the person.</div>`;
+    `<div class="note">${DATA.meta.sample ? "Sample accounts and claims. " : ""}Each claim is checked against the record. Supported, misleading and contradicted all need a cited source; without one a claim stays unverified. Dated price calls are scored from Coinbase prices after the deadline. Strings connect a claim to feed items about the same event: green backs it, red conflicts with it, blue is the same event without settling it. Assessing the claim, not the person.</div>`;
+  $("#lk-toggle").setAttribute("aria-pressed", String(LK.on));
+  scheduleStrings();
 }
 
 const openHist = new Set();
@@ -1918,6 +1971,137 @@ function wire(){
 }
 
 /* =====================================================================
+   CLAIM <-> FEED STRINGS: links from the pipeline drawn as routed traces
+   in an overlay. They run through the gap between panels (or the page
+   margin when the panels are stacked), so they never cross text.
+   ===================================================================== */
+const LK = {on: store.get("strings", true), pin: null, hover: null, raf: 0, byClaim: new Map(), byItem: new Map()};
+const REL_LABEL = {supports:"Backs it", contradicts:"Conflicts", context:"Same event"};
+const relLabel = l => l.via === "same_post" ? "Same post" : (l.via === "cited" ? "Cited · " : "") + (REL_LABEL[l.rel] || l.rel);
+const claimById = id => (DATA.claims?.items || []).find(c => c.id === id);
+const itemById = id => (DATA.items || []).find(i => i.id === id);
+const pinnedItemIds = () => LK.pin ? (LK.byClaim.get(LK.pin) || []).map(l => l.item) : [];
+
+function indexLinks(){
+  LK.byClaim = new Map(); LK.byItem = new Map();
+  const ids = new Set((DATA.items || []).map(i => i.id));
+  for (const c of DATA.claims?.items || []) for (const l of c.links || []){
+    if (!ids.has(l.item)) continue;
+    const x = {cid:c.id, item:l.item, rel:REL_LABEL[l.rel] ? l.rel : "context", via:l.via};
+    if (!LK.byClaim.has(c.id)) LK.byClaim.set(c.id, []);
+    if (!LK.byItem.has(l.item)) LK.byItem.set(l.item, []);
+    LK.byClaim.get(c.id).push(x); LK.byItem.get(l.item).push(x);
+  }
+}
+function chipHtml(l, go, text){
+  return `<button type="button" class="lk-chip r-${esc(l.rel)}" data-pin="${esc(l.cid)}" data-go="${esc(go)}" aria-pressed="${LK.pin === l.cid && LK.go === go}" title="${esc(relLabel(l))}: ${esc(text)}"><i></i><b>${esc(relLabel(l))}</b><span>${esc(text)}</span></button>`;
+}
+function scheduleStrings(){ if (!LK.raf) LK.raf = requestAnimationFrame(drawStrings); }
+
+function roundedPath(pts, rad){
+  const f = n => Math.round(n * 10) / 10;
+  let d = `M${f(pts[0][0])} ${f(pts[0][1])}`;
+  for (let i = 1; i < pts.length - 1; i++){
+    const [px, py] = pts[i-1], [x, y] = pts[i], [nx, ny] = pts[i+1];
+    const d1 = Math.hypot(x - px, y - py), d2 = Math.hypot(nx - x, ny - y), r = Math.min(rad, d1 / 2, d2 / 2);
+    if (r < .5){ d += ` L${f(x)} ${f(y)}`; continue; }
+    d += ` L${f(x + (px - x) / d1 * r)} ${f(y + (py - y) / d1 * r)} Q${f(x)} ${f(y)} ${f(x + (nx - x) / d2 * r)} ${f(y + (ny - y) / d2 * r)}`;
+  }
+  const e = pts[pts.length - 1];
+  return d + ` L${f(e[0])} ${f(e[1])}`;
+}
+const docRect = el => { const r = el.getBoundingClientRect(); return {l:r.left + scrollX, r:r.right + scrollX, t:r.top + scrollY, b:r.bottom + scrollY, h:r.height}; };
+
+function drawStrings(){
+  LK.raf = 0;
+  const svg = document.getElementById("lk-svg");
+  if (!svg) return;
+  $$(".lk-hot").forEach(e => e.classList.remove("lk-hot"));
+  svg.style.height = "0px";
+  if (!DATA || isArranging() || !LK.byClaim.size){ svg.innerHTML = ""; return; }
+  const W = document.documentElement.clientWidth, H = document.documentElement.scrollHeight;
+  svg.setAttribute("width", W); svg.setAttribute("height", H); svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.style.width = W + "px"; svg.style.height = H + "px";
+  const k = LK.pin ? {t:"claim", id:LK.pin} : LK.hover;
+  const hotOf = l => !!k && (k.t === "claim" ? l.cid === k.id : l.item === k.id);
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // pairs whose two ends are both on screen (rendered and not hidden)
+  const pairs = [];
+  for (const [cid, ls] of LK.byClaim){
+    const ce = document.getElementById("cl-" + cid);
+    if (!ce || !ce.offsetParent) continue;
+    for (const l of ls){
+      const hot = hotOf(l);
+      if (!LK.on && !hot) continue;
+      const ie = document.getElementById("it-" + l.item);
+      if (!ie || !ie.offsetParent) continue;
+      pairs.push({l, hot, ce, ie});
+    }
+  }
+  const lanes = [...new Set(pairs.map(p => p.l.cid))];
+  const out = [];
+  for (const p of pairs){
+    const C = docRect(p.ce), I = docRect(p.ie);
+    const sy = Math.min(C.t + 19, C.b - 4), ey = Math.min(I.t + 23, I.b - 4);
+    let bus, busW, sx, ex;
+    if (C.l >= I.r - 1){ bus = (I.r + C.l) / 2; busW = C.l - I.r; sx = C.l; ex = I.r; }          // claim to the right of the item
+    else if (I.l >= C.r - 1){ bus = (C.r + I.l) / 2; busW = I.l - C.r; sx = C.r; ex = I.l; }     // claim to the left
+    else {                                                                                        // stacked: use the wider margin
+      const right = W - Math.max(C.r, I.r), left = Math.min(C.l, I.l);
+      if (right >= left){ busW = right; bus = Math.max(C.r, I.r) + right / 2; sx = C.r; ex = I.r; }
+      else { busW = left; bus = left / 2; sx = C.l; ex = I.l; }
+    }
+    const n = lanes.length, li = lanes.indexOf(p.l.cid);
+    const bx = bus + (n > 1 ? (li / (n - 1) - .5) * Math.max(0, busW - 6) : 0);
+    const d = roundedPath([[sx, sy], [bx, sy], [bx, ey], [ex, ey]], 9);
+    const node = (x, y) => `<rect class="node" x="${(x - 3).toFixed(1)}" y="${(y - 3).toFixed(1)}" width="6" height="6" transform="rotate(45 ${x.toFixed(1)} ${y.toFixed(1)})"/>`;
+    out.push({hot:p.hot, svg:`<g class="lk r-${p.l.rel}${p.hot ? " hot" : k ? " dim" : ""}"><path class="glow" d="${d}"/><path class="core" d="${d}"/>${node(sx, sy)}${node(ex, ey)}` +
+      (p.hot && !reduce ? `<circle class="pulse" r="2.4"><animateMotion dur="1.7s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear" path="${d}"/></circle>` : "") + `</g>`});
+    if (p.hot){ p.ce.classList.add("lk-hot"); p.ie.classList.add("lk-hot"); }
+  }
+  out.sort((a, b) => a.hot - b.hot);            // hot strings on top
+  svg.innerHTML = out.map(o => o.svg).join("");
+}
+
+function revealEl(el){
+  const top = ($(".bar")?.offsetHeight || 52) + 10, r = el.getBoundingClientRect();
+  if (r.top < top || r.bottom > innerHeight - 10){
+    const y = scrollY + r.top - Math.max(top, (innerHeight - Math.min(r.height, innerHeight - top)) / 2);
+    window.scrollTo({top:Math.max(0, y), behavior:matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"});
+  }
+  el.classList.remove("lk-flash"); void el.offsetWidth; el.classList.add("lk-flash");
+  setTimeout(() => el.classList.remove("lk-flash"), 1500);
+}
+function pinClaim(cid, go){
+  // the same chip twice unpins; another chip of the pinned claim moves to its target
+  if (LK.pin === cid && LK.go === go){ LK.pin = LK.go = null; renderFeed(); renderClaims(); return; }
+  LK.pin = cid; LK.go = go; LK.hover = null;
+  renderFeed(); renderClaims();
+  const el = go && document.getElementById(go);
+  if (el) revealEl(el);
+}
+function initStrings(){
+  document.addEventListener("click", e => {
+    const b = e.target.closest("[data-pin]");
+    if (b){ e.preventDefault(); e.stopPropagation(); pinClaim(b.dataset.pin, b.dataset.go); }
+  }, true);
+  $("#lk-toggle").addEventListener("click", () => { LK.on = !LK.on; store.set("strings", LK.on); $("#lk-toggle").setAttribute("aria-pressed", String(LK.on)); scheduleStrings(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && LK.pin){ LK.pin = LK.go = null; renderFeed(); renderClaims(); } });
+  document.addEventListener("pointerover", e => {
+    if (e.pointerType !== "mouse" || LK.pin) return;
+    const t = e.target.closest?.("article.cl[data-cid], article.item[data-id]");
+    let k = null;
+    if (t && t.matches("article.cl") && LK.byClaim.has(t.dataset.cid)) k = {t:"claim", id:t.dataset.cid};
+    else if (t && t.matches("article.item") && LK.byItem.has(t.dataset.id)) k = {t:"item", id:t.dataset.id};
+    if ((k && k.id) !== (LK.hover && LK.hover.id)){ LK.hover = k; scheduleStrings(); }
+  });
+  addEventListener("resize", scheduleStrings);
+  if ("ResizeObserver" in window){ const ro = new ResizeObserver(scheduleStrings); ["#desk", "#feed", "#claims-list"].forEach(s => { const el = $(s); if (el) ro.observe(el); }); }
+  document.fonts?.ready.then(scheduleStrings);
+}
+
+/* =====================================================================
    ARRANGE: move panels between the top strip, two columns and bottom
    strip. Saved in this browser only.
    ===================================================================== */
@@ -2105,6 +2289,21 @@ function initMenu(){
   });
 }
 
+function renderBudget(){
+  const b = DATA.meta?.budget, note = $("#budget-note");
+  if (!b || DATA.meta.sample){ note.hidden = true; return; }
+  const day = iso => new Intl.DateTimeFormat("en-US", {weekday:"short", month:"short", day:"numeric", timeZone:"UTC"}).format(new Date(iso + "T12:00:00Z"));
+  const today = new Intl.DateTimeFormat("en-CA", {timeZone:"America/New_York"}).format(new Date());
+  const days = b.pause_on ? Math.round((Date.parse(b.pause_on) - Date.parse(today)) / 864e5) : Infinity;
+  note.classList.toggle("paused", !!b.paused);
+  if (b.paused){
+    $("#budget-text").textContent = `Grok scans are paused: this month's $${b.cap_usd} budget is used up. ETF flows and prices keep updating. Scans resume ${day(b.resets_on)}, or sooner if budget.monthly_usd is raised.`;
+  } else if (days <= 7){
+    $("#budget-text").textContent = `$${b.spent_usd.toFixed(2)} of the $${b.cap_usd} Grok budget used. At about $${b.daily_usd.toFixed(2)} a day, scans pause around ${day(b.pause_on)} and resume ${day(b.resets_on)}. ETF flows and prices keep updating. A GitHub email goes out 3 days before.`;
+  } else { note.hidden = true; return; }
+  note.hidden = false;
+}
+
 async function main(){
   buildSkinPicker();
   syncThemeColor();
@@ -2136,11 +2335,14 @@ async function main(){
   const unlock = DATA.event_log?.unlock_n ?? 30;
   $("#unlock-n").textContent = unlock;
   $("#log-status").textContent = DATA.event_log ? `Events logged so far: ${DATA.event_log.logged}${sample ? " (sample count)" : ""}.` : "";
+  renderBudget();
+  indexLinks(); initStrings();
   renderEtf(); drawEtfChart(); renderFeed(); renderThemes(); renderTheories(); renderClaims();
   if (chartOk) loadPrice();
   else { setPricePill("warn", "Price · chart offline"); connectWs(); }
 }
 main();
 </script>
+<svg id="lk-svg" aria-hidden="true"></svg>
 </body>
 </html>

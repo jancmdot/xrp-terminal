@@ -53,6 +53,9 @@ class Budget:
             m["x_posts"] += posts
             m["x_users"] += users
             m["web_searches"] += webs
+            day = now_utc().strftime("%Y-%m-%d")
+            bd = m.setdefault("by_day", {})
+            bd[day] = round(bd.get(day, 0) + usd, 4)
         log.info("grok %-22s in=%d out=%d posts=%d users=%d web=%d  ≈$%.3f  (month $%.2f / $%s)",
                  label, inp, out, posts, users, webs, usd, m["usd"], c["monthly_usd"])
         return usd

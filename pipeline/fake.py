@@ -32,6 +32,8 @@ def respond(method, url, **kw):
         return FakeResponse(_xai(kw.get("json") or {}))
     if u.netloc == "api.exchange.coinbase.com":
         return FakeResponse(_candles(u.path, q))
+    if u.netloc == "api.github.com" and method == "POST" and u.path.endswith("/issues"):
+        return FakeResponse({"number": 1, "html_url": "https://github.com/test/repo/issues/1"}, 201)
     if u.netloc == "open-api-v4.coinglass.com":
         return FakeResponse(_coinglass(u.path, q))
     if "xrpl.org" in u.netloc:
@@ -130,6 +132,16 @@ def _xai(body):
                                  [{"theory": "collateral", "stance": "supports"}] if "basel" in txt else
                                  [{"theory": "collateral", "stance": "supports"}, {"theory": "nonexistent", "stance": "supports"}] if spec else [])})
         return _wrap({"items": items}, [], _usage())
+    if name == "links":
+        payload = json.loads(body["input"][1]["content"])
+        out = []
+        items = payload["items"]
+        for c in payload["claims"]:
+            if "$2" in c["claim"] and items:
+                out.append({"claim": c["id"], "item": items[-1]["id"], "rel": "context"})
+        if items:
+            out.append({"claim": "c:does-not-exist", "item": items[0]["id"], "rel": "supports"})   # must be dropped
+        return _wrap({"links": out}, [], _usage())
     if name == "claim_check":
         payload = json.loads(body["input"][1]["content"])
         out = []

@@ -13,10 +13,11 @@ on:
         description: What to run
         type: choice
         default: auto
-        options: [auto, scan, etf, reactions, rebuild, verify_handles, find_accounts, claims]
+        options: [auto, scan, etf, reactions, rebuild, verify_handles, find_accounts, claims, link]
 
 permissions:
   contents: write
+  issues: write          # budget heads-up: an issue that mentions you, so GitHub emails it
 
 concurrency:
   group: pipeline
@@ -45,6 +46,7 @@ jobs:
         env:
           XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
           COINGLASS_API_KEY: ${{ secrets.COINGLASS_API_KEY }}
+          GITHUB_TOKEN: ${{ github.token }}
         run: python -m pipeline --task "${{ inputs.task || 'auto' }}"
 
       - name: Save results

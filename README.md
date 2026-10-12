@@ -43,9 +43,11 @@ Each rated item is checked against the tracked theories in `config/theories.yaml
 
 Tracks what widely followed XRP accounts (`config/influencers.yaml`, max 20) claim about XRP. Once a day one X search pulls their recent posts that state a fact, a number, insider information or a prediction; a second Grok call checks each claim with web search. Verdicts: supported, misleading, contradicted, unverified, opinion, prediction. A claim is only called misleading or contradicted with a cited source from that search; without one it's unverified. Dated price calls are scored automatically from Coinbase daily highs and lows once the date passes; other dated predictions are checked by web search. The panel shows each account's tally and calls, and the claims from the last 30 days plus any still pending. It assesses claims, not people. To add an account by name, add `- lookup: <name>` and run the `find_accounts` task.
 
+Claims are linked to feed items about the same event: the item the check cited, the claim's own post if it's in the feed, and matches Grok finds after each scan (backs it, conflicts with it, or same event). On the page these are drawn as strings between the two panels; hover a claim or feed item to follow its strings, or click a link chip to pin it and jump to the other end. STRINGS in the panel header turns the always-on strings off.
+
 ## Cost control
 
-Each Grok call's usage is logged and priced with the rates in `config/settings.yaml`. When the month's estimate reaches `budget.monthly_usd` (default $40), scans stop until the next month. Spend shows in the page footer.
+Each Grok call's usage is logged and priced with the rates in `config/settings.yaml`. When the month's estimate reaches `budget.monthly_usd` (default $40), scans stop until the next month. Spend shows in the page footer. The pipeline projects the pause date from the average of the last 7 days: the page shows a banner a week ahead, and 3 days ahead it opens a GitHub issue that mentions you, so GitHub emails it (once more if scans actually pause).
 
 ## Files
 

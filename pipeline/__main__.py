@@ -6,11 +6,11 @@ import datetime as dt
 import sys
 from concurrent.futures import ThreadPoolExecutor
 
-from . import claims, classify, markets, news, store, theories, xscan
+from . import alerts, claims, classify, links, markets, news, store, theories, xscan
 from .util import DATA_DIR, NY, add_file_log, iso, load_json, load_yaml, log, now_utc, parse_iso, save_json, setup_logging
 from .xai import Budget, BudgetExceeded, Grok
 
-TASKS = ["auto", "scan", "etf", "reactions", "rebuild", "verify_handles", "find_accounts", "claims"]
+TASKS = ["auto", "scan", "etf", "reactions", "rebuild", "verify_handles", "find_accounts", "claims", "link"]
 
 
 def plan(task: str, state: dict, settings: dict) -> tuple[list[str], list[str]]:
@@ -189,7 +189,7 @@ def main(argv: list[str] | None = None) -> int:
     grok = Grok(settings, Budget(state, settings))
 
     tasks, slots = plan(args.task, state, settings)
-    if {"scan", "verify_handles", "find_accounts", "claims"} & set(tasks):
+    if {"scan", "verify_handles", "find_accounts", "claims", "link"} & set(tasks):
         add_file_log()
     log.info("New York %s · tasks: %s", now_utc().astimezone(NY).strftime("%a %H:%M"), ", ".join(tasks) or "reactions only")
     try:
@@ -207,6 +207,11 @@ def main(argv: list[str] | None = None) -> int:
                 run_claims(grok, state, icfg)
         if "claims" in tasks:
             run_claims(grok, state, load_yaml("influencers.yaml"))
+        if {"scan", "claims", "link"} & set(tasks) and grok.available:
+            try:
+                links.run(grok, state, evs)
+            except BudgetExceeded as e:
+                log.warning("%s", e)
         if "etf" in tasks:
             run_etf(state)
     finally:
@@ -222,9 +227,19 @@ def main(argv: list[str] | None = None) -> int:
         if store.has_any_data(evs) and args.task not in ("verify_handles", "find_accounts"):
             out = store.build(evs, state, settings, theories.build_output(theory_list, state, evs), state.get("theme_states", {}))
             out["claims"] = claims.build_output(load_yaml("influencers.yaml"), state)
+            if out["claims"]:
+                shown = {i["id"] for i in out["items"]}
+                for c in out["claims"]["items"]:
+                    if c.get("links"):
+                        c["links"] = [l for l in c["links"] if l["item"] in shown]
+            out["meta"]["budget"] = alerts.budget_outlook(state, settings)
             if store.write_output(out):
                 log.info("wrote data.json (%d events logged)", len(evs))
         store.save_events(evs)
+        try:
+            alerts.notify(state, settings)
+        except Exception as e:  # a missed heads-up must never fail the run
+            log.warning("budget heads-up skipped: %s", e)
         store.save_state(state)
     return 0
 
