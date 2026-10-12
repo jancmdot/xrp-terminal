@@ -107,7 +107,8 @@
   "n:0647aa211da6": "2026-10-12T12:29:06Z",
   "n:20b53fcb3628": "2026-10-12T12:29:06Z",
   "n:efa175d9083e": "2026-10-12T12:29:06Z",
-  "n:2035f305e1e9": "2026-10-12T12:29:06Z"
+  "n:2035f305e1e9": "2026-10-12T12:29:06Z",
+  "c:2109687734600163822": "2026-10-12T16:59:47Z"
  },
  "slots_done": [
   "etf:2026-10-08:20",
@@ -120,9 +121,9 @@
  ],
  "spend": {
   "2026-10": {
-   "usd": 13.983,
-   "calls": 126,
-   "x_posts": 786,
+   "usd": 14.2487,
+   "calls": 128,
+   "x_posts": 815,
    "x_users": 312,
    "web_searches": 115
   }
@@ -141,7 +142,7 @@
  "theme_states": {
   "stb": "Standard Chartered says RLUSD custody is live in Dubai; reports cite a $2B cap and several RLUSD burns.",
   "etf": "A sheet put spot XRP ETF vaults near 1.16 billion XRP; outlets said inflows cooled after about $1.7 billion held.",
-  "col": "An NYC XRPL lending hackathon is open, Clearpool will discuss lending, and Evernorth\u2019s SPAC was reported closed."
+  "col": "An NYC XRPL lending hackathon is open, Clearpool will discuss lending, and Evernorth’s SPAC was reported closed."
  },
  "theories": {
   "supply-shock": {
@@ -195,5 +196,6 @@
    }
   }
  },
- "theories_since": "2026-10-09T16:07:31Z"
+ "theories_since": "2026-10-09T16:07:31Z",
+ "last_claims_scan": "2026-10-12T16:57:33Z"
 }
