@@ -108,7 +108,25 @@
   "n:20b53fcb3628": "2026-10-12T12:29:06Z",
   "n:efa175d9083e": "2026-10-12T12:29:06Z",
   "n:2035f305e1e9": "2026-10-12T12:29:06Z",
-  "c:2109687734600163822": "2026-10-12T16:59:47Z"
+  "c:2109687734600163822": "2026-10-12T16:59:47Z",
+  "c:2109687365090635843": "2026-10-12T17:12:46Z",
+  "c:2109682840673911136": "2026-10-12T17:12:46Z",
+  "c:2109658335264006251": "2026-10-12T17:12:46Z",
+  "c:2109628885428240470": "2026-10-12T17:12:46Z",
+  "c:2109670213868490899": "2026-10-12T17:12:46Z",
+  "c:2109668649577681103": "2026-10-12T17:12:46Z",
+  "c:2109666583375487308": "2026-10-12T17:12:46Z",
+  "c:2109633978051490082": "2026-10-12T17:12:46Z",
+  "c:2109690566887846000": "2026-10-12T17:12:46Z",
+  "c:2109675462926762443": "2026-10-12T17:12:46Z",
+  "c:2109653664755224658": "2026-10-12T17:12:46Z",
+  "c:2109652302252630193": "2026-10-12T17:12:46Z",
+  "c:2109656801356493023": "2026-10-12T17:12:46Z",
+  "c:2109655364644061655": "2026-10-12T17:12:46Z",
+  "c:2109645270388470122": "2026-10-12T17:12:46Z",
+  "c:2109676152705212421": "2026-10-12T17:12:46Z",
+  "c:2109653305739907348": "2026-10-12T17:12:46Z",
+  "c:2109651944688198018": "2026-10-12T17:12:46Z"
  },
  "slots_done": [
   "etf:2026-10-08:20",
@@ -121,11 +139,11 @@
  ],
  "spend": {
   "2026-10": {
-   "usd": 14.2487,
-   "calls": 128,
-   "x_posts": 815,
+   "usd": 14.9102,
+   "calls": 131,
+   "x_posts": 844,
    "x_users": 312,
-   "web_searches": 115
+   "web_searches": 130
   }
  },
  "last_etf_pull": "2026-10-10T00:56:34Z",
@@ -142,7 +160,7 @@
  "theme_states": {
   "stb": "Standard Chartered says RLUSD custody is live in Dubai; reports cite a $2B cap and several RLUSD burns.",
   "etf": "A sheet put spot XRP ETF vaults near 1.16 billion XRP; outlets said inflows cooled after about $1.7 billion held.",
-  "col": "An NYC XRPL lending hackathon is open, Clearpool will discuss lending, and Evernorth\u2019s SPAC was reported closed."
+  "col": "An NYC XRPL lending hackathon is open, Clearpool will discuss lending, and Evernorth’s SPAC was reported closed."
  },
  "theories": {
   "supply-shock": {
@@ -196,5 +214,12 @@
    }
   }
  },
- "theories_since": "2026-10-09T16:07:31Z"
+ "theories_since": "2026-10-09T16:07:31Z",
+ "xrp_record_high": {
+  "price": 3.6662,
+  "date": "2025-07-18",
+  "through": "2026-10-12T17:12:44Z"
+ },
+ "claims_queue": [],
+ "last_claims_scan": "2026-10-12T17:01:17Z"
 }
