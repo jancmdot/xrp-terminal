@@ -53,6 +53,8 @@ groups:
       - CoinDesk
       - Cointelegraph
       - DeItaone           # Walter Bloomberg, headline wire
+    t2_handles:            # fast headline accounts that often post before a source is linked
+      - WatcherGuru
     primary_handles:       # on-chain data accounts count as primary records
       - whale_alert
       - lookonchain

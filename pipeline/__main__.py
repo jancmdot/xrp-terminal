@@ -10,7 +10,7 @@ from . import classify, markets, news, store, theories, xscan
 from .util import DATA_DIR, NY, add_file_log, iso, load_json, load_yaml, log, now_utc, parse_iso, save_json, setup_logging
 from .xai import Budget, BudgetExceeded, Grok
 
-TASKS = ["auto", "scan", "etf", "reactions", "rebuild", "verify_handles"]
+TASKS = ["auto", "scan", "etf", "reactions", "rebuild", "verify_handles", "find_accounts", "claims"]
 
 
 def plan(task: str, state: dict, settings: dict) -> tuple[list[str], list[str]]:
@@ -136,6 +136,24 @@ def run_etf(state: dict) -> None:
         state["positioning"] = markets.positioning() or state.get("positioning")
 
 
+def run_find_accounts(grok: Grok) -> None:
+    if not grok.available:
+        log.error("XAI_API_KEY not set: can't look up accounts")
+        return
+    cfg = load_yaml("influencers.yaml")
+    queries = [a["lookup"] for a in cfg.get("accounts") or [] if a.get("lookup") and not a.get("handle")]
+    known = [a["handle"].lstrip("@") for a in cfg.get("accounts") or [] if a.get("handle")]
+    listed = [h for g in xscan.groups_from_config(load_yaml("handles.yaml")) for h in g["tiers"]]
+    data = xscan.find_accounts(grok, queries + [f"@{h}" for h in ("WatcherGuru",)], int(cfg.get("suggest_more", 10)), known + listed)
+    save_json(DATA_DIR / "account_lookup.json", {"checked_at": iso(now_utc()), **data})
+    print("\nLOOKUP")
+    for f in data.get("found") or []:
+        print(f"  {f['match']:<9} {f['query'][:40]:<40} -> @{f['handle'] or '-'}  {f['display_name'] or ''}  ({f['followers'] or '?'} followers)")
+    print("\nSUGGESTED")
+    for s in data.get("suggested") or []:
+        print(f"  @{s['handle']:<18} {s['display_name'][:28]:<28} {s['followers'] or '?'}  {s['why'][:90]}")
+
+
 def run_verify(grok: Grok) -> None:
     if not grok.available:
         log.error("XAI_API_KEY not set: can't verify handles")
@@ -160,12 +178,14 @@ def main(argv: list[str] | None = None) -> int:
     grok = Grok(settings, Budget(state, settings))
 
     tasks, slots = plan(args.task, state, settings)
-    if {"scan", "verify_handles"} & set(tasks):
+    if {"scan", "verify_handles", "find_accounts", "claims"} & set(tasks):
         add_file_log()
     log.info("New York %s · tasks: %s", now_utc().astimezone(NY).strftime("%a %H:%M"), ", ".join(tasks) or "reactions only")
     try:
         if "verify_handles" in tasks:
             run_verify(grok)
+        if "find_accounts" in tasks:
+            run_find_accounts(grok)
         if "scan" in tasks:
             ny_h = now_utc().astimezone(NY).hour
             web = args.task == "scan" or any(h <= ny_h <= h + 1 for h in settings["xai"].get("web_news_hours_et", []))
@@ -182,7 +202,7 @@ def main(argv: list[str] | None = None) -> int:
                 log.info("filled %d price-reaction cells", filled)
         except Exception as e:  # prices are retried next run
             log.warning("price reactions skipped: %s", e)
-        if store.has_any_data(evs) and args.task != "verify_handles":
+        if store.has_any_data(evs) and args.task not in ("verify_handles", "find_accounts"):
             if store.write_output(store.build(evs, state, settings, theories.build_output(theory_list, state, evs), state.get("theme_states", {}))):
                 log.info("wrote data.json (%d events logged)", len(evs))
         store.save_events(evs)

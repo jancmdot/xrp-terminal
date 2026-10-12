@@ -61,6 +61,8 @@ def groups_from_config(handles_cfg: dict) -> list[dict]:
             tiers[h.lstrip("@")] = "t1"
         for h in g.get("primary_handles") or []:
             tiers[h.lstrip("@")] = "primary"
+        for h in g.get("t2_handles") or []:
+            tiers[h.lstrip("@")] = "t2"
         if len(tiers) > 20:
             raise ValueError(f"Handle group '{g.get('name')}' has {len(tiers)} accounts; x_search allows 20 per request")
         if tiers:
@@ -216,3 +218,35 @@ def verify_handles(grok: Grok, handles_cfg: dict) -> list[dict]:
         rows.append({"group": group, "handle": h, "status": a.get("status"), "exists": a.get("status") == "found",
                      "display_name": a.get("display_name"), "description": a.get("description")})
     return rows
+
+
+LOOKUP_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "found": {"type": "array", "items": {"type": "object", "properties": {
+            "query": {"type": "string"}, "handle": {"type": ["string", "null"]}, "display_name": {"type": ["string", "null"]},
+            "bio": {"type": ["string", "null"]}, "followers": {"type": ["integer", "null"]},
+            "match": {"type": "string", "enum": ["exact", "likely", "not_found"]}},
+            "required": ["query", "handle", "display_name", "bio", "followers", "match"], "additionalProperties": False}},
+        "suggested": {"type": "array", "items": {"type": "object", "properties": {
+            "handle": {"type": "string"}, "display_name": {"type": "string"}, "bio": {"type": ["string", "null"]},
+            "followers": {"type": ["integer", "null"]}, "why": {"type": "string"}},
+            "required": ["handle", "display_name", "bio", "followers", "why"], "additionalProperties": False}},
+    },
+    "required": ["found", "suggested"], "additionalProperties": False,
+}
+
+
+def find_accounts(grok: Grok, queries: list[str], suggest: int, exclude: list[str]) -> dict:
+    """Resolve account names to X handles with a user search, and suggest similar accounts."""
+    user = ("Use X user search to find the X account for each of these names or handles. Report the exact handle, display name, "
+            "bio and follower count from the profile, and whether it's an exact match, a likely match, or not found. "
+            "Prefer the person's or show's main account over fan or parody accounts.\n"
+            + "\n".join(f"- {q}" for q in queries) +
+            f"\n\nThen suggest up to {suggest} other widely followed accounts whose posts are mainly commentary about XRP "
+            "(individual commentators, podcasters, YouTubers or community accounts; not companies, news outlets, Ripple employees "
+            f"or bots), ranked by reach. Don't include these: {', '.join('@' + e for e in exclude)}. Give each one's handle, name, bio, "
+            "followers and one line on why it's relevant.")
+    data, _ = grok.respond(system="You look up X accounts for a data pipeline. Only report what profile search results show; never invent handles.",
+                           user=user, schema=LOOKUP_SCHEMA, name="lookup", tools=[{"type": "x_search"}], label="find-accounts")
+    return data

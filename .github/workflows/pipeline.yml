@@ -13,7 +13,7 @@ on:
         description: What to run
         type: choice
         default: auto
-        options: [auto, scan, etf, reactions, rebuild, verify_handles]
+        options: [auto, scan, etf, reactions, rebuild, verify_handles, find_accounts, claims]
 
 permissions:
   contents: write

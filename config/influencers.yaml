@@ -1,0 +1,17 @@
+# Claim Tracker: widely followed XRP accounts whose claims about XRP are logged and checked.
+# Each scan that runs the tracker (hours below) reads their recent posts, keeps the ones that make a
+# checkable claim or a prediction, and checks each against the record with a cited source.
+# Max 20 accounts (one X search). `handle` is filled in after the find_accounts lookup.
+
+hours_et: [17]          # which scans run the tracker (17 = the 5 PM scan); manual scans always run it
+max_posts: 15           # asked for per run, not hard-enforced
+max_web_searches: 4     # for checking claims against the record
+
+accounts:
+  - lookup: Versan Aljarrah, Black Swan Capitalist
+  - lookup: Jake Claver
+  - lookup: WaterAbv (XRP community account)
+  - lookup: Good Evening Crypto
+
+# Filled in by the lookup: other widely followed XRP commentary accounts, to review before adding.
+suggest_more: 10
