@@ -67,6 +67,16 @@ def _xai(body):
                      {"url": "https://x.com/JSeyff/status/1975000000000000099", "handle": "JSeyff", "author_name": "James Seyffart",
                       "posted_at": _ago(3), "text": "This post was invented by the model and has no citation.", "quoted_text": None, "links": []}]
             cites = ["https://x.com/JSeyff/status/1975000000000000001"]
+        elif allowed and "ExInfluencerA" in allowed:
+            posts = [{"url": "https://x.com/ExInfluencerA/status/1975000000000000101", "handle": "ExInfluencerA", "author_name": "Influencer A",
+                      "posted_at": _ago(4), "text": "XRP will hit $2 before the end of the week, mark my words.", "quoted_text": None, "links": []},
+                     {"url": "https://x.com/ExInfluencerA/status/1975000000000000102", "handle": "ExInfluencerA", "author_name": "Influencer A",
+                      "posted_at": _ago(5), "text": "A top-5 bank already settles all its payments in XRP. Fact.", "quoted_text": None, "links": []},
+                     {"url": "https://x.com/ExInfluencerB/status/1975000000000000103", "handle": "ExInfluencerB", "author_name": "Influencer B",
+                      "posted_at": _ago(6), "text": "XRP to $10 by next month!", "quoted_text": None, "links": []},
+                     {"url": "https://x.com/ExInfluencerB/status/1975000000000000104", "handle": "ExInfluencerB", "author_name": "Influencer B",
+                      "posted_at": _ago(7), "text": "Good morning XRP family!", "quoted_text": None, "links": []}]
+            cites = [p["url"] for p in posts]
         elif allowed and "whale_alert" in allowed:
             posts = [{"url": "https://x.com/whale_alert/status/1975000000000000002", "handle": "whale_alert", "author_name": "Whale Alert",
                       "posted_at": _ago(9), "text": "150,000,000 #XRP transferred from unknown wallet to Bitstamp", "quoted_text": None, "links": []}]
@@ -116,6 +126,31 @@ def _xai(body):
                                  [{"theory": "collateral", "stance": "supports"}] if "basel" in txt else
                                  [{"theory": "collateral", "stance": "supports"}, {"theory": "nonexistent", "stance": "supports"}] if spec else [])})
         return _wrap({"items": items}, [], _usage())
+    if name == "claim_check":
+        payload = json.loads(body["input"][1]["content"])
+        out = []
+        dl = (now_utc() + dt.timedelta(days=3)).strftime("%Y-%m-%d")
+        for c in payload["posts"]:
+            t = c["text"]
+            if "$2 before" in t:
+                out.append({"cid": c["cid"], "has_claim": True, "claim": "XRP will trade at $2 or higher within a week", "type": "price_prediction",
+                            "stance": "bullish", "verdict": "prediction", "on_record": "Price target with a date.", "evidence_url": None,
+                            "target_price": 2.0, "target_direction": "above", "deadline": dl})
+            elif "$10" in t:
+                out.append({"cid": c["cid"], "has_claim": True, "claim": "XRP will trade at $10 within a month", "type": "price_prediction",
+                            "stance": "bullish", "verdict": "prediction", "on_record": "Price target with a date.", "evidence_url": None,
+                            "target_price": 10.0, "target_direction": "above", "deadline": dl})
+            elif "bank" in t:
+                # says 'false' but cites nothing: the pipeline must downgrade it to unverified
+                out.append({"cid": c["cid"], "has_claim": True, "claim": "A top-5 bank settles all payments in XRP", "type": "adoption",
+                            "stance": "bullish", "verdict": "false", "on_record": "No bank discloses this.", "evidence_url": "https://made-up.example/none",
+                            "target_price": None, "target_direction": None, "deadline": None})
+            else:
+                out.append({"cid": c["cid"], "has_claim": False, "claim": "", "type": "other", "stance": "neutral", "verdict": "opinion",
+                            "on_record": "", "evidence_url": None, "target_price": None, "target_direction": None, "deadline": None})
+        return _wrap({"claims": out}, ["https://www.sec.gov/test"], _usage(web=2))
+    if name == "resolve":
+        return _wrap({"results": []}, [], _usage())
     if name == "theory_update":
         payload = json.loads(body["input"][1]["content"])
         out = []

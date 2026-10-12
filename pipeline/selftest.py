@@ -32,6 +32,10 @@ def run(root: Path, task: str, now: dt.datetime) -> str:
 def main() -> int:
     tmp = Path(tempfile.mkdtemp(prefix="xrpterm-"))
     shutil.copytree(REPO / "config", tmp / "config")
+    # the real account list is swapped for two example accounts (the claim tracker also runs inside a manual scan)
+    (tmp / "config" / "influencers.yaml").write_text(
+        "hours_et: [17]\nmax_posts: 15\nmax_web_searches: 4\naccounts:\n"
+        "  - {handle: ExInfluencerA, name: Influencer A}\n  - {handle: ExInfluencerB, name: Influencer B}\n")
     with open(tmp / "config" / "feeds.yaml", "a") as f:     # a feed that 404s, to test error reporting
         f.write('  - {name: XRPL Blog, url: "https://xrpl.org/blog/rss.xml", tier: primary}\n')
     t0 = dt.datetime.now(dt.timezone.utc).replace(microsecond=0)
@@ -92,6 +96,21 @@ def main() -> int:
     run(tmp, "rebuild", t0 + dt.timedelta(days=10))
     later = {t["id"]: t for t in json.loads((tmp / "data.json").read_text())["theories"]}["supply-shock"]
     check("history survives past the 7-day window", later["week"]["supports"] == 0 and later["history"]["supports"] >= 1)
+
+    # claim tracker: claims from the scan above, then price calls scored after their deadline
+    run(tmp, "claims", t0)
+    cl = json.loads((tmp / "data.json").read_text())["claims"]
+    by = {c["claim"]: c for c in cl["items"]}
+    check("claims logged, no-claim posts dropped", len(cl["items"]) == 3)
+    check("'false' without a cited source becomes unverified", by["A top-5 bank settles all payments in XRP"]["verdict"] == "unverified")
+    check("scorecard per account", {a["handle"] for a in cl["accounts"]} == {"@ExInfluencerA", "@ExInfluencerB"})
+    run(tmp, "claims", t0 + dt.timedelta(days=5))
+    cl = json.loads((tmp / "data.json").read_text())["claims"]
+    by = {c["claim"]: c for c in cl["items"]}
+    check("dated price call scored hit", by["XRP will trade at $2 or higher within a week"]["prediction"]["outcome"] == "hit")
+    check("dated price call scored missed", by["XRP will trade at $10 within a month"]["prediction"]["outcome"] == "missed")
+    a = next(x for x in cl["accounts"] if x["handle"] == "@ExInfluencerB")
+    check("scorecard counts outcomes", a["calls"]["missed"] == 1 and a["total"] == 1)
 
     # handle check: unclear handles are reported, found ones confirmed
     run(tmp, "verify_handles", t0)

@@ -23,6 +23,7 @@ All times New York. GitHub delays or drops scheduled triggers when busy, so the 
 |---|---|
 | X scan (curated accounts + open discovery), RSS, rating | 8:00, 17:00 |
 | Web news search and theory-evidence search (Grok) | 8:00 scan only |
+| Claim Tracker (influencer posts checked against the record) | 17:00 scan only |
 | ETF flows, positioning | every hourly run (CoinGlass posts flows at varying times after the close) |
 | Price reactions, base rates, `data.json` rebuild | every run |
 
@@ -37,6 +38,10 @@ Every rated item is logged in `data/events.jsonl`. The pipeline later measures X
 ## Theory Check
 
 Each rated item is checked against the tracked theories in `config/theories.yaml` (supports, contradicts, or no link). Linked items are kept for good: the panel shows this week's evidence and a running history since tracking began (Oct 9, 2026), grouped by week with each week's note. Once a day a web search looks for evidence that may not mention XRP, such as bank capital rules or SWIFT news. After each scan, Grok writes a one-line note per theory on the week's evidence. Rumors and speculation are shown but don't count. A verdict moves one step at most, only when a confirmed item from a primary or established source backs the change, and at most once a week; every change is shown on the page with its reason. Editing a verdict in the config resets the automatic one.
+
+## Claim Tracker
+
+Tracks what widely followed XRP accounts (`config/influencers.yaml`, max 20) claim about XRP. Once a day one X search pulls their recent posts that state a fact, a number, insider information or a prediction; a second Grok call checks each claim with web search. Verdicts: supported, misleading, contradicted, unverified, opinion, prediction. A claim is only called misleading or contradicted with a cited source from that search; without one it's unverified. Dated price calls are scored automatically from Coinbase daily highs and lows once the date passes; other dated predictions are checked by web search. The panel shows each account's tally and calls, and the claims from the last 30 days plus any still pending. It assesses claims, not people. To add an account by name, add `- lookup: <name>` and run the `find_accounts` task.
 
 ## Cost control
 
@@ -54,6 +59,8 @@ Each Grok call's usage is logged and priced with the rates in `config/settings.y
 | `config/handles.yaml` | X accounts for the signal scan, and accounts to block from discovery |
 | `config/feeds.yaml` | RSS feeds |
 | `config/theories.yaml` | Theory Check panel |
+| `config/influencers.yaml` | Claim Tracker accounts |
+| `data/claims.jsonl` | Every logged claim with its verdict and outcome |
 | `pipeline/` | The pipeline (`python -m pipeline --task auto`) |
 
 ## Local test

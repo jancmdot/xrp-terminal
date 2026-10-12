@@ -335,6 +335,35 @@ table.funds{width:100%;border-collapse:collapse;font:var(--fs-s)/1.4 var(--f-mon
 .tw-items .src{font:var(--fs-xs) var(--f-mono);color:var(--faint);white-space:nowrap}
 @media (max-width:700px){.tw-items button,.tw-items a{padding:8px 0}}
 
+/* ---------- claim tracker ---------- */
+.cb-row{display:grid;grid-template-columns:minmax(0,1fr) 44px 96px minmax(0,auto);gap:10px;align-items:center;width:100%;padding:8px 12px;border:0;border-bottom:1px solid var(--line);background:none;text-align:left;cursor:pointer;color:var(--fg)}
+.cb-row:hover{background:var(--panel-2)}
+.cb-row[aria-pressed="true"]{background:var(--amber-wash)}
+.cb-head{cursor:default;font:500 var(--fs-xs)/1.2 var(--f-label);letter-spacing:.07em;color:var(--faint);text-transform:uppercase}
+.cb-head:hover{background:none}
+.cb-name{min-width:0;display:flex;flex-direction:column;gap:1px}
+.cb-name b{font:500 var(--fs-s)/1.3 var(--f-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cb-name span{font:var(--fs-xs)/1.2 var(--f-mono);color:var(--faint)}
+.cb-n{font:var(--fs-s)/1 var(--f-mono);text-align:right;font-variant-numeric:tabular-nums}
+.mix{display:flex;height:6px;background:var(--line-2);width:96px}
+.mix i{display:block;height:100%}
+.vc-supported{background:var(--up)} .vc-misleading{background:var(--warn)} .vc-false{background:var(--down)}
+.vc-unverified{background:var(--faint)} .vc-opinion{background:var(--line-2)} .vc-prediction{background:var(--info)}
+.cb-calls{font:var(--fs-xs)/1.3 var(--f-mono);color:var(--dim);text-align:right;white-space:nowrap}
+.cl{padding:11px 12px;border-bottom:1px solid var(--line);display:grid;gap:5px}
+.cl-meta{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;font:var(--fs-xs)/1.3 var(--f-mono);color:var(--faint)}
+.cl-meta .who{color:var(--dim)}
+.cl q{font:500 var(--fs-m)/1.45 var(--f-text);color:var(--fg);quotes:"\201C" "\201D"}
+.cl p{margin:0;font-size:var(--fs-s);line-height:1.55;color:var(--dim)}
+.cl p b{font:500 var(--fs-xs)/1 var(--f-label);letter-spacing:.06em;color:var(--faint);text-transform:uppercase;margin-right:6px}
+.cl-pred{font:var(--fs-xs)/1.5 var(--f-mono);color:var(--dim)}
+.cl-links{display:flex;gap:14px;font:var(--fs-xs)/1.3 var(--f-mono)}
+.vp{font:700 9.5px/1 var(--f-label);letter-spacing:.06em;padding:3px 5px 2px;text-transform:uppercase;border:1px solid}
+.vp-supported{color:var(--up)} .vp-misleading{color:var(--warn)} .vp-false{color:var(--down)}
+.vp-unverified{color:var(--faint)} .vp-opinion{color:var(--dim);border-style:dashed} .vp-prediction{color:var(--info)}
+.oc-hit,.oc-came_true{color:var(--up)} .oc-missed,.oc-did_not_happen{color:var(--down)} .oc-pending,.oc-open-ended,.oc-unclear{color:var(--dim)}
+@media (max-width:700px){.cb-row{grid-template-columns:minmax(0,1fr) 34px 64px;padding:10px 12px}.mix{width:64px}.cb-calls{grid-column:1/-1;text-align:left}.cb-head .cb-calls{display:none}}
+
 /* ---------- footer ---------- */
 .method{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
 .mcard{padding:12px;display:grid;gap:8px;align-content:start;min-width:0;border-top:1px solid var(--line)}
@@ -534,6 +563,21 @@ table.funds{width:100%;border-collapse:collapse;font:var(--fs-s)/1.4 var(--f-mon
       </div>
       <div id="theories"></div>
     </section>
+
+    <section class="panel" id="p-claims" aria-label="Claim tracker">
+      <div class="ph">
+        <h2>Claim tracker</h2>
+        <span class="sub" id="claims-sub"></span>
+        <span class="sp"></span>
+        <div class="seg" role="group" aria-label="Show" id="cl-filter">
+          <button type="button" data-v="all" aria-pressed="true">ALL</button>
+          <button type="button" data-v="calls">CALLS</button>
+          <button type="button" data-v="flag">FLAGGED</button>
+        </div>
+      </div>
+      <div id="claims-board"></div>
+      <div id="claims-list"></div>
+    </section>
     </div>
   </div>
   <div class="zone zone-full" id="z-bottom" data-zone="bottom" data-label="Full width · bottom">
@@ -607,6 +651,10 @@ table.funds{width:100%;border-collapse:collapse;font:var(--fs-s)/1.4 var(--f-mon
                 week?:{supports, contradicts, claims, net:"strengthens"|"weakens"|"mixed"|"none", note, items:[{id, stance, counts}]},
                 true_part, would_change }]
    event_log: { logged:int, unlock_n:int }
+   claims: { since, last_scan, accounts:[{handle, name, total, supported, misleading, false, unverified, opinion, prediction,
+             calls:{hit, missed, pending, came_true, did_not_happen, open-ended, unclear}}],
+             items:[{id, handle, name, url, published_at, claim, type, stance, verdict, on_record, evidence_url,
+                     prediction?:{target_price, direction, deadline, outcome, peak?, note?}}] }
    ===================================================================== */
 
 const THEMES = {
@@ -1030,7 +1078,31 @@ function buildSample(now){
         return {week:k, ...c, note: i === 0 ? t.week.note : (OLD_NOTES[t.id] || [])[i - 1] || null, net: i === 0 ? t.week.net : netOf(c)}; })};
   }
 
+  const dlFuture = new Date(now + 20 * 864e5).toISOString().slice(0, 10), dlPast = new Date(now - 2 * 864e5).toISOString().slice(0, 10);
+  const cl = (h, n, mins, claim, type, stance, verdict, rec, pred) => ({id:"c:" + h + mins, handle:h, name:n, url:null, evidence_url:null,
+    published_at:ago(mins), claim, type, stance, verdict, on_record:rec, prediction:pred || null});
+  const claimsItems = [
+    cl("@example_voice_a", "Example Commentator A", 95, "A major US bank will announce XRP settlement this week", "insider_rumor", "bullish", "unverified",
+       "No bank filing, press release or established report says this; the claim cites unnamed sources."),
+    cl("@example_voice_b", "Example Commentator B", 180, "XRP will trade at $5 or higher within three weeks", "price_prediction", "bullish", "prediction",
+       "Price target with a date; scored automatically from Coinbase prices after the deadline.", {target_price:5, direction:"above", deadline:dlFuture, outcome:"pending"}),
+    cl("@example_voice_a", "Example Commentator A", 400, "Spot XRP ETFs took in $50M yesterday", "etf_flows", "bullish", "misleading",
+       "Flow data shows about $11M net that day; $50M was the five-day total."),
+    cl("@example_voice_c", "Example Commentator C", 720, "Escrow releases will flood the market this month", "supply_onchain", "bearish", "false",
+       "Most of each monthly release goes back into escrow; the net amount is far smaller than the claim implies."),
+    cl("@example_voice_b", "Example Commentator B", 3000, "XRP will break $3 by last Friday", "price_prediction", "bullish", "prediction",
+       "Price target with a date.", {target_price:3, direction:"above", deadline:dlPast, outcome:"missed", peak:2.49}),
+    cl("@example_voice_c", "Example Commentator C", 1500, "The XRP Ledger processed more payments last month than the month before", "adoption", "neutral", "supported",
+       "Ledger explorer data shows a month-over-month rise in payment transactions.")
+  ];
+  const acc = (h, n) => { const its = claimsItems.filter(c => c.handle === h); const r = {handle:h, name:n, total:its.length,
+    supported:0, misleading:0, false:0, unverified:0, opinion:0, prediction:0, calls:{hit:0, missed:0, pending:0, came_true:0, did_not_happen:0, "open-ended":0, unclear:0}};
+    its.forEach(c => { r[c.verdict]++; if (c.prediction) r.calls[c.prediction.outcome]++; }); return r; };
+  const claimsData = {since:ago(14 * 1440), last_scan:ago(60), items:claimsItems,
+    accounts:[acc("@example_voice_a", "Example Commentator A"), acc("@example_voice_b", "Example Commentator B"), acc("@example_voice_c", "Example Commentator C")]};
+
   return {
+    claims: claimsData,
     meta:{schema:"xrp-terminal/0.1", generated_at:ago(9), sample:true, last_x_scan:ago(9), last_news_scan:ago(9),
           sources:["Grok x_search (sample)","CryptoPanic + primary RSS (sample)","ETF flows (sample)"]},
     etf:{as_of:days[days.length-1], funds:fundsOut, daily},
@@ -1342,6 +1414,65 @@ function renderTheories(){
     </div>`;
   }).join("") + `<div class="note">${DATA.meta.sample ? "Sample analysis. " : ""}Each scan checks new items against these claims. Rumors and speculation are shown but don't count as evidence. A verdict moves one step at most, only on confirmed evidence from a primary or established source, and at most once a week.</div>`;
 }
+/* ---------- CLAIM TRACKER ---------- */
+const CL_VERDICT = {supported:"Supported", misleading:"Misleading", false:"Contradicted", unverified:"Unverified", opinion:"Opinion", prediction:"Prediction"};
+const CL_TYPE = {price_prediction:"Price call", adoption:"Adoption", regulation_legal:"Legal", etf_flows:"ETF", supply_onchain:"On-chain",
+                 insider_rumor:"Insider", macro:"Macro", other:"Other"};
+const CL_OUT = {hit:"Hit", missed:"Missed", pending:"Pending", "open-ended":"No date given", came_true:"Came true", did_not_happen:"Didn't happen", unclear:"Unclear"};
+const CLF = {mode:"all", account:null, all:false};
+function callsText(c){
+  const parts = [];
+  if (c.hit + c.missed) parts.push(`${c.hit}/${c.hit + c.missed} price calls hit`);
+  if (c.came_true + c.did_not_happen) parts.push(`${c.came_true}/${c.came_true + c.did_not_happen} other calls`);
+  if (c.pending) parts.push(`${c.pending} pending`);
+  return parts.join(" · ") || "no dated calls yet";
+}
+function renderClaims(){
+  const C = DATA.claims;
+  if (!C || !(C.accounts || []).length){
+    $("#claims-sub").textContent = "";
+    $("#claims-board").innerHTML = `<div class="empty">The tracker starts with the next 5 PM scan, once the accounts are set.</div>`;
+    $("#claims-list").innerHTML = ""; return;
+  }
+  $("#claims-sub").textContent = C.last_scan ? `checked ${rel(C.last_scan)}` : "";
+  $$("#cl-filter button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === CLF.mode)));
+  const order = ["supported","misleading","false","unverified","opinion","prediction"];
+  $("#claims-board").innerHTML = `<div class="cb-row cb-head"><span>Account</span><span class="cb-n">Claims</span><span>Verdicts</span><span class="cb-calls">Dated calls</span></div>` +
+    C.accounts.map(a => {
+      const tot = Math.max(1, a.total);
+      const mix = order.map(v => a[v] ? `<i class="vc-${v}" style="width:${a[v] / tot * 100}%" title="${a[v]} ${CL_VERDICT[v].toLowerCase()}"></i>` : "").join("");
+      return `<button type="button" class="cb-row" data-acct="${esc(a.handle)}" aria-pressed="${CLF.account === a.handle}">
+        <span class="cb-name"><b>${esc(a.name)}</b><span>${esc(a.handle)}</span></span><span class="cb-n">${a.total}</span>
+        <span class="mix">${mix}</span><span class="cb-calls">${esc(callsText(a.calls))}</span></button>`;
+    }).join("");
+  let xs = (C.items || []).slice();
+  if (CLF.account) xs = xs.filter(c => c.handle === CLF.account);
+  if (CLF.mode === "calls") xs = xs.filter(c => c.prediction);
+  if (CLF.mode === "flag") xs = xs.filter(c => c.verdict === "false" || c.verdict === "misleading");
+  const shown = CLF.all ? xs : xs.slice(0, 12);
+  $("#claims-list").innerHTML = (xs.length ? shown.map(c => {
+    const pr = c.prediction;
+    let pline = "";
+    if (pr){
+      const tgt = pr.target_price ? `Target ${pr.direction === "below" ? "≤" : "≥"} $${(+pr.target_price).toFixed(pr.target_price < 10 ? 2 : 0)}` : "Prediction";
+      const by = pr.deadline ? ` by ${new Intl.DateTimeFormat("en-US", {month:"short", day:"numeric", timeZone:"UTC"}).format(new Date(pr.deadline + "T12:00:00Z"))}` : "";
+      const peak = pr.peak != null ? ` (${pr.direction === "below" ? "low" : "high"} $${fmtPx(pr.peak)})` : "";
+      pline = `<div class="cl-pred">${tgt}${by} · <span class="oc-${esc(pr.outcome)}">${CL_OUT[pr.outcome] || esc(pr.outcome)}${peak}</span>${pr.note ? " · " + esc(pr.note) : ""}</div>`;
+    }
+    const post = safeUrl(c.url), ev = safeUrl(c.evidence_url);
+    return `<article class="cl">
+      <div class="cl-meta"><span>${NY_MDHM.format(new Date(c.published_at))} ET</span><span class="who">${esc(c.name)} ${esc(c.handle)}</span>
+        <span class="vp vp-${esc(c.verdict)}">${CL_VERDICT[c.verdict] || esc(c.verdict)}</span><span class="tag">${CL_TYPE[c.type] || esc(c.type)}</span>
+        <span class="dir d-${esc(c.stance)}">${DIR_ARROW[c.stance] || ""} ${esc(c.stance)}</span></div>
+      <q>${esc(c.claim)}</q>
+      <p><b>On record</b>${esc(c.on_record)}</p>${pline}
+      <div class="cl-links">${post ? `<a href="${esc(post)}" target="_blank" rel="noopener">Post ↗</a>` : ""}${ev ? `<a href="${esc(ev)}" target="_blank" rel="noopener">Source ↗</a>` : ""}</div>
+    </article>`;
+  }).join("") : `<div class="empty">No claims match.</div>`) +
+    (!CLF.all && xs.length > 12 ? `<button type="button" class="feed-more" id="cl-more">Show all ${xs.length}</button>` : "") +
+    `<div class="note">${DATA.meta.sample ? "Sample accounts and claims. " : ""}Each claim is checked against the record with a cited source; a claim is only marked contradicted or misleading when a source backs that. Dated price calls are scored from Coinbase prices after the deadline. Assessing the claim, not the person.</div>`;
+}
+
 const openHist = new Set();
 const sinceLabel = iso => NY_MD.format(new Date(iso));
 function evRow(x, byId){
@@ -1760,6 +1891,9 @@ function wire(){
     const t = r.dataset.t; F.themes = (F.themes.length === 1 && F.themes[0] === t) ? [] : [t]; renderFeed();
     $("#p-feed").scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block:"start"});
   });
+  $("#cl-filter").addEventListener("click", e => { const b = e.target.closest("button[data-v]"); if (!b) return; CLF.mode = b.dataset.v; CLF.all = false; renderClaims(); });
+  $("#claims-board").addEventListener("click", e => { const r = e.target.closest("button[data-acct]"); if (!r) return; CLF.account = CLF.account === r.dataset.acct ? null : r.dataset.acct; CLF.all = false; renderClaims(); });
+  $("#claims-list").addEventListener("click", e => { if (e.target.closest("#cl-more")){ CLF.all = true; renderClaims(); } });
   $("#theories").addEventListener("click", e => {
     const hb = e.target.closest("button[data-hist]");
     if (hb){ const id = hb.dataset.hist; openHist.has(id) ? openHist.delete(id) : openHist.add(id); renderTheories(); return; }
@@ -1996,7 +2130,7 @@ async function main(){
   const unlock = DATA.event_log?.unlock_n ?? 30;
   $("#unlock-n").textContent = unlock;
   $("#log-status").textContent = DATA.event_log ? `Events logged so far: ${DATA.event_log.logged}${sample ? " (sample count)" : ""}.` : "";
-  renderEtf(); drawEtfChart(); renderFeed(); renderThemes(); renderTheories();
+  renderEtf(); drawEtfChart(); renderFeed(); renderThemes(); renderTheories(); renderClaims();
   if (chartOk) loadPrice();
   else { setPricePill("warn", "Price · chart offline"); connectWs(); }
 }

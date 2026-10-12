@@ -1,17 +1,44 @@
 # Claim Tracker: widely followed XRP accounts whose claims about XRP are logged and checked.
 # Each scan that runs the tracker (hours below) reads their recent posts, keeps the ones that make a
 # checkable claim or a prediction, and checks each against the record with a cited source.
-# Max 20 accounts (one X search). `handle` is filled in after the find_accounts lookup.
+# Max 20 accounts (one X search). Handles confirmed with the find_accounts lookup on Oct 12, 2026
+# (results in data/account_lookup.json). Being on this list says nothing about accuracy either way.
 
 hours_et: [17]          # which scans run the tracker (17 = the 5 PM scan); manual scans always run it
-max_posts: 15           # asked for per run, not hard-enforced
-max_web_searches: 4     # for checking claims against the record
+max_posts: 20           # asked for per run, not hard-enforced
+max_web_searches: 5     # for checking claims against the record
 
 accounts:
-  - lookup: Versan Aljarrah, Black Swan Capitalist
-  - lookup: Jake Claver
-  - lookup: WaterAbv (XRP community account)
-  - lookup: Good Evening Crypto
+  # Requested
+  - handle: VersanAljarrah
+    name: Versan Aljarrah (Black Swan Capitalist)
+  - handle: beyond_broke
+    name: Jake Claver
+  - handle: WatersAbve        # "WatersAbove"; the lookup rated this a likely, not exact, match for "WaterAbv"
+    name: WatersAbove
+  - handle: AbsGEC
+    name: Good Evening Crypto
+  # Added from the lookup's suggestions (widely followed, post mostly about XRP)
+  - handle: digitalassetbuy
+    name: Digital Asset Investor
+  - handle: XRPcryptowolf
+    name: XRPcryptowolf
+  - handle: sentosumosaba
+    name: Eri (Carpe Diem)
+  - handle: BankXRP
+    name: BankXRP
+  - handle: DigPerspectives
+    name: Digital Perspectives
+  - handle: jungleincxrp
+    name: Jungle Inc
+  - handle: RipBullWinkle
+    name: Ripple Bull Winkle
+  - handle: ZachRector7
+    name: Zach Rector
+  - handle: SMQKEDQG
+    name: SMQKE
+  - handle: stedas
+    name: XRP_Cro
 
-# Filled in by the lookup: other widely followed XRP commentary accounts, to review before adding.
+# Used by the find_accounts task: how many extra accounts to suggest.
 suggest_more: 10

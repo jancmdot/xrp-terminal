@@ -6,7 +6,7 @@ import datetime as dt
 import sys
 from concurrent.futures import ThreadPoolExecutor
 
-from . import classify, markets, news, store, theories, xscan
+from . import claims, classify, markets, news, store, theories, xscan
 from .util import DATA_DIR, NY, add_file_log, iso, load_json, load_yaml, log, now_utc, parse_iso, save_json, setup_logging
 from .xai import Budget, BudgetExceeded, Grok
 
@@ -136,6 +136,17 @@ def run_etf(state: dict) -> None:
         state["positioning"] = markets.positioning() or state.get("positioning")
 
 
+def run_claims(grok: Grok, state: dict, icfg: dict) -> None:
+    if not grok.available:
+        log.warning("XAI_API_KEY not set: skipping the claim tracker")
+        return
+    ctx = " ".join(x for x in (etf_context(), markets.positioning_text(state.get("positioning"))) if x)
+    try:
+        claims.run(grok, icfg, state, ctx)
+    except BudgetExceeded as e:
+        log.warning("%s", e)
+
+
 def run_find_accounts(grok: Grok) -> None:
     if not grok.available:
         log.error("XAI_API_KEY not set: can't look up accounts")
@@ -144,7 +155,7 @@ def run_find_accounts(grok: Grok) -> None:
     queries = [a["lookup"] for a in cfg.get("accounts") or [] if a.get("lookup") and not a.get("handle")]
     known = [a["handle"].lstrip("@") for a in cfg.get("accounts") or [] if a.get("handle")]
     listed = [h for g in xscan.groups_from_config(load_yaml("handles.yaml")) for h in g["tiers"]]
-    data = xscan.find_accounts(grok, queries + [f"@{h}" for h in ("WatcherGuru",)], int(cfg.get("suggest_more", 10)), known + listed)
+    data = xscan.find_accounts(grok, queries, int(cfg.get("suggest_more", 10)), known + listed)
     save_json(DATA_DIR / "account_lookup.json", {"checked_at": iso(now_utc()), **data})
     print("\nLOOKUP")
     for f in data.get("found") or []:
@@ -188,8 +199,14 @@ def main(argv: list[str] | None = None) -> int:
             run_find_accounts(grok)
         if "scan" in tasks:
             ny_h = now_utc().astimezone(NY).hour
-            web = args.task == "scan" or any(h <= ny_h <= h + 1 for h in settings["xai"].get("web_news_hours_et", []))
+            late = int(settings["schedule"].get("late_window_hours", 3))
+            web = args.task == "scan" or any(h <= ny_h < h + late for h in settings["xai"].get("web_news_hours_et", []))
             run_scan(grok, state, evs, settings, theory_list, web=web)
+            icfg = load_yaml("influencers.yaml")
+            if args.task == "scan" or any(h <= ny_h < h + late for h in icfg.get("hours_et", [])):
+                run_claims(grok, state, icfg)
+        if "claims" in tasks:
+            run_claims(grok, state, load_yaml("influencers.yaml"))
         if "etf" in tasks:
             run_etf(state)
     finally:
@@ -203,7 +220,9 @@ def main(argv: list[str] | None = None) -> int:
         except Exception as e:  # prices are retried next run
             log.warning("price reactions skipped: %s", e)
         if store.has_any_data(evs) and args.task not in ("verify_handles", "find_accounts"):
-            if store.write_output(store.build(evs, state, settings, theories.build_output(theory_list, state, evs), state.get("theme_states", {}))):
+            out = store.build(evs, state, settings, theories.build_output(theory_list, state, evs), state.get("theme_states", {}))
+            out["claims"] = claims.build_output(load_yaml("influencers.yaml"), state)
+            if store.write_output(out):
                 log.info("wrote data.json (%d events logged)", len(evs))
         store.save_events(evs)
         store.save_state(state)
