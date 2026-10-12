@@ -136,6 +136,8 @@ def _xai(body):
         dl = (now_utc() + dt.timedelta(days=3)).strftime("%Y-%m-%d")
         for c in payload["posts"]:
             t = c["text"]
+            if "Good morning" in t:
+                continue                       # the real model sometimes skips posts: they must be retried, then queued
             if "$2 before" in t:
                 out.append({"cid": c["cid"], "has_claim": True, "claim": "XRP will trade at $2 or higher within a week", "type": "price_prediction",
                             "stance": "bullish", "verdict": "prediction", "on_record": "Price target with a date.", "evidence_url": None,

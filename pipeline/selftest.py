@@ -108,6 +108,8 @@ def main() -> int:
     check("all-time-high call gets the Coinbase record as its target", ath["target_price"] and ath["target_price"] > 2.3
           and ath["direction"] == "above" and ath["outcome"] == "pending" and "record high" in ath["basis"])
     check("scorecard per account", {a["handle"] for a in cl["accounts"]} == {"@ExInfluencerA", "@ExInfluencerB"})
+    q = json.loads((tmp / "data" / "state.json").read_text()).get("claims_queue") or []
+    check("post the checker skipped is queued for the next run", [p["text"] for p in q] == ["Good morning XRP family!"])
     run(tmp, "claims", t0 + dt.timedelta(days=5))
     cl = json.loads((tmp / "data.json").read_text())["claims"]
     by = {c["claim"]: c for c in cl["items"]}

@@ -72,7 +72,8 @@ def scan(grok: Grok, accts: list[dict], since: dt.datetime, max_posts: int) -> l
             "Don't open threads. If there are none, return an empty list.")
     try:
         data, info = grok.respond(system=RETRIEVE_SYSTEM, user=user, schema=POSTS_SCHEMA, name="posts",
-                                  tools=[{"type": "x_search", "allowed_x_handles": handles, **_window(since)}], label="x:claims")
+                                  tools=[{"type": "x_search", "allowed_x_handles": handles, **_window(since)}], label="x:claims",
+                                  effort="low")
     except BudgetExceeded:
         raise
     except Exception as e:
@@ -138,6 +139,7 @@ def check(grok: Grok, posts: list[dict], context: str, max_searches: int, state:
         return []
     cmap = {f"p{i + 1}": p for i, p in enumerate(posts)}
     user = json.dumps({
+        "instructions": f"Return exactly {len(cmap)} entries, one for each post ({', '.join(cmap)}), including posts with no claim.",
         "context_from_terminal": context or "none",
         "posts": [{"cid": cid, "account": "@" + p["handle"], "time_utc": p["posted_at"], "text": p["text"][:1200],
                    **({"quoting": p["quoted_text"][:500]} if p.get("quoted_text") else {}),
@@ -184,6 +186,23 @@ def check(grok: Grok, posts: list[dict], context: str, max_searches: int, state:
             "prediction": ({"target_price": target, "direction": direction, "deadline": deadline, "basis": basis,
                             "outcome": "pending" if deadline else "open-ended"} if verdict == "prediction" else None),
         })
+    return out
+
+
+BATCH = 10
+
+
+def check_all(grok: Grok, posts: list[dict], context: str, max_searches: int, state: dict) -> list[dict]:
+    """Check in batches of 10. Posts the model skips get one more try; any still unchecked wait for the next run."""
+    out = []
+    for attempt in range(2):
+        todo = [p for p in posts if not p.get("_checked")]
+        if not todo:
+            break
+        if attempt:
+            log.info("claim check skipped %d posts; trying them again", len(todo))
+        for i in range(0, len(todo), BATCH):
+            out += check(grok, todo[i:i + BATCH], context, max_searches, state)
     return out
 
 
@@ -308,10 +327,13 @@ def run(grok: Grok, cfg: dict, state: dict, context: str = "") -> None:
     since = parse_iso(state.get("last_claims_scan")) or now_utc() - dt.timedelta(hours=24)
     since = max(since, now_utc() - dt.timedelta(hours=30))
     started = now_utc()
-    posts = [p for p in scan(grok, accts, since, int(cfg.get("max_posts", 15)))
-             if ("c:" + p["sid"]) not in claims and ("c:" + p["sid"]) not in state["seen"]]
-    log.info("claim tracker: %d new posts to check", len(posts))
-    checked = check(grok, posts, context, int(cfg.get("max_web_searches", 4)), state)
+    cut = now_utc() - dt.timedelta(days=4)
+    queue = [p for p in state.get("claims_queue") or [] if (parse_iso(p.get("posted_at")) or cut) > cut]
+    byid = {p["sid"]: p for p in queue + scan(grok, accts, since, int(cfg.get("max_posts", 15)))}
+    posts = [p for p in byid.values() if ("c:" + p["sid"]) not in claims and ("c:" + p["sid"]) not in state["seen"]]
+    log.info("claim tracker: %d posts to check (%d left over from the last run)", len(posts), sum(1 for p in queue if p in posts))
+    checked = check_all(grok, posts, context, int(cfg.get("max_web_searches", 4)), state)
+    state["claims_queue"] = [{k: v for k, v in p.items() if not k.startswith("_")} for p in posts if not p.get("_checked")][:40]
     for p in posts:
         if p.get("_checked"):
             state["seen"]["c:" + p["sid"]] = iso(now_utc())
