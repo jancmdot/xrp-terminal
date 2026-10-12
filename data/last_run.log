@@ -1,5 +1,5 @@
-18:40:45 INFO New York Mon 14:40 · tasks: link
-18:41:47 INFO grok claim-links            in=8779 out=5150 posts=0 users=0 web=0  ≈$0.047  (month $14.96 / $40)
-18:41:47 INFO     tool {"summary": [{"text": "Claims should only be linked to news items when they cover the same specific event.\n\nThe first claim is too broad to match any news item. The second claim and the headline about Evernorth's XRP treasury are linked as a support relationship.\n\nThe third claim about Ripple su
-18:41:47 INFO claim links: 18 added (19 new claims, 63 new items considered)
-18:41:48 INFO wrote data.json (63 events logged)
+18:42:26 INFO New York Mon 14:42 · tasks: link
+18:43:13 INFO grok claim-links            in=9163 out=4027 posts=0 users=0 web=0  ≈$0.041  (month $15.00 / $40)
+18:43:13 INFO     tool {"summary": [{"text": "I should only link claims to news items when they refer to the same specific event.\n\nThe first claim is too broad to match any event. The second claim links to the news item about the Evernorth hire. The third claim concerns a Ripple bug and is still being matched.\n\nThe th
+18:43:13 INFO claim links: 12 added (19 new claims, 63 new items considered)
+18:43:13 INFO wrote data.json (63 events logged)
