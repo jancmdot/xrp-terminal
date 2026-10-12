@@ -57,13 +57,18 @@ def accounts(cfg: dict) -> list[dict]:
 # ------------------------------------------------------------------ retrieval
 def scan(grok: Grok, accts: list[dict], since: dt.datetime, max_posts: int) -> list[dict]:
     handles = [a["handle"] for a in accts]
-    froms = " OR ".join(f"from:{h}" for h in handles)
+    # one search per slice of accounts, so a few very active accounts can't fill every result
+    n = min(3, len(handles))
+    slices = [handles[i::n] for i in range(n)]
+    day = since.strftime("%Y-%m-%d")
+    queries = "\n".join(f"  `(XRP OR Ripple OR XRPL OR RLUSD) ({' OR '.join('from:' + h for h in sl)}) since:{day}`" for sl in slices)
     user = (f"Find up to {max_posts} posts from these accounts posted after {iso(since)} that make a claim or a prediction about XRP, "
             "Ripple, the XRP Ledger, RLUSD or XRP ETFs: a stated fact, a number, insider or 'coming soon' information, a partnership, "
             "a regulatory or legal statement, or a price target. Skip greetings, memes, polls, giveaways, and chart commentary that "
-            "makes no claim. Prefer posts that state something specific. Keep each post's text exactly as written.\n"
+            "makes no claim. Prefer posts that state something specific. Take at most 3 posts per account. Keep each post's text "
+            "exactly as written, and fill quoted_text when the post quotes another post.\n"
             f"Accounts: {', '.join('@' + h for h in handles)}\n"
-            f"Run at most 3 searches with limit 10, e.g. `(XRP OR Ripple OR XRPL) ({froms}) since:{since.strftime('%Y-%m-%d')}` in Latest mode. "
+            f"Run exactly these {n} searches in Latest mode with limit 10, one per group of accounts:\n{queries}\n"
             "Don't open threads. If there are none, return an empty list.")
     try:
         data, info = grok.respond(system=RETRIEVE_SYSTEM, user=user, schema=POSTS_SCHEMA, name="posts",
@@ -97,30 +102,38 @@ CHECK_SCHEMA = {
         "target_price": NULLABLE({"type": "number"}),
         "target_direction": NULLABLE(ENUM("above", "below")),
         "deadline": NULLABLE({"type": "string"}),
+        "all_time_high": {"type": "boolean"},
     }, "required": ["cid", "has_claim", "claim", "type", "stance", "verdict", "on_record", "evidence_url",
-                    "target_price", "target_direction", "deadline"], "additionalProperties": False}}},
+                    "target_price", "target_direction", "deadline", "all_time_high"], "additionalProperties": False}}},
     "required": ["claims"], "additionalProperties": False,
 }
 
 CHECK_SYSTEM = (
     "You check claims about XRP made by widely followed X accounts, for an objective trading terminal. Assess the claim, not the person. "
-    "Be equally strict with bullish and bearish claims, and fair: quote the claim's meaning accurately and don't stretch it.\n"
-    "For each post: has_claim=false if it makes no checkable claim or prediction about XRP (then fill the other fields minimally).\n"
+    "Be equally strict with bullish and bearish claims, and fair: state the claim's meaning accurately and don't stretch it.\n"
+    "For each post: the claim must come from the post's text or the text it quotes, nothing else. has_claim=false if neither makes a "
+    "checkable claim or prediction about XRP (for example a reaction like 'this is true' with no quoted text); then fill the other "
+    "fields minimally.\n"
     "claim: the claim in neutral words, max 160 characters, attributed to nobody (e.g. 'Bank X will settle payments in XRP this month').\n"
+    "Judge what the post asserts as fact, not its tone: caps, emojis or hype alone don't make a true claim misleading. Misleading means "
+    "a reader would come away believing something that isn't so.\n"
     "verdict:\n"
-    "- supported: the record (filings, official statements, on-chain or flow data, established reporting) backs it.\n"
+    "- supported: a source you found (filing, official statement, on-chain or flow data, established reporting) backs it.\n"
     "- misleading: partly true, but missing context changes the meaning (cherry-picked numbers, wrong timeframe, partnership that doesn't use XRP).\n"
-    "- false: the record contradicts it. Only with a source you found.\n"
+    "- false: a source you found contradicts it.\n"
     "- unverified: a factual claim with no record either way, including insider or 'sources say' claims.\n"
     "- opinion: a value judgment or interpretation, not checkable.\n"
-    "- prediction: about the future. For price targets fill target_price (USD), target_direction (above/below) and deadline "
-    "(YYYY-MM-DD) only if the post gives a date; otherwise deadline null. Non-price predictions with a date also get a deadline.\n"
-    "on_record: 1-2 sentences on what the record shows and why this verdict. evidence_url: the most relevant source from your searches, "
-    "or null. Use the web search tool only as needed, at most {max_searches} searches in total."
+    "- prediction: about the future. For price targets fill target_price (USD) and target_direction (above/below). deadline "
+    "(YYYY-MM-DD) only if the post gives a time frame: a year alone ('in 2026') means Dec 31 of that year, 'this month' the month's "
+    "last day, 'by Q1' the quarter's last day; otherwise null. all_time_high=true if the prediction is a new all-time high for XRP "
+    "(leave target_price null then). Non-price predictions with a time frame also get a deadline.\n"
+    "supported, misleading and false need evidence_url: the most relevant source from your searches. Otherwise evidence_url may be "
+    "null. on_record: 1-2 sentences on what the record shows and why this verdict. Use the web search tool only as needed, at most "
+    "{max_searches} searches in total."
 )
 
 
-def check(grok: Grok, posts: list[dict], context: str, max_searches: int) -> list[dict]:
+def check(grok: Grok, posts: list[dict], context: str, max_searches: int, state: dict | None = None) -> list[dict]:
     if not posts:
         return []
     cmap = {f"p{i + 1}": p for i, p in enumerate(posts)}
@@ -151,17 +164,24 @@ def check(grok: Grok, posts: list[dict], context: str, max_searches: int) -> lis
         if url and (norm_url(url) not in cited) and not any(norm_url(url) == norm_url(l) for l in p.get("links") or []):
             url = None                                   # a source has to come from an actual search result
         verdict = r["verdict"]
-        if verdict in ("false", "misleading") and not url:
-            verdict = "unverified"                       # no cited source: don't call it wrong
+        if verdict in ("supported", "false", "misleading") and not url:
+            verdict = "unverified"                       # no cited source: neither confirmed nor called wrong
         deadline = r.get("deadline")
         if deadline and not parse_iso(deadline + "T00:00:00Z"):
             deadline = None
+        target, direction, basis, ctype = r.get("target_price"), r.get("target_direction"), None, r["type"]
+        if verdict == "prediction" and r.get("all_time_high"):
+            rec = record_high(state) if state is not None else None
+            target, direction, ctype = (rec["price"] if rec else None), "above", "price_prediction"
+            if rec:
+                basis = f"Coinbase record high of {rec['date']}"
         out.append({
             "id": "c:" + p["sid"], "handle": "@" + p["handle"], "name": p["name"], "url": p["url"],
             "published_at": p["posted_at"], "logged_at": iso(now_utc()),
-            "text": p["text"][:600], "claim": r["claim"][:200], "type": r["type"], "stance": r["stance"],
+            "text": p["text"][:600], "quoted_text": (p.get("quoted_text") or "")[:300] or None,
+            "claim": r["claim"][:200], "type": ctype, "stance": r["stance"],
             "verdict": verdict, "on_record": r["on_record"][:400], "evidence_url": url,
-            "prediction": ({"target_price": r.get("target_price"), "direction": r.get("target_direction"), "deadline": deadline,
+            "prediction": ({"target_price": target, "direction": direction, "deadline": deadline, "basis": basis,
                             "outcome": "pending" if deadline else "open-ended"} if verdict == "prediction" else None),
         })
     return out
@@ -172,6 +192,36 @@ def _daily(start: dt.datetime, end: dt.datetime) -> list[list]:
     r = http("GET", CB.format(pid="XRP-USD"), params={"granularity": 86400, "start": start.isoformat(), "end": end.isoformat()}, timeout=20)
     rows = r.json()
     return rows if isinstance(rows, list) else []
+
+
+COINBASE_LISTED = dt.datetime(2019, 2, 25, tzinfo=dt.timezone.utc)
+
+
+def record_high(state: dict) -> dict | None:
+    """XRP's highest daily high on Coinbase since it listed there (Feb 2019): the bar for 'new all-time high' calls.
+    Cached in state and extended with new days, so the full history is read once."""
+    rec = state.get("xrp_record_high")
+    now = now_utc()
+    start = (parse_iso(rec["through"]) - dt.timedelta(days=1)) if rec else COINBASE_LISTED
+    if rec and now - start < dt.timedelta(hours=36):
+        return rec
+    rows, t = [], start
+    try:
+        while t < now:
+            t2 = min(now, t + dt.timedelta(days=290))
+            rows += _daily(t, t2)
+            t = t2
+    except Exception as e:
+        log.warning("record-high lookup failed: %s", e)
+        return rec
+    best = rec
+    for x in rows:
+        if not best or float(x[2]) > best["price"]:
+            best = {"price": round(float(x[2]), 4), "date": dt.datetime.fromtimestamp(int(x[0]), dt.timezone.utc).strftime("%Y-%m-%d")}
+    if best:
+        best = {**best, "through": iso(now)}
+        state["xrp_record_high"] = best
+    return best
 
 
 def score_price_calls(claims: dict[str, dict]) -> int:
@@ -261,7 +311,7 @@ def run(grok: Grok, cfg: dict, state: dict, context: str = "") -> None:
     posts = [p for p in scan(grok, accts, since, int(cfg.get("max_posts", 15)))
              if ("c:" + p["sid"]) not in claims and ("c:" + p["sid"]) not in state["seen"]]
     log.info("claim tracker: %d new posts to check", len(posts))
-    checked = check(grok, posts, context, int(cfg.get("max_web_searches", 4)))
+    checked = check(grok, posts, context, int(cfg.get("max_web_searches", 4)), state)
     for p in posts:
         if p.get("_checked"):
             state["seen"]["c:" + p["sid"]] = iso(now_utc())

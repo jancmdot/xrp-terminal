@@ -353,7 +353,8 @@ table.funds{width:100%;border-collapse:collapse;font:var(--fs-s)/1.4 var(--f-mon
 .cl{padding:11px 12px;border-bottom:1px solid var(--line);display:grid;gap:5px}
 .cl-meta{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;font:var(--fs-xs)/1.3 var(--f-mono);color:var(--faint)}
 .cl-meta .who{color:var(--dim)}
-.cl q{font:500 var(--fs-m)/1.45 var(--f-text);color:var(--fg);quotes:"\201C" "\201D"}
+.cl-claim{font:500 var(--fs-m)/1.45 var(--f-text);color:var(--fg)}
+.cl p.cl-said{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;color:var(--faint)}
 .cl p{margin:0;font-size:var(--fs-s);line-height:1.55;color:var(--dim)}
 .cl p b{font:500 var(--fs-xs)/1 var(--f-label);letter-spacing:.06em;color:var(--faint);text-transform:uppercase;margin-right:6px}
 .cl-pred{font:var(--fs-xs)/1.5 var(--f-mono);color:var(--dim)}
@@ -1457,20 +1458,21 @@ function renderClaims(){
       const tgt = pr.target_price ? `Target ${pr.direction === "below" ? "≤" : "≥"} $${(+pr.target_price).toFixed(pr.target_price < 10 ? 2 : 0)}` : "Prediction";
       const by = pr.deadline ? ` by ${new Intl.DateTimeFormat("en-US", {month:"short", day:"numeric", timeZone:"UTC"}).format(new Date(pr.deadline + "T12:00:00Z"))}` : "";
       const peak = pr.peak != null ? ` (${pr.direction === "below" ? "low" : "high"} $${fmtPx(pr.peak)})` : "";
-      pline = `<div class="cl-pred">${tgt}${by} · <span class="oc-${esc(pr.outcome)}">${CL_OUT[pr.outcome] || esc(pr.outcome)}${peak}</span>${pr.note ? " · " + esc(pr.note) : ""}</div>`;
+      pline = `<div class="cl-pred">${tgt}${by}${pr.basis ? ` (${esc(pr.basis)})` : ""} · <span class="oc-${esc(pr.outcome)}">${CL_OUT[pr.outcome] || esc(pr.outcome)}${peak}</span>${pr.note ? " · " + esc(pr.note) : ""}</div>`;
     }
     const post = safeUrl(c.url), ev = safeUrl(c.evidence_url);
     return `<article class="cl">
       <div class="cl-meta"><span>${NY_MDHM.format(new Date(c.published_at))} ET</span><span class="who">${esc(c.name)} ${esc(c.handle)}</span>
         <span class="vp vp-${esc(c.verdict)}">${CL_VERDICT[c.verdict] || esc(c.verdict)}</span><span class="tag">${CL_TYPE[c.type] || esc(c.type)}</span>
         <span class="dir d-${esc(c.stance)}">${DIR_ARROW[c.stance] || ""} ${esc(c.stance)}</span></div>
-      <q>${esc(c.claim)}</q>
+      <div class="cl-claim">${esc(c.claim)}</div>
+      <p class="cl-said" title="${esc(c.text)}"><b>Posted</b>“${esc(c.text)}”${c.quoted_text ? ` · quoting “${esc(c.quoted_text)}”` : ""}</p>
       <p><b>On record</b>${esc(c.on_record)}</p>${pline}
       <div class="cl-links">${post ? `<a href="${esc(post)}" target="_blank" rel="noopener">Post ↗</a>` : ""}${ev ? `<a href="${esc(ev)}" target="_blank" rel="noopener">Source ↗</a>` : ""}</div>
     </article>`;
   }).join("") : `<div class="empty">No claims match.</div>`) +
     (!CLF.all && xs.length > 12 ? `<button type="button" class="feed-more" id="cl-more">Show all ${xs.length}</button>` : "") +
-    `<div class="note">${DATA.meta.sample ? "Sample accounts and claims. " : ""}Each claim is checked against the record with a cited source; a claim is only marked contradicted or misleading when a source backs that. Dated price calls are scored from Coinbase prices after the deadline. Assessing the claim, not the person.</div>`;
+    `<div class="note">${DATA.meta.sample ? "Sample accounts and claims. " : ""}Each claim is checked against the record. Supported, misleading and contradicted all need a cited source; without one a claim stays unverified. Dated price calls are scored from Coinbase prices after the deadline. Assessing the claim, not the person.</div>`;
 }
 
 const openHist = new Set();

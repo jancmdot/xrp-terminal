@@ -75,7 +75,11 @@ def _xai(body):
                      {"url": "https://x.com/ExInfluencerB/status/1975000000000000103", "handle": "ExInfluencerB", "author_name": "Influencer B",
                       "posted_at": _ago(6), "text": "XRP to $10 by next month!", "quoted_text": None, "links": []},
                      {"url": "https://x.com/ExInfluencerB/status/1975000000000000104", "handle": "ExInfluencerB", "author_name": "Influencer B",
-                      "posted_at": _ago(7), "text": "Good morning XRP family!", "quoted_text": None, "links": []}]
+                      "posted_at": _ago(7), "text": "Good morning XRP family!", "quoted_text": None, "links": []},
+                     {"url": "https://x.com/ExInfluencerB/status/1975000000000000105", "handle": "ExInfluencerB", "author_name": "Influencer B",
+                      "posted_at": _ago(8), "text": "New all-time high for XRP is coming. Book it.", "quoted_text": None, "links": []},
+                     {"url": "https://x.com/ExInfluencerA/status/1975000000000000106", "handle": "ExInfluencerA", "author_name": "Influencer A",
+                      "posted_at": _ago(9), "text": "RLUSD is now the biggest stablecoin by volume.", "quoted_text": None, "links": []}]
             cites = [p["url"] for p in posts]
         elif allowed and "whale_alert" in allowed:
             posts = [{"url": "https://x.com/whale_alert/status/1975000000000000002", "handle": "whale_alert", "author_name": "Whale Alert",
@@ -140,6 +144,16 @@ def _xai(body):
                 out.append({"cid": c["cid"], "has_claim": True, "claim": "XRP will trade at $10 within a month", "type": "price_prediction",
                             "stance": "bullish", "verdict": "prediction", "on_record": "Price target with a date.", "evidence_url": None,
                             "target_price": 10.0, "target_direction": "above", "deadline": dl})
+            elif "all-time high" in t:
+                out.append({"cid": c["cid"], "has_claim": True, "claim": "XRP will make a new all-time high", "type": "price_prediction",
+                            "stance": "bullish", "verdict": "prediction", "on_record": "Record-high call with a time frame.", "evidence_url": None,
+                            "target_price": None, "target_direction": None, "all_time_high": True,
+                            "deadline": (now_utc() + dt.timedelta(days=60)).strftime("%Y-%m-%d")})
+            elif "RLUSD" in t:
+                # says 'supported' but cites nothing: also downgraded to unverified
+                out.append({"cid": c["cid"], "has_claim": True, "claim": "RLUSD is the largest stablecoin by volume", "type": "adoption",
+                            "stance": "bullish", "verdict": "supported", "on_record": "Looks right.", "evidence_url": None,
+                            "target_price": None, "target_direction": None, "deadline": None, "all_time_high": False})
             elif "bank" in t:
                 # says 'false' but cites nothing: the pipeline must downgrade it to unverified
                 out.append({"cid": c["cid"], "has_claim": True, "claim": "A top-5 bank settles all payments in XRP", "type": "adoption",

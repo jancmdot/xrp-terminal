@@ -101,8 +101,12 @@ def main() -> int:
     run(tmp, "claims", t0)
     cl = json.loads((tmp / "data.json").read_text())["claims"]
     by = {c["claim"]: c for c in cl["items"]}
-    check("claims logged, no-claim posts dropped", len(cl["items"]) == 3)
+    check("claims logged, no-claim posts dropped", len(cl["items"]) == 5)
     check("'false' without a cited source becomes unverified", by["A top-5 bank settles all payments in XRP"]["verdict"] == "unverified")
+    check("'supported' without a cited source becomes unverified", by["RLUSD is the largest stablecoin by volume"]["verdict"] == "unverified")
+    ath = by["XRP will make a new all-time high"]["prediction"]
+    check("all-time-high call gets the Coinbase record as its target", ath["target_price"] and ath["target_price"] > 2.3
+          and ath["direction"] == "above" and ath["outcome"] == "pending" and "record high" in ath["basis"])
     check("scorecard per account", {a["handle"] for a in cl["accounts"]} == {"@ExInfluencerA", "@ExInfluencerB"})
     run(tmp, "claims", t0 + dt.timedelta(days=5))
     cl = json.loads((tmp / "data.json").read_text())["claims"]
@@ -110,7 +114,7 @@ def main() -> int:
     check("dated price call scored hit", by["XRP will trade at $2 or higher within a week"]["prediction"]["outcome"] == "hit")
     check("dated price call scored missed", by["XRP will trade at $10 within a month"]["prediction"]["outcome"] == "missed")
     a = next(x for x in cl["accounts"] if x["handle"] == "@ExInfluencerB")
-    check("scorecard counts outcomes", a["calls"]["missed"] == 1 and a["total"] == 1)
+    check("scorecard counts outcomes", a["calls"]["missed"] == 1 and a["calls"]["pending"] == 1 and a["total"] == 2)
 
     # handle check: unclear handles are reported, found ones confirmed
     run(tmp, "verify_handles", t0)
