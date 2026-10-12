@@ -167,7 +167,7 @@
  "theme_states": {
   "stb": "Standard Chartered says RLUSD custody is live in Dubai; reports cite a $2B cap and several RLUSD burns.",
   "etf": "A sheet put spot XRP ETF vaults near 1.16 billion XRP; outlets said inflows cooled after about $1.7 billion held.",
-  "col": "An NYC XRPL lending hackathon is open, Clearpool will discuss lending, and Evernorth’s SPAC was reported closed."
+  "col": "An NYC XRPL lending hackathon is open, Clearpool will discuss lending, and Evernorth\u2019s SPAC was reported closed."
  },
  "theories": {
   "supply-shock": {
@@ -229,6 +229,5 @@
  },
  "claims_queue": [],
  "last_claims_scan": "2026-10-12T17:01:17Z",
- "last_link_pass": "2026-10-12T18:40:45Z",
  "alerts": {}
 }

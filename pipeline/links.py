@@ -35,6 +35,8 @@ SYSTEM = (
     "rel: supports = the item reports facts that back the claim; contradicts = the item reports facts that conflict with it; "
     "context = the same event, but the item neither backs nor refutes the claim (for example a prediction and news about the event "
     "it builds on).\n"
+    "contradicts needs facts that can't both be true with the claim. An item that is older, less complete, or calls something planned "
+    "or unconfirmed does not contradict a later claim that it happened; that is context. Check the times: each entry has one (UTC).\n"
     "Only return pairs where the claim or the item is marked new. Use the ids exactly as given. Most claims link to 0-3 items; "
     "return an empty list if nothing fits."
 )
@@ -89,9 +91,9 @@ def run(grok: Grok, state: dict, evs: dict) -> int:
     if recent_c and items and (new_c or new_i) and grok.available:
         new_ids = {c["id"] for c in new_c} | {e["id"] for e in new_i}
         payload = {
-            "claims": [{"id": c["id"], **({"new": True} if c["id"] in new_ids else {}), "date": c["published_at"][:10],
+            "claims": [{"id": c["id"], **({"new": True} if c["id"] in new_ids else {}), "time": c["published_at"][:16].replace("T", " "),
                         "claim": c["claim"], "verdict": c["verdict"]} for c in sorted(recent_c.values(), key=lambda c: c["published_at"])],
-            "items": [{"id": e["id"], **({"new": True} if e["id"] in new_ids else {}), "date": e["published_at"][:10],
+            "items": [{"id": e["id"], **({"new": True} if e["id"] in new_ids else {}), "time": e["published_at"][:16].replace("T", " "),
                        "headline": e["headline"], "summary": (e.get("summary") or "")[:220]}
                       for e in sorted(items, key=lambda e: e["published_at"])],
         }
