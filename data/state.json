@@ -166,7 +166,31 @@
   "n:2c92408e5a14": "2026-10-13T12:27:32Z",
   "n:45a7fecf0686": "2026-10-13T12:27:32Z",
   "n:725e50c3b369": "2026-10-13T12:27:32Z",
-  "n:271982e5316a": "2026-10-13T12:27:32Z"
+  "n:271982e5316a": "2026-10-13T12:27:32Z",
+  "x:2110049938281464157": "2026-10-13T21:26:41Z",
+  "x:2110047614922375447": "2026-10-13T21:26:41Z",
+  "x:2109990338131595420": "2026-10-13T21:26:41Z",
+  "x:2110113351057674362": "2026-10-13T21:26:41Z",
+  "x:2110076869470978188": "2026-10-13T21:26:41Z",
+  "x:2110072590371041298": "2026-10-13T21:26:41Z",
+  "x:2110070612857430516": "2026-10-13T21:26:41Z",
+  "x:2110062198915825953": "2026-10-13T21:26:41Z",
+  "x:2110045007876878683": "2026-10-13T21:26:41Z",
+  "n:f65ec83d2fb9": "2026-10-13T21:26:41Z",
+  "c:2110097206191464923": "2026-10-13T21:29:43Z",
+  "c:2110036100366336242": "2026-10-13T21:29:43Z",
+  "c:2110032940017295733": "2026-10-13T21:29:43Z",
+  "c:2109953260232867972": "2026-10-13T21:29:43Z",
+  "c:2109937873076302051": "2026-10-13T21:29:43Z",
+  "c:2110117483449327629": "2026-10-13T21:29:43Z",
+  "c:2110117345058230310": "2026-10-13T21:29:43Z",
+  "c:2110098592853532759": "2026-10-13T21:29:43Z",
+  "c:2110091438411464872": "2026-10-13T21:29:43Z",
+  "c:2110113211509072159": "2026-10-13T21:29:43Z",
+  "c:2110065030003864052": "2026-10-13T21:29:43Z",
+  "c:2110025898930094384": "2026-10-13T21:29:43Z",
+  "c:2110063771309752544": "2026-10-13T21:29:43Z",
+  "c:2110052955843915914": "2026-10-13T21:29:43Z"
  },
  "slots_done": [
   "etf:2026-10-08:20",
@@ -177,60 +201,54 @@
   "scan:2026-10-11:17",
   "scan:2026-10-12:8",
   "scan:2026-10-12:17",
-  "scan:2026-10-13:8"
+  "scan:2026-10-13:8",
+  "scan:2026-10-13:17"
  ],
  "spend": {
   "2026-10": {
-   "usd": 17.1754,
-   "calls": 157,
-   "x_posts": 988,
+   "usd": 18.6667,
+   "calls": 170,
+   "x_posts": 1151,
    "x_users": 318,
-   "web_searches": 155,
+   "web_searches": 159,
    "by_day": {
     "2026-10-08": 4.6973,
     "2026-10-09": 2.3975,
     "2026-10-10": 2.0953,
     "2026-10-11": 1.5954,
     "2026-10-12": 5.1787,
-    "2026-10-13": 1.2112
+    "2026-10-13": 2.7025
    }
   }
  },
  "last_etf_pull": "2026-10-13T01:23:18Z",
  "positioning": {
-  "as_of": "2026-10-13T19:20:01Z",
-  "funding_rate": -0.001229,
-  "funding_pctile_30d": 0.06,
-  "open_interest_usd": 3015369516,
-  "oi_change_24h_pct": -0.97
+  "as_of": "2026-10-13T21:23:18Z",
+  "funding_rate": -0.003735,
+  "funding_pctile_30d": 0.02,
+  "open_interest_usd": 3000628684,
+  "oi_change_24h_pct": 0.37
  },
  "feed_errors": [],
- "last_x_scan": "2026-10-13T12:23:15Z",
- "last_news_scan": "2026-10-13T12:23:15Z",
+ "last_x_scan": "2026-10-13T21:23:18Z",
+ "last_news_scan": "2026-10-13T21:23:18Z",
  "theme_states": {
   "stb": "Standard Chartered said RLUSD custody is live in Dubai; trackers cited tens of millions of RLUSD burns.",
-  "sup": "Ripple moved 200 million XRP between its own wallets; a tracker put 21.97 billion XRP in exchange wallets.",
-  "etf": "A sheet put spot ETF vaults near 1.16 billion XRP; holdings were reported at $1.7 billion after a $4 million week.",
-  "pay": "XRPL payment volume printed 858 million XRP, near average; TrustLinq was said to widen RLUSD payment reach.",
-  "tok": "A report ranked the XRP Ledger sixth by tokenized-asset value; an outlet said it led 2026 commodity inflows.",
-  "col": "Clearpool is set to discuss XRPL lending; a Brevan Howard prime deal disclosed no XRP allocation.",
-  "corp": "Cointelegraph said Evernorth’s SPAC closed with a large XRP stake; Ripple events and product updates continued.",
-  "reg": "Basel materials restated bank capital rules for crypto; an outlet said those weights still make holdings costly.",
-  "mac": "CoinDesk said chip-rout liquidations exceeded XRP’s, tying the token to broader market stress.",
-  "spec": "A fund partner guessed Ripple could list in 12 to 24 months; that remains unsourced speculation."
+  "pay": "Privy XRPL wallets were confirmed live; XRPL payment volume printed 858 million XRP, near average.",
+  "etf": "Spot XRP ETF holdings were reported near $1.7 billion, with mixed and partly unverified inflow figures."
  },
  "theories": {
   "supply-shock": {
-   "note": "Reported sheets put spot ETF vaults near 1.16B XRP and $1.7B after a $4M week, not holdings rising faster than exchange balances.",
+   "note": "Reported spot-ETF holdings of $1.7 billion after a $4 million week do not show holdings outrunning available supply.",
    "net": "weakens",
-   "updated_at": "2026-10-13T12:27:55Z",
+   "updated_at": "2026-10-13T21:27:05Z",
    "weeks": {
     "2026-10-05": {
      "note": "The strongest item, a reported $1.7 billion ETF holding after a $4 million week, does not show holdings rising faster than exchange balances.",
      "net": "weakens"
     },
     "2026-10-12": {
-     "note": "Reported sheets put spot ETF vaults near 1.16B XRP and $1.7B after a $4M week, not holdings rising faster than exchange balances.",
+     "note": "Reported spot-ETF holdings of $1.7 billion after a $4 million week do not show holdings outrunning available supply.",
      "net": "weakens"
     }
    }
@@ -238,34 +256,34 @@
   "swift": {
    "note": "No confirmed or reported evidence in the last 7 days.",
    "net": "none",
-   "updated_at": "2026-10-13T12:27:41Z"
+   "updated_at": "2026-10-13T21:26:52Z"
   },
   "collateral": {
-   "note": "A reported outlet note says Basel weights still make bank crypto holdings costly, with no favorable rule or audited disclosure.",
+   "note": "A reported note that Basel weights still make bank crypto holdings costly works against favorable capital treatment.",
    "net": "weakens",
-   "updated_at": "2026-10-13T12:27:55Z",
+   "updated_at": "2026-10-13T21:27:05Z",
    "weeks": {
     "2026-10-05": {
      "note": "The strongest item is a reported note that Basel weights still make bank crypto holdings costly, not a favorable rule or audited disclosure.",
      "net": "weakens"
     },
     "2026-10-12": {
-     "note": "A reported outlet note says Basel weights still make bank crypto holdings costly, with no favorable rule or audited disclosure.",
+     "note": "A reported note that Basel weights still make bank crypto holdings costly works against favorable capital treatment.",
      "net": "weakens"
     }
    }
   },
   "tokenization": {
-   "note": "XRPL Commons' reported partial on-ledger repo sketch does not show products that require meaningful XRP balances.",
+   "note": "A reported XRPL Commons sketch of a partial on-ledger repo does not show products that must hold meaningful XRP.",
    "net": "weakens",
-   "updated_at": "2026-10-13T12:27:55Z",
+   "updated_at": "2026-10-13T21:27:05Z",
    "weeks": {
     "2026-10-05": {
      "note": "The strongest item is a reported proposal that an XRPL sponsor model could hold user reserves, not a product requiring meaningful XRP balances.",
      "net": "weakens"
     },
     "2026-10-12": {
-     "note": "XRPL Commons' reported partial on-ledger repo sketch does not show products that require meaningful XRP balances.",
+     "note": "A reported XRPL Commons sketch of a partial on-ledger repo does not show products that must hold meaningful XRP.",
      "net": "weakens"
     }
    }
@@ -278,7 +296,7 @@
   "through": "2026-10-12T17:12:44Z"
  },
  "claims_queue": [],
- "last_claims_scan": "2026-10-12T21:28:35Z",
+ "last_claims_scan": "2026-10-13T21:27:05Z",
  "alerts": {},
- "last_link_pass": "2026-10-13T12:27:55Z"
+ "last_link_pass": "2026-10-13T21:29:43Z"
 }
