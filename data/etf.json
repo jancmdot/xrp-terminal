@@ -1,5 +1,5 @@
 {
- "as_of": "2026-10-12",
+ "as_of": "2026-10-13",
  "funds": [
   {
    "ticker": "XRPC",
@@ -33,22 +33,6 @@
   }
  ],
  "daily": [
-  {
-   "date": "2026-07-20",
-   "reported": true,
-   "net_flow_usd": 2490876,
-   "cum_flow_usd": 1409954440,
-   "total_aum_usd": null,
-   "price_usd": 1.0973,
-   "spot_volume_usd": 55143396,
-   "by_fund": {
-    "XRPC": 0,
-    "XRP": 2490876,
-    "TOXR": 0,
-    "GXRP": 0,
-    "XRPZ": 0
-   }
-  },
   {
    "date": "2026-07-21",
    "reported": true,
@@ -986,10 +970,26 @@
    "price_usd": 1.4096,
    "spot_volume_usd": 72755535,
    "by_fund": {
-    "TOXR": 0,
     "XRPC": 0,
-    "GXRP": 0,
     "XRP": 0,
+    "XRPZ": 0,
+    "GXRP": 0,
+    "TOXR": 0
+   }
+  },
+  {
+   "date": "2026-10-13",
+   "reported": true,
+   "net_flow_usd": 0,
+   "cum_flow_usd": 1723149920,
+   "total_aum_usd": null,
+   "price_usd": 1.3415,
+   "spot_volume_usd": 70032981,
+   "by_fund": {
+    "XRP": 0,
+    "TOXR": 0,
+    "GXRP": 0,
+    "XRPC": 0,
     "XRPZ": 0
    }
   }
