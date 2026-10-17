@@ -1,11 +1,11 @@
 {
- "as_of": "2026-10-15",
+ "as_of": "2026-10-16",
  "funds": [
   {
    "ticker": "XRPC",
    "issuer": "Canary Capital",
    "aum_usd": null,
-   "cum_flow_usd": 481096103
+   "cum_flow_usd": 478622705
   },
   {
    "ticker": "XRPZ",
@@ -33,22 +33,6 @@
   }
  ],
  "daily": [
-  {
-   "date": "2026-07-23",
-   "reported": true,
-   "net_flow_usd": 0,
-   "cum_flow_usd": 1415616161,
-   "total_aum_usd": null,
-   "price_usd": 1.1414,
-   "spot_volume_usd": 48121669,
-   "by_fund": {
-    "XRP": 0,
-    "XRPC": 0,
-    "XRPZ": 0,
-    "TOXR": 0,
-    "GXRP": 0
-   }
-  },
   {
    "date": "2026-07-24",
    "reported": true,
@@ -986,11 +970,27 @@
    "price_usd": 1.331,
    "spot_volume_usd": 102396381,
    "by_fund": {
-    "TOXR": 0,
     "GXRP": 0,
     "XRPC": 0,
     "XRPZ": 3644842,
-    "XRP": -3749353
+    "XRP": -3749353,
+    "TOXR": 0
+   }
+  },
+  {
+   "date": "2026-10-16",
+   "reported": true,
+   "net_flow_usd": -2473398,
+   "cum_flow_usd": 1721312425,
+   "total_aum_usd": null,
+   "price_usd": 1.3343,
+   "spot_volume_usd": 62761573,
+   "by_fund": {
+    "XRPZ": 0,
+    "XRPC": -2473398,
+    "TOXR": 0,
+    "GXRP": 0,
+    "XRP": 0
    }
   }
  ],
