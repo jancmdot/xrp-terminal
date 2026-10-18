@@ -347,7 +347,20 @@
   "x:2111770976165802464": "2026-10-18T12:26:26Z",
   "x:2111747551565394165": "2026-10-18T12:26:26Z",
   "n:2eff51378c74": "2026-10-18T12:26:26Z",
-  "n:398de9d1d146": "2026-10-18T12:26:26Z"
+  "n:398de9d1d146": "2026-10-18T12:26:26Z",
+  "x:2111871346074341636": "2026-10-18T21:25:26Z",
+  "x:2111853363948376412": "2026-10-18T21:25:26Z",
+  "c:2111931206988140936": "2026-10-18T21:34:28Z",
+  "c:2111910515320496165": "2026-10-18T21:34:28Z",
+  "c:2111910283409023375": "2026-10-18T21:34:28Z",
+  "c:2111891118644441591": "2026-10-18T21:34:28Z",
+  "c:2111880127323726190": "2026-10-18T21:34:28Z",
+  "c:2111878818294362449": "2026-10-18T21:34:28Z",
+  "c:2111849402520506654": "2026-10-18T21:34:28Z",
+  "c:2111834915977232822": "2026-10-18T21:34:28Z",
+  "c:2111834079431643388": "2026-10-18T21:34:28Z",
+  "c:2111772942803554567": "2026-10-18T21:34:28Z",
+  "c:2111617341037346969": "2026-10-18T21:34:28Z"
  },
  "slots_done": [
   "etf:2026-10-08:20",
@@ -368,15 +381,16 @@
   "scan:2026-10-16:17",
   "scan:2026-10-17:8",
   "scan:2026-10-17:17",
-  "scan:2026-10-18:8"
+  "scan:2026-10-18:8",
+  "scan:2026-10-18:17"
  ],
  "spend": {
   "2026-10": {
-   "usd": 28.4126,
-   "calls": 283,
-   "x_posts": 1886,
+   "usd": 29.411,
+   "calls": 296,
+   "x_posts": 1961,
    "x_users": 357,
-   "web_searches": 253,
+   "web_searches": 263,
    "by_day": {
     "2026-10-08": 4.6973,
     "2026-10-09": 2.3975,
@@ -388,45 +402,45 @@
     "2026-10-15": 2.0862,
     "2026-10-16": 2.2289,
     "2026-10-17": 1.8677,
-    "2026-10-18": 0.926
+    "2026-10-18": 1.9244
    }
   }
  },
  "last_etf_pull": "2026-10-17T01:23:12Z",
  "positioning": {
-  "as_of": "2026-10-18T19:23:14Z",
-  "funding_rate": -0.001003,
-  "funding_pctile_30d": 0.09,
-  "open_interest_usd": 2773224545,
-  "oi_change_24h_pct": -0.85
+  "as_of": "2026-10-18T21:23:17Z",
+  "funding_rate": -0.001268,
+  "funding_pctile_30d": 0.08,
+  "open_interest_usd": 2749877109,
+  "oi_change_24h_pct": 0.1
  },
  "feed_errors": [],
- "last_x_scan": "2026-10-18T12:23:14Z",
- "last_news_scan": "2026-10-18T12:23:14Z",
+ "last_x_scan": "2026-10-18T21:23:17Z",
+ "last_news_scan": "2026-10-18T21:23:17Z",
  "theme_states": {
-  "sup": "CryptoQuant said XRP whale inflows to Binance hit a high; a report still puts about 31.4 billion XRP in escrow.",
-  "corp": "Evernorth debuted on Nasdaq, named partners, and hired an ex-Coinbase executive for a 473 million XRP treasury.",
-  "tok": "Reports put XRPL tokenized value near $6.14 billion; Ripple Prime offered RWA swaps on 100-plus markets.",
-  "stb": "Trackers cited about 39 million RLUSD minted on Ethereum; Standard Chartered said Dubai custody is live.",
-  "pay": "Cross River will settle with RLUSD, DriveWealth will use its rails, and Ripple extended RLUSD to more sidechains.",
-  "etf": "Reports put cumulative XRP ETF inflows near $1.8 billion and spot ETF vaults near 1.16 billion XRP.",
-  "mac": "XRP was near $1.33 after macro-linked pressure, broad liquidations, and small spot ETF outflows.",
-  "spec": "Coverage was speculative or unverified, including an IPO timing guess and a rumored Japan ETF listing.",
-  "col": "Evernorth staffed a 473 million XRP treasury as shares rose about 5%, though the stake was called underwater.",
-  "reg": "A Basel chapter restated bank capital rules for crypto; other regulatory items were unverified."
+  "sup": "CryptoQuant reported whale inflows to Binance at a high; escrow is still estimated at 31.4 billion XRP.",
+  "pay": "RLUSD rails expanded via Cross River, DriveWealth, sidechains, and a fiat on-ramp; batch txs topped 20%.",
+  "corp": "Evernorth named partners and a hire for a 473 million XRP treasury after a Nasdaq debut.",
+  "tok": "Reports put XRPL tokenized value near $5-6.14 billion as RWA addresses rose by 47,953.",
+  "stb": "Trackers cited two Ethereum RLUSD mints near 19 million each; Dubai RLUSD custody is live.",
+  "etf": "Cumulative XRP ETF inflows were cited near $1.8 billion; Oct. 16 showed a small net outflow.",
+  "mac": "XRP was reported near $1.33 as macro pressure and nearly $1 billion in crypto liquidations hit.",
+  "spec": "Items were opinion or rumor, including a return comparison and an unsourced Ripple listing guess.",
+  "col": "Evernorth is tied to a 473 million XRP treasury; a report says that XRP stake is underwater.",
+  "reg": "A Basel chapter restated bank capital rules for crypto; a China XRP case claim is unverified."
  },
  "theories": {
   "supply-shock": {
-   "note": "Cointelegraph's reported ~$105k spot-ETF outflow is negligible beside +$89.8M over 20 days and does not show a supply shock.",
+   "note": "Strongest item is Cointelegraph’s reported ~$105k ETF outflow; with the 1.16B vault figure, it does not show holdings outpacing exchange drains.",
    "net": "weakens",
-   "updated_at": "2026-10-18T12:27:11Z",
+   "updated_at": "2026-10-18T21:26:00Z",
    "weeks": {
     "2026-10-05": {
      "note": "The strongest item, a reported $1.7 billion ETF holding after a $4 million week, does not show holdings rising faster than exchange balances.",
      "net": "weakens"
     },
     "2026-10-12": {
-     "note": "Cointelegraph's reported ~$105k spot-ETF outflow is negligible beside +$89.8M over 20 days and does not show a supply shock.",
+     "note": "Strongest item is Cointelegraph’s reported ~$105k ETF outflow; with the 1.16B vault figure, it does not show holdings outpacing exchange drains.",
      "net": "weakens"
     }
    }
@@ -434,12 +448,12 @@
   "swift": {
    "note": "No confirmed or reported evidence in the last 7 days.",
    "net": "none",
-   "updated_at": "2026-10-18T12:26:58Z"
+   "updated_at": "2026-10-18T21:25:46Z"
   },
   "collateral": {
    "note": "No confirmed or reported evidence in the last 7 days.",
    "net": "none",
-   "updated_at": "2026-10-18T12:26:58Z",
+   "updated_at": "2026-10-18T21:25:46Z",
    "weeks": {
     "2026-10-05": {
      "note": "The strongest item is a reported note that Basel weights still make bank crypto holdings costly, not a favorable rule or audited disclosure.",
@@ -452,16 +466,16 @@
    }
   },
   "tokenization": {
-   "note": "A reported $5.05B of tokenized XRPL assets still shows no products that require meaningful XRP balances.",
+   "note": "Strongest item is XRPL Commons’ reported partial on-ledger repo sketch, which does not require products to hold meaningful XRP.",
    "net": "weakens",
-   "updated_at": "2026-10-18T12:27:11Z",
+   "updated_at": "2026-10-18T21:26:00Z",
    "weeks": {
     "2026-10-05": {
      "note": "The strongest item is a reported proposal that an XRPL sponsor model could hold user reserves, not a product requiring meaningful XRP balances.",
      "net": "weakens"
     },
     "2026-10-12": {
-     "note": "A reported $5.05B of tokenized XRPL assets still shows no products that require meaningful XRP balances.",
+     "note": "Strongest item is XRPL Commons’ reported partial on-ledger repo sketch, which does not require products to hold meaningful XRP.",
      "net": "weakens"
     }
    }
@@ -474,7 +488,7 @@
   "through": "2026-10-12T17:12:44Z"
  },
  "claims_queue": [],
- "last_claims_scan": "2026-10-17T21:25:06Z",
+ "last_claims_scan": "2026-10-18T21:26:00Z",
  "alerts": {},
- "last_link_pass": "2026-10-18T12:27:11Z"
+ "last_link_pass": "2026-10-18T21:34:28Z"
 }
