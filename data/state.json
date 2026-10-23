@@ -539,15 +539,16 @@
   "scan:2026-10-21:8",
   "scan:2026-10-21:17",
   "scan:2026-10-22:8",
-  "scan:2026-10-22:17"
+  "scan:2026-10-22:17",
+  "scan:2026-10-23:8"
  ],
  "spend": {
   "2026-10": {
-   "usd": 39.3234,
-   "calls": 395,
-   "x_posts": 2733,
+   "usd": 40.6658,
+   "calls": 403,
+   "x_posts": 2869,
    "x_users": 410,
-   "web_searches": 355,
+   "web_searches": 373,
    "by_day": {
     "2026-10-08": 4.6973,
     "2026-10-09": 2.3975,
@@ -563,21 +564,22 @@
     "2026-10-19": 2.4296,
     "2026-10-20": 2.3401,
     "2026-10-21": 1.9784,
-    "2026-10-22": 3.1643
+    "2026-10-22": 3.1643,
+    "2026-10-23": 1.3424
    }
   }
  },
  "last_etf_pull": "2026-10-23T01:23:15Z",
  "positioning": {
-  "as_of": "2026-10-23T10:23:18Z",
-  "funding_rate": 0.009454,
-  "funding_pctile_30d": 0.84,
-  "open_interest_usd": 2913866602,
-  "oi_change_24h_pct": -2.46
+  "as_of": "2026-10-23T12:23:15Z",
+  "funding_rate": 0.010026,
+  "funding_pctile_30d": 0.93,
+  "open_interest_usd": 2905141562,
+  "oi_change_24h_pct": -0.58
  },
  "feed_errors": [],
- "last_x_scan": "2026-10-22T21:23:14Z",
- "last_news_scan": "2026-10-22T21:23:14Z",
+ "last_x_scan": "2026-10-23T12:23:15Z",
+ "last_news_scan": "2026-10-23T12:23:15Z",
  "theme_states": {
   "sup": "Reports cite 6 billion XRP sent to exchanges in 30 days and a one-year high in exchange-held XRP.",
   "stb": "Confirmed items: Aave RLUSD borrow markets, Arf XRPL settlement liquidity, and RLUSD on more sidechains.",
@@ -613,12 +615,12 @@
   "swift": {
    "note": "No confirmed or reported evidence in the last 7 days.",
    "net": "none",
-   "updated_at": "2026-10-22T21:24:41Z"
+   "updated_at": "2026-10-23T12:24:48Z"
   },
   "collateral": {
    "note": "No confirmed or reported evidence in the last 7 days.",
    "net": "none",
-   "updated_at": "2026-10-22T21:24:41Z",
+   "updated_at": "2026-10-23T12:24:48Z",
    "weeks": {
     "2026-10-05": {
      "note": "The strongest item is a reported note that Basel weights still make bank crypto holdings costly, not a favorable rule or audited disclosure.",
@@ -659,7 +661,8 @@
  "claims_queue": [],
  "last_claims_scan": "2026-10-22T21:24:54Z",
  "alerts": {
-  "budget-warn:2026-10": "2026-10-19T04:23:13Z"
+  "budget-warn:2026-10": "2026-10-19T04:23:13Z",
+  "budget-paused:2026-10": "2026-10-23T12:24:49Z"
  },
- "last_link_pass": "2026-10-22T21:28:45Z"
+ "last_link_pass": "2026-10-23T12:24:48Z"
 }
