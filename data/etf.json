@@ -1,5 +1,5 @@
 {
- "as_of": "2026-10-21",
+ "as_of": "2026-10-22",
  "funds": [
   {
    "ticker": "XRPC",
@@ -11,7 +11,7 @@
    "ticker": "XRPZ",
    "issuer": "Franklin Templeton",
    "aum_usd": null,
-   "cum_flow_usd": 520096185
+   "cum_flow_usd": 523642628
   },
   {
    "ticker": "XRP",
@@ -33,22 +33,6 @@
   }
  ],
  "daily": [
-  {
-   "date": "2026-07-29",
-   "reported": true,
-   "net_flow_usd": 584706,
-   "cum_flow_usd": 1416793332,
-   "total_aum_usd": null,
-   "price_usd": 1.0686,
-   "spot_volume_usd": 52780220,
-   "by_fund": {
-    "XRPC": 0,
-    "GXRP": 0,
-    "TOXR": 0,
-    "XRPZ": 584706,
-    "XRP": 0
-   }
-  },
   {
    "date": "2026-07-30",
    "reported": true,
@@ -987,10 +971,26 @@
    "spot_volume_usd": 97249999,
    "by_fund": {
     "XRP": -1546211,
+    "XRPC": 0,
     "TOXR": 0,
-    "GXRP": 0,
     "XRPZ": 2254726,
-    "XRPC": 0
+    "GXRP": 0
+   }
+  },
+  {
+   "date": "2026-10-22",
+   "reported": true,
+   "net_flow_usd": 3546443,
+   "cum_flow_usd": 1725567383,
+   "total_aum_usd": null,
+   "price_usd": 1.3648,
+   "spot_volume_usd": 87211922,
+   "by_fund": {
+    "XRP": 0,
+    "TOXR": 0,
+    "XRPC": 0,
+    "XRPZ": 3546443,
+    "GXRP": 0
    }
   }
  ],
