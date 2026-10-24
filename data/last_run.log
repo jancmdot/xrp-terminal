@@ -1,18 +1,15 @@
-12:23:15 INFO New York Sat 08:23 · tasks: scan, etf
-12:23:15 INFO feed SEC press releases   25 entries, 0 about XRP in the window
-12:23:16 INFO feed CoinDesk             25 entries, 1 about XRP in the window
-12:23:16 INFO feed Cointelegraph        30 entries, 0 about XRP in the window
-12:23:16 INFO feed The Block            19 entries, 0 about XRP in the window
-12:23:16 INFO feed Decrypt              60 entries, 0 about XRP in the window
-12:23:16 WARNING Monthly Grok budget of $40 reached (spent $40.67)
-12:23:16 WARNING Monthly Grok budget of $40 reached (spent $40.67)
-12:23:16 WARNING Monthly Grok budget of $40 reached (spent $40.67)
-12:23:16 INFO candidates: 1 new of 1 found
-12:23:16 WARNING rating batch failed: Monthly Grok budget of $40 reached (spent $40.67)
-12:23:16 WARNING Monthly Grok budget of $40 reached (spent $40.67)
-12:23:16 INFO rated 0, kept 0
-12:23:16 WARNING theme states failed: Monthly Grok budget of $40 reached (spent $40.67)
-12:23:16 WARNING Monthly Grok budget of $40 reached (spent $40.67)
-12:23:16 INFO claim links: 0 added (0 new claims, 0 new items considered)
-12:23:16 INFO ETF flows unchanged (through 2026-10-23)
-12:23:16 INFO wrote data.json (197 events logged)
+21:23:16 INFO New York Sat 17:23 · tasks: scan, etf
+21:23:17 INFO feed SEC press releases   25 entries, 0 about XRP in the window
+21:23:17 INFO feed CoinDesk             25 entries, 0 about XRP in the window
+21:23:17 INFO feed Cointelegraph        30 entries, 0 about XRP in the window
+21:23:17 INFO feed The Block            19 entries, 0 about XRP in the window
+21:23:18 INFO feed Decrypt              40 entries, 0 about XRP in the window
+21:23:18 WARNING Monthly Grok budget of $40 reached (spent $40.67)
+21:23:18 INFO candidates: 0 new of 0 found
+21:23:18 INFO rated 0, kept 0
+21:23:18 WARNING theme states failed: Monthly Grok budget of $40 reached (spent $40.67)
+21:23:18 WARNING Monthly Grok budget of $40 reached (spent $40.67)
+21:23:18 WARNING Monthly Grok budget of $40 reached (spent $40.67)
+21:23:18 INFO claim links: 0 added (0 new claims, 0 new items considered)
+21:23:18 INFO ETF flows unchanged (through 2026-10-23)
+21:23:18 INFO wrote data.json (197 events logged)
