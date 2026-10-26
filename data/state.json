@@ -576,11 +576,11 @@
  },
  "last_etf_pull": "2026-10-26T04:23:14Z",
  "positioning": {
-  "as_of": "2026-10-26T03:23:15Z",
-  "funding_rate": 0.009632,
-  "funding_pctile_30d": 0.88,
-  "open_interest_usd": 2861164117,
-  "oi_change_24h_pct": -1.89
+  "as_of": "2026-10-26T09:23:15Z",
+  "funding_rate": 0.008708,
+  "funding_pctile_30d": 0.78,
+  "open_interest_usd": 2867081617,
+  "oi_change_24h_pct": -0.32
  },
  "feed_errors": [],
  "last_x_scan": "2026-10-23T12:23:15Z",
