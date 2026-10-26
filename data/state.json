@@ -546,7 +546,8 @@
   "scan:2026-10-24:17",
   "scan:2026-10-25:8",
   "scan:2026-10-25:17",
-  "scan:2026-10-26:8"
+  "scan:2026-10-26:8",
+  "scan:2026-10-26:17"
  ],
  "spend": {
   "2026-10": {
@@ -577,15 +578,15 @@
  },
  "last_etf_pull": "2026-10-26T04:23:14Z",
  "positioning": {
-  "as_of": "2026-10-26T18:23:17Z",
-  "funding_rate": 0.009364,
-  "funding_pctile_30d": 0.83,
-  "open_interest_usd": 2879890516,
-  "oi_change_24h_pct": 0.07
+  "as_of": "2026-10-26T21:23:15Z",
+  "funding_rate": 0.008656,
+  "funding_pctile_30d": 0.77,
+  "open_interest_usd": 2861183090,
+  "oi_change_24h_pct": 0.05
  },
  "feed_errors": [],
  "last_x_scan": "2026-10-23T12:23:15Z",
- "last_news_scan": "2026-10-26T12:23:15Z",
+ "last_news_scan": "2026-10-26T21:23:15Z",
  "theme_states": {
   "sup": "Reports cite 6 billion XRP sent to exchanges in 30 days and a one-year high in exchange-held XRP.",
   "stb": "Confirmed items: Aave RLUSD borrow markets, Arf XRPL settlement liquidity, and RLUSD on more sidechains.",
@@ -621,12 +622,12 @@
   "swift": {
    "note": "No confirmed or reported evidence in the last 7 days.",
    "net": "none",
-   "updated_at": "2026-10-26T12:23:16Z"
+   "updated_at": "2026-10-26T21:23:16Z"
   },
   "collateral": {
    "note": "No confirmed or reported evidence in the last 7 days.",
    "net": "none",
-   "updated_at": "2026-10-26T12:23:16Z",
+   "updated_at": "2026-10-26T21:23:16Z",
    "weeks": {
     "2026-10-05": {
      "note": "The strongest item is a reported note that Basel weights still make bank crypto holdings costly, not a favorable rule or audited disclosure.",
@@ -641,7 +642,7 @@
   "tokenization": {
    "note": "No confirmed or reported evidence in the last 7 days.",
    "net": "none",
-   "updated_at": "2026-10-26T12:23:16Z",
+   "updated_at": "2026-10-26T21:23:16Z",
    "weeks": {
     "2026-10-05": {
      "note": "The strongest item is a reported proposal that an XRPL sponsor model could hold user reserves, not a product requiring meaningful XRP balances.",
@@ -670,5 +671,5 @@
   "budget-warn:2026-10": "2026-10-19T04:23:13Z",
   "budget-paused:2026-10": "2026-10-23T12:24:49Z"
  },
- "last_link_pass": "2026-10-26T12:23:16Z"
+ "last_link_pass": "2026-10-26T21:23:16Z"
 }
