@@ -547,7 +547,8 @@
   "scan:2026-10-25:8",
   "scan:2026-10-25:17",
   "scan:2026-10-26:8",
-  "scan:2026-10-26:17"
+  "scan:2026-10-26:17",
+  "scan:2026-10-27:8"
  ],
  "spend": {
   "2026-10": {
@@ -578,15 +579,15 @@
  },
  "last_etf_pull": "2026-10-27T03:23:14Z",
  "positioning": {
-  "as_of": "2026-10-27T10:23:15Z",
-  "funding_rate": 0.009486,
-  "funding_pctile_30d": 0.85,
-  "open_interest_usd": 2971256287,
-  "oi_change_24h_pct": 2.86
+  "as_of": "2026-10-27T12:23:14Z",
+  "funding_rate": 0.009768,
+  "funding_pctile_30d": 0.88,
+  "open_interest_usd": 2991643208,
+  "oi_change_24h_pct": 3.78
  },
  "feed_errors": [],
  "last_x_scan": "2026-10-23T12:23:15Z",
- "last_news_scan": "2026-10-26T21:23:15Z",
+ "last_news_scan": "2026-10-27T12:23:14Z",
  "theme_states": {
   "sup": "Reports cite 6 billion XRP sent to exchanges in 30 days and a one-year high in exchange-held XRP.",
   "stb": "Confirmed items: Aave RLUSD borrow markets, Arf XRPL settlement liquidity, and RLUSD on more sidechains.",
@@ -601,9 +602,9 @@
  },
  "theories": {
   "supply-shock": {
-   "note": "Strongest item: Cointelegraph reports 6 billion XRP sent to exchanges in 30 days, against a squeeze; the cited $105k ETF outflow is small versus recent inflows.",
-   "net": "weakens",
-   "updated_at": "2026-10-22T21:24:54Z",
+   "note": "No confirmed or reported evidence in the last 7 days.",
+   "net": "none",
+   "updated_at": "2026-10-27T12:23:15Z",
    "weeks": {
     "2026-10-05": {
      "note": "The strongest item, a reported $1.7 billion ETF holding after a $4 million week, does not show holdings rising faster than exchange balances.",
@@ -622,12 +623,12 @@
   "swift": {
    "note": "No confirmed or reported evidence in the last 7 days.",
    "net": "none",
-   "updated_at": "2026-10-26T21:23:16Z"
+   "updated_at": "2026-10-27T12:23:15Z"
   },
   "collateral": {
    "note": "No confirmed or reported evidence in the last 7 days.",
    "net": "none",
-   "updated_at": "2026-10-26T21:23:16Z",
+   "updated_at": "2026-10-27T12:23:15Z",
    "weeks": {
     "2026-10-05": {
      "note": "The strongest item is a reported note that Basel weights still make bank crypto holdings costly, not a favorable rule or audited disclosure.",
@@ -642,7 +643,7 @@
   "tokenization": {
    "note": "No confirmed or reported evidence in the last 7 days.",
    "net": "none",
-   "updated_at": "2026-10-26T21:23:16Z",
+   "updated_at": "2026-10-27T12:23:15Z",
    "weeks": {
     "2026-10-05": {
      "note": "The strongest item is a reported proposal that an XRPL sponsor model could hold user reserves, not a product requiring meaningful XRP balances.",
@@ -671,5 +672,5 @@
   "budget-warn:2026-10": "2026-10-19T04:23:13Z",
   "budget-paused:2026-10": "2026-10-23T12:24:49Z"
  },
- "last_link_pass": "2026-10-26T21:23:16Z"
+ "last_link_pass": "2026-10-27T12:23:15Z"
 }
