@@ -1,15 +1,5 @@
 {
  "seen": {
-  "x:2109387797584892359": "2026-10-11T21:25:53Z",
-  "x:2109334265083441320": "2026-10-11T21:25:53Z",
-  "x:2109333395725598850": "2026-10-11T21:25:53Z",
-  "x:2109282793360658727": "2026-10-11T21:25:53Z",
-  "x:2109392061397082151": "2026-10-11T21:25:53Z",
-  "x:2109390633601536450": "2026-10-11T21:25:53Z",
-  "x:2109387581188120939": "2026-10-11T21:25:53Z",
-  "x:2109387061979648357": "2026-10-11T21:25:53Z",
-  "x:2109386642393858235": "2026-10-11T21:25:53Z",
-  "n:f28c853391d2": "2026-10-11T21:25:53Z",
   "x:2109517259551191043": "2026-10-12T12:29:06Z",
   "x:2109615069336150058": "2026-10-12T12:29:06Z",
   "x:2109577531795919072": "2026-10-12T12:29:06Z",
@@ -448,7 +438,23 @@
   "n:bf0f692fa57b": "2026-11-01T13:31:44Z",
   "n:ab5f5cf04001": "2026-11-01T13:31:44Z",
   "n:d94c39bf4168": "2026-11-01T13:31:44Z",
-  "n:35ab31a96f14": "2026-11-01T13:31:44Z"
+  "n:35ab31a96f14": "2026-11-01T13:31:44Z",
+  "x:2116949028055212129": "2026-11-01T22:24:48Z",
+  "x:2116948386377023689": "2026-11-01T22:24:48Z",
+  "x:2116947996344496296": "2026-11-01T22:24:48Z",
+  "x:2116909152911884356": "2026-11-01T22:24:48Z",
+  "x:2116886676102377788": "2026-11-01T22:24:48Z",
+  "c:2117018698817192292": "2026-11-01T22:34:50Z",
+  "c:2116936189408100722": "2026-11-01T22:34:50Z",
+  "c:2116914067956732289": "2026-11-01T22:34:50Z",
+  "c:2116632920437743675": "2026-11-01T22:34:50Z",
+  "c:2117018563533816026": "2026-11-01T22:34:50Z",
+  "c:2116998969519731152": "2026-11-01T22:34:50Z",
+  "c:2116973265256169764": "2026-11-01T22:34:50Z",
+  "c:2116998863273730501": "2026-11-01T22:34:50Z",
+  "c:2117004514511265865": "2026-11-01T22:34:50Z",
+  "c:2117003527126208728": "2026-11-01T22:34:50Z",
+  "c:2116961074327204252": "2026-11-01T22:34:50Z"
  },
  "slots_done": [
   "etf:2026-10-08:20",
@@ -497,7 +503,8 @@
   "scan:2026-10-30:17",
   "scan:2026-10-31:8",
   "scan:2026-10-31:17",
-  "scan:2026-11-01:8"
+  "scan:2026-11-01:8",
+  "scan:2026-11-01:17"
  ],
  "spend": {
   "2026-10": {
@@ -526,41 +533,37 @@
    }
   },
   "2026-11": {
-   "usd": 1.3017,
-   "calls": 10,
-   "x_posts": 121,
+   "usd": 2.6416,
+   "calls": 22,
+   "x_posts": 229,
    "x_users": 0,
-   "web_searches": 11,
+   "web_searches": 26,
    "by_day": {
-    "2026-11-01": 1.3017
+    "2026-11-01": 2.6416
    }
   }
  },
  "last_etf_pull": "2026-10-30T01:59:13Z",
  "positioning": {
-  "as_of": "2026-11-01T19:23:14Z",
-  "funding_rate": 0.009559,
-  "funding_pctile_30d": 0.87,
-  "open_interest_usd": 2809288751,
-  "oi_change_24h_pct": 0.17
+  "as_of": "2026-11-01T22:23:12Z",
+  "funding_rate": 0.008365,
+  "funding_pctile_30d": 0.74,
+  "open_interest_usd": 2805605018,
+  "oi_change_24h_pct": 0.04
  },
  "feed_errors": [],
- "last_x_scan": "2026-11-01T13:23:12Z",
- "last_news_scan": "2026-11-01T13:23:12Z",
+ "last_x_scan": "2026-11-01T22:23:12Z",
+ "last_news_scan": "2026-11-01T22:23:12Z",
  "theme_states": {
-  "etf": "Spot XRP ETF filings drew fresh SEC comments; one account posted $43.2 million in weekly inflows.",
-  "stb": "This week's items did not report RLUSD or other XRP Ledger stablecoin developments.",
-  "corp": "Recaps cited Ripple's October licenses, partners, and revenue, plus a won custody and bank charter.",
-  "pay": "An outlet recap listed Ripple's October licenses, partners, and revenue.",
-  "tok": "A Q3 recap cited higher tokenized assets; a ledger change would limit permissioned-token holders.",
-  "mac": "October recap listed XRP down 16.2%; Binance said XRP is fully reserved and will restart withdrawals.",
-  "sup": "Alerts showed two 500 million XRP escrow unlocks; a page recapped an Oct. 1 release and re-lock."
+  "sup": "Confirmed alerts show 1B XRP unlocked from escrow and about 700M re-locked, plus 50M moved off Binance.",
+  "etf": "Reports say spot XRP ETF filings drew fresh SEC comments; one account cited $43.2M weekly inflows.",
+  "mac": "An October recap listed XRP down 16.2%; Binance said XRP is fully reserved and plans withdrawal restarts."
  },
  "theories": {
   "supply-shock": {
    "note": "No confirmed or reported evidence in the last 7 days.",
    "net": "none",
-   "updated_at": "2026-11-01T13:31:56Z",
+   "updated_at": "2026-11-01T22:24:56Z",
    "weeks": {
     "2026-10-05": {
      "note": "The strongest item, a reported $1.7 billion ETF holding after a $4 million week, does not show holdings rising faster than exchange balances.",
@@ -579,12 +582,12 @@
   "swift": {
    "note": "No confirmed or reported evidence in the last 7 days.",
    "net": "none",
-   "updated_at": "2026-11-01T13:31:56Z"
+   "updated_at": "2026-11-01T22:24:56Z"
   },
   "collateral": {
    "note": "No confirmed or reported evidence in the last 7 days.",
    "net": "none",
-   "updated_at": "2026-11-01T13:31:56Z",
+   "updated_at": "2026-11-01T22:24:56Z",
    "weeks": {
     "2026-10-05": {
      "note": "The strongest item is a reported note that Basel weights still make bank crypto holdings costly, not a favorable rule or audited disclosure.",
@@ -599,7 +602,7 @@
   "tokenization": {
    "note": "No confirmed or reported evidence in the last 7 days.",
    "net": "none",
-   "updated_at": "2026-11-01T13:31:56Z",
+   "updated_at": "2026-11-01T22:24:56Z",
    "weeks": {
     "2026-10-05": {
      "note": "The strongest item is a reported proposal that an XRPL sponsor model could hold user reserves, not a product requiring meaningful XRP balances.",
@@ -623,10 +626,10 @@
   "through": "2026-10-12T17:12:44Z"
  },
  "claims_queue": [],
- "last_claims_scan": "2026-10-22T21:24:54Z",
+ "last_claims_scan": "2026-11-01T22:24:56Z",
  "alerts": {
   "budget-warn:2026-10": "2026-10-19T04:23:13Z",
   "budget-paused:2026-10": "2026-10-23T12:24:49Z"
  },
- "last_link_pass": "2026-10-31T21:23:13Z"
+ "last_link_pass": "2026-11-01T22:34:50Z"
 }
