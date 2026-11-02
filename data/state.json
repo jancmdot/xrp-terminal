@@ -1,30 +1,5 @@
 {
  "seen": {
-  "x:2109727010234978801": "2026-10-12T21:27:38Z",
-  "x:2109713160919793704": "2026-10-12T21:27:38Z",
-  "x:2109625613862719965": "2026-10-12T21:27:38Z",
-  "x:2109621188657881403": "2026-10-12T21:27:38Z",
-  "x:2109749230206128215": "2026-10-12T21:27:38Z",
-  "x:2109744238636491017": "2026-10-12T21:27:38Z",
-  "x:2109737067504603478": "2026-10-12T21:27:38Z",
-  "x:2109719151606636912": "2026-10-12T21:27:38Z",
-  "x:2109708533776232544": "2026-10-12T21:27:38Z",
-  "x:2109688996234445188": "2026-10-12T21:27:38Z",
-  "x:2109647790817022137": "2026-10-12T21:27:38Z",
-  "n:5a84b505fd88": "2026-10-12T21:27:38Z",
-  "n:c792df29bdf1": "2026-10-12T21:27:38Z",
-  "n:a04e4620a553": "2026-10-12T21:27:38Z",
-  "n:2099006aaf8d": "2026-10-12T21:27:38Z",
-  "c:2109755681657987443": "2026-10-12T21:36:30Z",
-  "c:2109754353716543567": "2026-10-12T21:36:30Z",
-  "c:2109744357863502232": "2026-10-12T21:36:30Z",
-  "c:2109736380679024894": "2026-10-12T21:36:30Z",
-  "c:2109735890754965702": "2026-10-12T21:36:30Z",
-  "c:2109724204849594862": "2026-10-12T21:36:30Z",
-  "c:2109732357683179678": "2026-10-12T21:36:30Z",
-  "c:2109715862584463774": "2026-10-12T21:36:30Z",
-  "c:2109708654878543965": "2026-10-12T21:36:30Z",
-  "c:2109693915070976288": "2026-10-12T21:36:30Z",
   "x:2109841721580265529": "2026-10-13T12:27:32Z",
   "x:2109811527708545126": "2026-10-13T12:27:32Z",
   "x:2109980361316823491": "2026-10-13T12:27:32Z",
@@ -428,7 +403,22 @@
   "n:2cfc154c6f47": "2026-11-02T13:26:28Z",
   "n:e7f90857c400": "2026-11-02T13:26:28Z",
   "n:9e0317f8e150": "2026-11-02T13:26:28Z",
-  "n:c2f187cfc193": "2026-11-02T13:26:28Z"
+  "n:c2f187cfc193": "2026-11-02T13:26:28Z",
+  "x:2117358373393809859": "2026-11-02T22:26:06Z",
+  "x:2117314045758091718": "2026-11-02T22:26:06Z",
+  "x:2117286348633878996": "2026-11-02T22:26:06Z",
+  "x:2117282605414404545": "2026-11-02T22:26:06Z",
+  "x:2117347677231096233": "2026-11-02T22:26:06Z",
+  "x:2117346012478030221": "2026-11-02T22:26:06Z",
+  "x:2117315813611049009": "2026-11-02T22:26:06Z",
+  "x:2117314083850735815": "2026-11-02T22:26:06Z",
+  "x:2117300716876578995": "2026-11-02T22:26:06Z",
+  "n:a0a7ca7f7d75": "2026-11-02T22:26:06Z",
+  "c:2117361263445459268": "2026-11-02T22:46:04Z",
+  "c:2117368617410961866": "2026-11-02T22:46:04Z",
+  "c:2117255410445078821": "2026-11-02T22:46:04Z",
+  "c:2117293489352581542": "2026-11-02T22:46:04Z",
+  "c:2117272916836696073": "2026-11-02T22:46:04Z"
  },
  "slots_done": [
   "etf:2026-10-08:20",
@@ -479,7 +469,8 @@
   "scan:2026-10-31:17",
   "scan:2026-11-01:8",
   "scan:2026-11-01:17",
-  "scan:2026-11-02:8"
+  "scan:2026-11-02:8",
+  "scan:2026-11-02:17"
  ],
  "spend": {
   "2026-10": {
@@ -508,44 +499,44 @@
    }
   },
   "2026-11": {
-   "usd": 3.67,
-   "calls": 34,
-   "x_posts": 305,
-   "x_users": 6,
-   "web_searches": 34,
+   "usd": 4.8987,
+   "calls": 46,
+   "x_posts": 410,
+   "x_users": 18,
+   "web_searches": 39,
    "by_day": {
     "2026-11-01": 2.6416,
-    "2026-11-02": 1.0284
+    "2026-11-02": 2.2571
    }
   }
  },
  "last_etf_pull": "2026-10-30T01:59:13Z",
  "positioning": {
-  "as_of": "2026-11-02T20:23:14Z",
-  "funding_rate": 0.003467,
+  "as_of": "2026-11-02T22:23:14Z",
+  "funding_rate": 0.003329,
   "funding_pctile_30d": 0.34,
-  "open_interest_usd": 2878571610,
-  "oi_change_24h_pct": 1.62
+  "open_interest_usd": 2885890103,
+  "oi_change_24h_pct": 1.88
  },
  "feed_errors": [],
- "last_x_scan": "2026-11-02T13:23:14Z",
- "last_news_scan": "2026-11-02T13:23:14Z",
+ "last_x_scan": "2026-11-02T22:23:14Z",
+ "last_news_scan": "2026-11-02T22:23:14Z",
  "theme_states": {
-  "etf": "Spot XRP ETFs were reported up $4.32 million in a session and $43.2 million weekly; filings drew fresh SEC comments.",
-  "sup": "Alerts showed large XRP escrow unlocks and re-locks, plus transfers from a Binance-hack label to unknown wallets.",
-  "mac": "A data firm said major crypto spot ETFs lost about $702 million last week; an October recap listed XRP down 16.2%.",
-  "col": "An outlet said about 225 million XRP backs $152 million in loans; Canada bars Group 2 assets as collateral.",
-  "pay": "Arf said founders met Ripple on XRPL credit and payment liquidity; an outlet recapped October partners and licenses.",
-  "tok": "A Nov. 4 fix targets an issued-token mint bug, not XRP supply; a Q3 recap cited higher XRPL tokenized assets.",
-  "corp": "An outlet recapped Ripple’s October licenses, partners, and revenue and said custody and a bank charter were won.",
-  "reg": "Canada’s bank crypto rules started, and Group 2 assets are not eligible as collateral.",
-  "stb": "Listed items did not report a clear RLUSD or other XRPL stablecoin development this week."
+  "sup": "Alerts showed large escrow unlocks and re-locks, exchange transfers, and Binance 1:1 XRP reserve backing.",
+  "etf": "Spot XRP ETFs were reported up $4.32 million as filings drew fresh SEC comments.",
+  "mac": "XRP fell under $1.25 amid crypto liquidations; major spot ETFs lost about $702 million last week.",
+  "corp": "At Ripple Swell, CME’s chief cited $100 billion in daily margin savings; outlets recapped licenses.",
+  "pay": "Arf said its founders met Ripple on XRPL credit and payment liquidity.",
+  "col": "About 225 million XRP was reported backing $152 million in loans; Canada bars Group 2 collateral.",
+  "reg": "Canada’s bank crypto rules took effect, and Group 2 assets are not eligible collateral.",
+  "tok": "A Nov. 4 fix targets an issued-token mint bug, not XRP supply; Q3 cited more tokenized assets.",
+  "stb": "Listed items did not report RLUSD activity; posts said Hong Kong deposits are not on XRPL."
  },
  "theories": {
   "supply-shock": {
    "note": "No confirmed or reported evidence in the last 7 days.",
    "net": "none",
-   "updated_at": "2026-11-02T13:26:43Z",
+   "updated_at": "2026-11-02T22:26:19Z",
    "weeks": {
     "2026-10-05": {
      "note": "The strongest item, a reported $1.7 billion ETF holding after a $4 million week, does not show holdings rising faster than exchange balances.",
@@ -564,12 +555,12 @@
   "swift": {
    "note": "No confirmed or reported evidence in the last 7 days.",
    "net": "none",
-   "updated_at": "2026-11-02T13:26:43Z"
+   "updated_at": "2026-11-02T22:26:19Z"
   },
   "collateral": {
-   "note": "The week's only item, a reported Canadian rule start, bars Group 2 crypto from bank collateral and weighs against XRP collateral use.",
+   "note": "A reported t2 item says Canada’s bank crypto rules start with Group 2 assets ineligible as collateral, against bank XRP collateral use.",
    "net": "weakens",
-   "updated_at": "2026-11-02T13:26:49Z",
+   "updated_at": "2026-11-02T22:26:29Z",
    "weeks": {
     "2026-10-05": {
      "note": "The strongest item is a reported note that Basel weights still make bank crypto holdings costly, not a favorable rule or audited disclosure.",
@@ -580,15 +571,15 @@
      "net": "weakens"
     },
     "2026-11-02": {
-     "note": "The week's only item, a reported Canadian rule start, bars Group 2 crypto from bank collateral and weighs against XRP collateral use.",
+     "note": "A reported t2 item says Canada’s bank crypto rules start with Group 2 assets ineligible as collateral, against bank XRP collateral use.",
      "net": "weakens"
     }
    }
   },
   "tokenization": {
-   "note": "No confirmed or reported evidence in the last 7 days.",
+   "note": "A crowd-reported post says Hong Kong bank deposits are not on the XRP Ledger, which does not test XRP demand from tokenization.",
    "net": "none",
-   "updated_at": "2026-11-02T13:26:43Z",
+   "updated_at": "2026-11-02T22:26:29Z",
    "weeks": {
     "2026-10-05": {
      "note": "The strongest item is a reported proposal that an XRPL sponsor model could hold user reserves, not a product requiring meaningful XRP balances.",
@@ -601,6 +592,10 @@
     "2026-10-19": {
      "note": "A tier-2 outlet values XRPL tokenized assets near $5.05 billion, without evidence of products that must hold meaningful XRP.",
      "net": "none"
+    },
+    "2026-11-02": {
+     "note": "A crowd-reported post says Hong Kong bank deposits are not on the XRP Ledger, which does not test XRP demand from tokenization.",
+     "net": "none"
     }
    }
   }
@@ -611,11 +606,136 @@
   "date": "2025-07-18",
   "through": "2026-10-12T17:12:44Z"
  },
- "claims_queue": [],
- "last_claims_scan": "2026-11-01T22:24:56Z",
+ "claims_queue": [
+  {
+   "sid": "2117347677231096233",
+   "url": "https://x.com/SMQKEDQG/status/2117347677231096233",
+   "handle": "SMQKEDQG",
+   "author_name": "SMQKE",
+   "posted_at": "2026-11-02T20:06:39Z",
+   "text": "‼️NYSE CONNECTS TO XRPL, STELLAR, XDC AND ALGORAND THROUGH TWO TRANSFER AGENTS‼️\n\nNYSE has signed Securitize and tZERO as transfer agent partners for its new tokenized securities venue.🤝\n\nSecuritize integrated RLUSD into its platform and is integrating with the XRP Ledger.✅\n\ntZERO's infrastructure supports Stellar, XDC Network and Algorand✅\n\nBoth firms will support Issuer Sponsored Tokenized Securities on the new NYSE-affiliated venue.🔑\n\nNYSE 🤝XRP + XLM + XDC + ALGO\n\nDocumented.📝👇",
+   "quoted_text": "The @NYSE's network of transfer agent partners is expanding. \n\nMore firms are joining us to support Issuer Sponsored Tokenized Securities on the new NYSE-affiliated venue for trading tokenized securities. \n\nHear from our transfer agent partners, below. https://x.com/i/article/2117300941061758976",
+   "links": [],
+   "verified_citation": true,
+   "name": "SMQKE"
+  },
+  {
+   "sid": "2117233322774712773",
+   "url": "https://x.com/SMQKEDQG/status/2117233322774712773",
+   "handle": "SMQKEDQG",
+   "author_name": "SMQKE",
+   "posted_at": "2026-11-02T12:32:15Z",
+   "text": "‼️JUST IN: RIPPLE PARTNER STANDARD CHARTERED LAUNCHES TOKENIZED DEPOSITS IN HONG KONG‼️\n\nDocumented.📝👇",
+   "quoted_text": null,
+   "links": [],
+   "verified_citation": true,
+   "name": "SMQKE"
+  },
+  {
+   "sid": "2117296369337557082",
+   "url": "https://x.com/AbsGEC/status/2117296369337557082",
+   "handle": "AbsGEC",
+   "author_name": "Good Evening Crypto",
+   "posted_at": "2026-11-02T16:42:46Z",
+   "text": "🚨 BREAKING: $6.3 BILLION  *BOMBSHELL* LARGEST HACK IN CRYPTO HISTORY! 🚨 EVERNORTH BUYING $80M XRP!? https://x.com/i/broadcasts/2LPLnmREeyWVAz",
+   "quoted_text": null,
+   "links": [
+    "https://x.com/i/broadcasts/2LPLnmREeyWVAz"
+   ],
+   "verified_citation": true,
+   "name": "Good Evening Crypto"
+  },
+  {
+   "sid": "2117263752685130018",
+   "url": "https://x.com/AbsGEC/status/2117263752685130018",
+   "handle": "AbsGEC",
+   "author_name": "Good Evening Crypto",
+   "posted_at": "2026-11-02T14:33:10Z",
+   "text": "$XRP INFLOWS, WHILE $BTC, $ETH & $SOL HAVE OUTFLOWS...",
+   "quoted_text": "🇺🇸 ETF FLOWS: XRP spot ETFs saw net inflows last week, while BTC, ETH and SOL spot ETFs saw net outflows.\n\nBTC: -$202.59M\nETH: -$431.53M\nSOL: -$71.47M\nXRP: $4.32M",
+   "links": [],
+   "verified_citation": true,
+   "name": "Good Evening Crypto"
+  },
+  {
+   "sid": "2117244954389119154",
+   "url": "https://x.com/jungleincxrp/status/2117244954389119154",
+   "handle": "jungleincxrp",
+   "author_name": "Jungle Inc | Markets & Future Systems",
+   "posted_at": "2026-11-02T13:18:28Z",
+   "text": "Wrong : it lost money. Ripple paid them a fee and covered loses . Go back and read",
+   "quoted_text": null,
+   "links": [],
+   "verified_citation": true,
+   "name": "Jungle Inc"
+  },
+  {
+   "sid": "2117076002279137573",
+   "url": "https://x.com/jungleincxrp/status/2117076002279137573",
+   "handle": "jungleincxrp",
+   "author_name": "Jungle Inc | Markets & Future Systems",
+   "posted_at": "2026-11-02T02:07:06Z",
+   "text": "Ripple was losing tons of money on many of these ODL payments . We know this in two ways.\n\n1. Read the MoneyGram quarterly reports: they lost millions per quarter \n\n2. Buy XRP and see what the cost is. U can spot check this yourself. \n\nRLUSD is non competitive because it completed payments that didn’t work with XRP due to costs.",
+   "quoted_text": "This message is to the XRP holders at least I think they’re holders that are coming after me because I question Brad calling house and ripple in regards to RLUSD!",
+   "links": [],
+   "verified_citation": true,
+   "name": "Jungle Inc"
+  },
+  {
+   "sid": "2117065310113259948",
+   "url": "https://x.com/jungleincxrp/status/2117065310113259948",
+   "handle": "jungleincxrp",
+   "author_name": "Jungle Inc | Markets & Future Systems",
+   "posted_at": "2026-11-02T01:24:37Z",
+   "text": "A lot of their growth is via acquisition. This company would not command a 50 B valuation if u took XRP off their balance sheet",
+   "quoted_text": null,
+   "links": [],
+   "verified_citation": true,
+   "name": "Jungle Inc"
+  },
+  {
+   "sid": "2117381026964275515",
+   "url": "https://x.com/BankXRP/status/2117381026964275515",
+   "handle": "BankXRP",
+   "author_name": "𝗕𝗮𝗻𝗸XRP",
+   "posted_at": "2026-11-02T22:19:10Z",
+   "text": "JUST IN: Wolverine Asset Management disclosed 52,522 shares of the Bitwise XRP ETF ($XRP) in its latest Q3 2026 SEC filing.\n\nThe bigger picture? Institutional access to XRP is expanding.",
+   "quoted_text": "JUST IN: Creative Planning's latest SEC 13F filing reports a position of 12,176 shares in the Bitwise XRP ETF.\n\nAnother institutional portfolio with reported exposure to XRP through spot ETFs.\n\nInstitutional interest is worth watching.",
+   "links": [],
+   "verified_citation": true,
+   "name": "BankXRP"
+  },
+  {
+   "sid": "2117380846243959049",
+   "url": "https://x.com/RipBullWinkle/status/2117380846243959049",
+   "handle": "RipBullWinkle",
+   "author_name": "Ripple Bull Winkle",
+   "posted_at": "2026-11-02T22:18:27Z",
+   "text": "Another major exchange hack. This is why self-custody matters and why settlement infrastructure like $XRP — where funds move in 3-5 seconds and don't sit exposed on centralized platforms — keeps getting more relevant. Not your keys, not your crypto.",
+   "quoted_text": "Another major exchange hack. Security remains one of crypto's biggest challenges.",
+   "links": [],
+   "verified_citation": true,
+   "name": "Ripple Bull Winkle"
+  },
+  {
+   "sid": "2117361694515036176",
+   "url": "https://x.com/RipBullWinkle/status/2117361694515036176",
+   "handle": "RipBullWinkle",
+   "author_name": "Ripple Bull Winkle",
+   "posted_at": "2026-11-02T21:02:21Z",
+   "text": "Evernorth just lined up $80M and said a SUBSTANTIAL portion goes straight into XRP. The supply absorption on this is something most people haven't calculated yet... $XRP\n\nhttps://www.youtube.com/watch?v=ZR2iKOujqVg&feature=youtu.be",
+   "quoted_text": null,
+   "links": [
+    "https://www.youtube.com/watch?v=ZR2iKOujqVg&feature=youtu.be"
+   ],
+   "verified_citation": true,
+   "name": "Ripple Bull Winkle"
+  }
+ ],
+ "last_claims_scan": "2026-11-02T22:26:29Z",
  "alerts": {
   "budget-warn:2026-10": "2026-10-19T04:23:13Z",
   "budget-paused:2026-10": "2026-10-23T12:24:49Z"
  },
- "last_link_pass": "2026-11-02T13:26:49Z"
+ "last_link_pass": "2026-11-02T22:46:04Z"
 }
