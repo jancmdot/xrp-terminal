@@ -1,29 +1,5 @@
 {
  "seen": {
-  "x:2110049938281464157": "2026-10-13T21:26:41Z",
-  "x:2110047614922375447": "2026-10-13T21:26:41Z",
-  "x:2109990338131595420": "2026-10-13T21:26:41Z",
-  "x:2110113351057674362": "2026-10-13T21:26:41Z",
-  "x:2110076869470978188": "2026-10-13T21:26:41Z",
-  "x:2110072590371041298": "2026-10-13T21:26:41Z",
-  "x:2110070612857430516": "2026-10-13T21:26:41Z",
-  "x:2110062198915825953": "2026-10-13T21:26:41Z",
-  "x:2110045007876878683": "2026-10-13T21:26:41Z",
-  "n:f65ec83d2fb9": "2026-10-13T21:26:41Z",
-  "c:2110097206191464923": "2026-10-13T21:29:43Z",
-  "c:2110036100366336242": "2026-10-13T21:29:43Z",
-  "c:2110032940017295733": "2026-10-13T21:29:43Z",
-  "c:2109953260232867972": "2026-10-13T21:29:43Z",
-  "c:2109937873076302051": "2026-10-13T21:29:43Z",
-  "c:2110117483449327629": "2026-10-13T21:29:43Z",
-  "c:2110117345058230310": "2026-10-13T21:29:43Z",
-  "c:2110098592853532759": "2026-10-13T21:29:43Z",
-  "c:2110091438411464872": "2026-10-13T21:29:43Z",
-  "c:2110113211509072159": "2026-10-13T21:29:43Z",
-  "c:2110065030003864052": "2026-10-13T21:29:43Z",
-  "c:2110025898930094384": "2026-10-13T21:29:43Z",
-  "c:2110063771309752544": "2026-10-13T21:29:43Z",
-  "c:2110052955843915914": "2026-10-13T21:29:43Z",
   "x:2110325001102520791": "2026-10-14T12:28:09Z",
   "x:2110263934548844722": "2026-10-14T12:28:09Z",
   "x:2110204058036248983": "2026-10-14T12:28:09Z",
@@ -417,7 +393,35 @@
   "n:bbea4a884d84": "2026-11-03T13:26:52Z",
   "n:373829b26703": "2026-11-03T13:26:52Z",
   "n:3ab0cf5c6027": "2026-11-03T13:26:52Z",
-  "n:32d315b3304d": "2026-11-03T13:26:52Z"
+  "n:32d315b3304d": "2026-11-03T13:26:52Z",
+  "x:2117668164045623793": "2026-11-03T22:26:02Z",
+  "x:2117668244916256927": "2026-11-03T22:26:02Z",
+  "x:2117710137985269870": "2026-11-03T22:26:02Z",
+  "x:2117640550472110336": "2026-11-03T22:26:02Z",
+  "x:2117642055404904943": "2026-11-03T22:26:02Z",
+  "c:2117347677231096233": "2026-11-03T22:44:13Z",
+  "c:2117233322774712773": "2026-11-03T22:44:13Z",
+  "c:2117296369337557082": "2026-11-03T22:44:13Z",
+  "c:2117263752685130018": "2026-11-03T22:44:13Z",
+  "c:2117244954389119154": "2026-11-03T22:44:13Z",
+  "c:2117076002279137573": "2026-11-03T22:44:13Z",
+  "c:2117065310113259948": "2026-11-03T22:44:13Z",
+  "c:2117381026964275515": "2026-11-03T22:44:13Z",
+  "c:2117380846243959049": "2026-11-03T22:44:13Z",
+  "c:2117361694515036176": "2026-11-03T22:44:13Z",
+  "c:2117743430457589802": "2026-11-03T22:44:13Z",
+  "c:2117706369084334320": "2026-11-03T22:44:13Z",
+  "c:2117703235813445693": "2026-11-03T22:44:13Z",
+  "c:2117742490656591932": "2026-11-03T22:44:13Z",
+  "c:2117742480657457581": "2026-11-03T22:44:13Z",
+  "c:2117742471857729821": "2026-11-03T22:44:13Z",
+  "c:2117723651290087547": "2026-11-03T22:44:13Z",
+  "c:2117723633728520513": "2026-11-03T22:44:13Z",
+  "c:2117697936079405086": "2026-11-03T22:44:13Z",
+  "c:2117663941975474237": "2026-11-03T22:44:13Z",
+  "c:2117652284796747843": "2026-11-03T22:44:13Z",
+  "c:2117644509739708818": "2026-11-03T22:44:13Z",
+  "c:2117617229415993846": "2026-11-03T22:44:13Z"
  },
  "slots_done": [
   "etf:2026-10-08:20",
@@ -470,7 +474,8 @@
   "scan:2026-11-01:17",
   "scan:2026-11-02:8",
   "scan:2026-11-02:17",
-  "scan:2026-11-03:8"
+  "scan:2026-11-03:8",
+  "scan:2026-11-03:17"
  ],
  "spend": {
   "2026-10": {
@@ -499,39 +504,39 @@
    }
   },
   "2026-11": {
-   "usd": 6.1863,
-   "calls": 58,
-   "x_posts": 531,
+   "usd": 7.6217,
+   "calls": 72,
+   "x_posts": 611,
    "x_users": 18,
-   "web_searches": 50,
+   "web_searches": 78,
    "by_day": {
     "2026-11-01": 2.6416,
     "2026-11-02": 2.2571,
-    "2026-11-03": 1.2876
+    "2026-11-03": 2.723
    }
   }
  },
  "last_etf_pull": "2026-10-30T01:59:13Z",
  "positioning": {
-  "as_of": "2026-11-03T19:23:20Z",
-  "funding_rate": 0.010224,
-  "funding_pctile_30d": 0.99,
-  "open_interest_usd": 2901884353,
-  "oi_change_24h_pct": 1.13
+  "as_of": "2026-11-03T22:23:18Z",
+  "funding_rate": 0.01009,
+  "funding_pctile_30d": 0.97,
+  "open_interest_usd": 2894129219,
+  "oi_change_24h_pct": 0.15
  },
  "feed_errors": [],
- "last_x_scan": "2026-11-03T13:23:13Z",
- "last_news_scan": "2026-11-03T13:23:13Z",
+ "last_x_scan": "2026-11-03T22:23:18Z",
+ "last_news_scan": "2026-11-03T22:23:18Z",
  "theme_states": {
-  "etf": "Spot XRP ETFs gained about $4.32 million while filings drew fresh SEC comments.",
-  "sup": "On-chain alerts showed large Ripple escrow unlocks and re-locks, plus multimillion XRP transfers.",
-  "mac": "XRP fell under $1.25 as crypto longs were liquidated and major spot ETFs lost about $702 million."
+  "etf": "Spot XRP ETFs were reported up $4.32 million and $43.2 million weekly, while filings drew fresh SEC comments.",
+  "sup": "Alerts showed 500 million XRP unlocked from escrow, with hundreds of millions locked back and large wallet moves.",
+  "stb": "An outlet said RLUSD supply topped $2.5 billion; another put XRPL stablecoins near $1.03 billion."
  },
  "theories": {
   "supply-shock": {
    "note": "No confirmed or reported evidence in the last 7 days.",
    "net": "none",
-   "updated_at": "2026-11-03T13:27:02Z",
+   "updated_at": "2026-11-03T22:26:11Z",
    "weeks": {
     "2026-10-05": {
      "note": "The strongest item, a reported $1.7 billion ETF holding after a $4 million week, does not show holdings rising faster than exchange balances.",
@@ -550,12 +555,12 @@
   "swift": {
    "note": "No confirmed or reported evidence in the last 7 days.",
    "net": "none",
-   "updated_at": "2026-11-03T13:27:02Z"
+   "updated_at": "2026-11-03T22:26:11Z"
   },
   "collateral": {
-   "note": "A reported t2 item says Canada’s new bank crypto rules bar Group 2 assets as eligible collateral, not bank XRP holdings.",
+   "note": "Reported Canadian bank crypto rules exclude Group 2 assets from eligible collateral, cutting against banks holding XRP as collateral.",
    "net": "weakens",
-   "updated_at": "2026-11-03T13:27:11Z",
+   "updated_at": "2026-11-03T22:26:22Z",
    "weeks": {
     "2026-10-05": {
      "note": "The strongest item is a reported note that Basel weights still make bank crypto holdings costly, not a favorable rule or audited disclosure.",
@@ -566,15 +571,15 @@
      "net": "weakens"
     },
     "2026-11-02": {
-     "note": "A reported t2 item says Canada’s new bank crypto rules bar Group 2 assets as eligible collateral, not bank XRP holdings.",
+     "note": "Reported Canadian bank crypto rules exclude Group 2 assets from eligible collateral, cutting against banks holding XRP as collateral.",
      "net": "weakens"
     }
    }
   },
   "tokenization": {
-   "note": "The strongest item is a crowd post reporting Hong Kong bank deposits are not on the XRP Ledger, not XRP-denominated liquidity.",
+   "note": "An unconfirmed crowd post says Hong Kong bank deposits are not on the XRP Ledger, which does not test XRP demand from tokenization.",
    "net": "none",
-   "updated_at": "2026-11-03T13:27:11Z",
+   "updated_at": "2026-11-03T22:26:22Z",
    "weeks": {
     "2026-10-05": {
      "note": "The strongest item is a reported proposal that an XRPL sponsor model could hold user reserves, not a product requiring meaningful XRP balances.",
@@ -589,7 +594,7 @@
      "net": "none"
     },
     "2026-11-02": {
-     "note": "The strongest item is a crowd post reporting Hong Kong bank deposits are not on the XRP Ledger, not XRP-denominated liquidity.",
+     "note": "An unconfirmed crowd post says Hong Kong bank deposits are not on the XRP Ledger, which does not test XRP demand from tokenization.",
      "net": "none"
     }
    }
@@ -601,136 +606,11 @@
   "date": "2025-07-18",
   "through": "2026-10-12T17:12:44Z"
  },
- "claims_queue": [
-  {
-   "sid": "2117347677231096233",
-   "url": "https://x.com/SMQKEDQG/status/2117347677231096233",
-   "handle": "SMQKEDQG",
-   "author_name": "SMQKE",
-   "posted_at": "2026-11-02T20:06:39Z",
-   "text": "‼️NYSE CONNECTS TO XRPL, STELLAR, XDC AND ALGORAND THROUGH TWO TRANSFER AGENTS‼️\n\nNYSE has signed Securitize and tZERO as transfer agent partners for its new tokenized securities venue.🤝\n\nSecuritize integrated RLUSD into its platform and is integrating with the XRP Ledger.✅\n\ntZERO's infrastructure supports Stellar, XDC Network and Algorand✅\n\nBoth firms will support Issuer Sponsored Tokenized Securities on the new NYSE-affiliated venue.🔑\n\nNYSE 🤝XRP + XLM + XDC + ALGO\n\nDocumented.📝👇",
-   "quoted_text": "The @NYSE's network of transfer agent partners is expanding. \n\nMore firms are joining us to support Issuer Sponsored Tokenized Securities on the new NYSE-affiliated venue for trading tokenized securities. \n\nHear from our transfer agent partners, below. https://x.com/i/article/2117300941061758976",
-   "links": [],
-   "verified_citation": true,
-   "name": "SMQKE"
-  },
-  {
-   "sid": "2117233322774712773",
-   "url": "https://x.com/SMQKEDQG/status/2117233322774712773",
-   "handle": "SMQKEDQG",
-   "author_name": "SMQKE",
-   "posted_at": "2026-11-02T12:32:15Z",
-   "text": "‼️JUST IN: RIPPLE PARTNER STANDARD CHARTERED LAUNCHES TOKENIZED DEPOSITS IN HONG KONG‼️\n\nDocumented.📝👇",
-   "quoted_text": null,
-   "links": [],
-   "verified_citation": true,
-   "name": "SMQKE"
-  },
-  {
-   "sid": "2117296369337557082",
-   "url": "https://x.com/AbsGEC/status/2117296369337557082",
-   "handle": "AbsGEC",
-   "author_name": "Good Evening Crypto",
-   "posted_at": "2026-11-02T16:42:46Z",
-   "text": "🚨 BREAKING: $6.3 BILLION  *BOMBSHELL* LARGEST HACK IN CRYPTO HISTORY! 🚨 EVERNORTH BUYING $80M XRP!? https://x.com/i/broadcasts/2LPLnmREeyWVAz",
-   "quoted_text": null,
-   "links": [
-    "https://x.com/i/broadcasts/2LPLnmREeyWVAz"
-   ],
-   "verified_citation": true,
-   "name": "Good Evening Crypto"
-  },
-  {
-   "sid": "2117263752685130018",
-   "url": "https://x.com/AbsGEC/status/2117263752685130018",
-   "handle": "AbsGEC",
-   "author_name": "Good Evening Crypto",
-   "posted_at": "2026-11-02T14:33:10Z",
-   "text": "$XRP INFLOWS, WHILE $BTC, $ETH & $SOL HAVE OUTFLOWS...",
-   "quoted_text": "🇺🇸 ETF FLOWS: XRP spot ETFs saw net inflows last week, while BTC, ETH and SOL spot ETFs saw net outflows.\n\nBTC: -$202.59M\nETH: -$431.53M\nSOL: -$71.47M\nXRP: $4.32M",
-   "links": [],
-   "verified_citation": true,
-   "name": "Good Evening Crypto"
-  },
-  {
-   "sid": "2117244954389119154",
-   "url": "https://x.com/jungleincxrp/status/2117244954389119154",
-   "handle": "jungleincxrp",
-   "author_name": "Jungle Inc | Markets & Future Systems",
-   "posted_at": "2026-11-02T13:18:28Z",
-   "text": "Wrong : it lost money. Ripple paid them a fee and covered loses . Go back and read",
-   "quoted_text": null,
-   "links": [],
-   "verified_citation": true,
-   "name": "Jungle Inc"
-  },
-  {
-   "sid": "2117076002279137573",
-   "url": "https://x.com/jungleincxrp/status/2117076002279137573",
-   "handle": "jungleincxrp",
-   "author_name": "Jungle Inc | Markets & Future Systems",
-   "posted_at": "2026-11-02T02:07:06Z",
-   "text": "Ripple was losing tons of money on many of these ODL payments . We know this in two ways.\n\n1. Read the MoneyGram quarterly reports: they lost millions per quarter \n\n2. Buy XRP and see what the cost is. U can spot check this yourself. \n\nRLUSD is non competitive because it completed payments that didn’t work with XRP due to costs.",
-   "quoted_text": "This message is to the XRP holders at least I think they’re holders that are coming after me because I question Brad calling house and ripple in regards to RLUSD!",
-   "links": [],
-   "verified_citation": true,
-   "name": "Jungle Inc"
-  },
-  {
-   "sid": "2117065310113259948",
-   "url": "https://x.com/jungleincxrp/status/2117065310113259948",
-   "handle": "jungleincxrp",
-   "author_name": "Jungle Inc | Markets & Future Systems",
-   "posted_at": "2026-11-02T01:24:37Z",
-   "text": "A lot of their growth is via acquisition. This company would not command a 50 B valuation if u took XRP off their balance sheet",
-   "quoted_text": null,
-   "links": [],
-   "verified_citation": true,
-   "name": "Jungle Inc"
-  },
-  {
-   "sid": "2117381026964275515",
-   "url": "https://x.com/BankXRP/status/2117381026964275515",
-   "handle": "BankXRP",
-   "author_name": "𝗕𝗮𝗻𝗸XRP",
-   "posted_at": "2026-11-02T22:19:10Z",
-   "text": "JUST IN: Wolverine Asset Management disclosed 52,522 shares of the Bitwise XRP ETF ($XRP) in its latest Q3 2026 SEC filing.\n\nThe bigger picture? Institutional access to XRP is expanding.",
-   "quoted_text": "JUST IN: Creative Planning's latest SEC 13F filing reports a position of 12,176 shares in the Bitwise XRP ETF.\n\nAnother institutional portfolio with reported exposure to XRP through spot ETFs.\n\nInstitutional interest is worth watching.",
-   "links": [],
-   "verified_citation": true,
-   "name": "BankXRP"
-  },
-  {
-   "sid": "2117380846243959049",
-   "url": "https://x.com/RipBullWinkle/status/2117380846243959049",
-   "handle": "RipBullWinkle",
-   "author_name": "Ripple Bull Winkle",
-   "posted_at": "2026-11-02T22:18:27Z",
-   "text": "Another major exchange hack. This is why self-custody matters and why settlement infrastructure like $XRP — where funds move in 3-5 seconds and don't sit exposed on centralized platforms — keeps getting more relevant. Not your keys, not your crypto.",
-   "quoted_text": "Another major exchange hack. Security remains one of crypto's biggest challenges.",
-   "links": [],
-   "verified_citation": true,
-   "name": "Ripple Bull Winkle"
-  },
-  {
-   "sid": "2117361694515036176",
-   "url": "https://x.com/RipBullWinkle/status/2117361694515036176",
-   "handle": "RipBullWinkle",
-   "author_name": "Ripple Bull Winkle",
-   "posted_at": "2026-11-02T21:02:21Z",
-   "text": "Evernorth just lined up $80M and said a SUBSTANTIAL portion goes straight into XRP. The supply absorption on this is something most people haven't calculated yet... $XRP\n\nhttps://www.youtube.com/watch?v=ZR2iKOujqVg&feature=youtu.be",
-   "quoted_text": null,
-   "links": [
-    "https://www.youtube.com/watch?v=ZR2iKOujqVg&feature=youtu.be"
-   ],
-   "verified_citation": true,
-   "name": "Ripple Bull Winkle"
-  }
- ],
- "last_claims_scan": "2026-11-02T22:26:29Z",
+ "claims_queue": [],
+ "last_claims_scan": "2026-11-03T22:26:22Z",
  "alerts": {
   "budget-warn:2026-10": "2026-10-19T04:23:13Z",
   "budget-paused:2026-10": "2026-10-23T12:24:49Z"
  },
- "last_link_pass": "2026-11-03T13:27:11Z"
+ "last_link_pass": "2026-11-03T22:44:13Z"
 }
