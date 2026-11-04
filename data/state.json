@@ -1,26 +1,5 @@
 {
  "seen": {
-  "x:2110325001102520791": "2026-10-14T12:28:09Z",
-  "x:2110263934548844722": "2026-10-14T12:28:09Z",
-  "x:2110204058036248983": "2026-10-14T12:28:09Z",
-  "x:2110200524347683257": "2026-10-14T12:28:09Z",
-  "x:2110173855134138741": "2026-10-14T12:28:09Z",
-  "x:2110340494479794510": "2026-10-14T12:28:09Z",
-  "x:2110334704444748223": "2026-10-14T12:28:09Z",
-  "x:2110331181161996480": "2026-10-14T12:28:09Z",
-  "x:2110315255356403983": "2026-10-14T12:28:09Z",
-  "x:2110280957773144369": "2026-10-14T12:28:09Z",
-  "x:2110221046188245182": "2026-10-14T12:28:09Z",
-  "x:2110183542617784636": "2026-10-14T12:28:09Z",
-  "n:6babb10b63b1": "2026-10-14T12:28:09Z",
-  "n:e9e51677704f": "2026-10-14T12:28:09Z",
-  "n:b3d8f7337bb6": "2026-10-14T12:28:09Z",
-  "n:79fd47fd9d7a": "2026-10-14T12:28:09Z",
-  "n:9a1ba56e3bbf": "2026-10-14T12:28:09Z",
-  "n:be89a6af70aa": "2026-10-14T12:28:09Z",
-  "n:9706c55ef2bf": "2026-10-14T12:28:09Z",
-  "n:c7df355b37ac": "2026-10-14T12:28:09Z",
-  "n:16f364943b49": "2026-10-14T12:28:09Z",
   "x:2110435058305868169": "2026-10-14T21:27:16Z",
   "x:2110411504097042917": "2026-10-14T21:27:16Z",
   "x:2110403852218269850": "2026-10-14T21:27:16Z",
@@ -421,7 +400,21 @@
   "c:2117663941975474237": "2026-11-03T22:44:13Z",
   "c:2117652284796747843": "2026-11-03T22:44:13Z",
   "c:2117644509739708818": "2026-11-03T22:44:13Z",
-  "c:2117617229415993846": "2026-11-03T22:44:13Z"
+  "c:2117617229415993846": "2026-11-03T22:44:13Z",
+  "x:2117852042232283551": "2026-11-04T13:26:51Z",
+  "x:2117930530561781836": "2026-11-04T13:26:51Z",
+  "x:2117900834256159116": "2026-11-04T13:26:51Z",
+  "x:2117880432222236792": "2026-11-04T13:26:51Z",
+  "x:2117798992809783410": "2026-11-04T13:26:51Z",
+  "x:2117774737430507999": "2026-11-04T13:26:51Z",
+  "n:c5582ab1272b": "2026-11-04T13:26:51Z",
+  "n:42dd3fd17cec": "2026-11-04T13:26:51Z",
+  "n:3e7f74beada0": "2026-11-04T13:26:51Z",
+  "n:10b85b5824be": "2026-11-04T13:26:51Z",
+  "n:12ed75cb94cf": "2026-11-04T13:26:51Z",
+  "n:013ad0eff5af": "2026-11-04T13:26:51Z",
+  "n:d8ecb41f887b": "2026-11-04T13:26:51Z",
+  "n:aad9cc110876": "2026-11-04T13:26:51Z"
  },
  "slots_done": [
   "etf:2026-10-08:20",
@@ -475,7 +468,8 @@
   "scan:2026-11-02:8",
   "scan:2026-11-02:17",
   "scan:2026-11-03:8",
-  "scan:2026-11-03:17"
+  "scan:2026-11-03:17",
+  "scan:2026-11-04:8"
  ],
  "spend": {
   "2026-10": {
@@ -504,39 +498,47 @@
    }
   },
   "2026-11": {
-   "usd": 7.6217,
-   "calls": 72,
-   "x_posts": 611,
-   "x_users": 18,
-   "web_searches": 78,
+   "usd": 8.6001,
+   "calls": 84,
+   "x_posts": 679,
+   "x_users": 21,
+   "web_searches": 89,
    "by_day": {
     "2026-11-01": 2.6416,
     "2026-11-02": 2.2571,
-    "2026-11-03": 2.723
+    "2026-11-03": 2.723,
+    "2026-11-04": 0.9784
    }
   }
  },
  "last_etf_pull": "2026-11-04T04:23:18Z",
  "positioning": {
-  "as_of": "2026-11-04T11:23:17Z",
-  "funding_rate": 0.010055,
-  "funding_pctile_30d": 0.94,
-  "open_interest_usd": 2936005757,
-  "oi_change_24h_pct": 1.93
+  "as_of": "2026-11-04T13:23:14Z",
+  "funding_rate": 0.010074,
+  "funding_pctile_30d": 0.96,
+  "open_interest_usd": 2889479395,
+  "oi_change_24h_pct": -0.33
  },
  "feed_errors": [],
- "last_x_scan": "2026-11-03T22:23:18Z",
- "last_news_scan": "2026-11-03T22:23:18Z",
+ "last_x_scan": "2026-11-04T13:23:14Z",
+ "last_news_scan": "2026-11-04T13:23:14Z",
  "theme_states": {
-  "etf": "Spot XRP ETFs were reported up $4.32 million and $43.2 million weekly, while filings drew fresh SEC comments.",
-  "sup": "Alerts showed 500 million XRP unlocked from escrow, with hundreds of millions locked back and large wallet moves.",
-  "stb": "An outlet said RLUSD supply topped $2.5 billion; another put XRPL stablecoins near $1.03 billion."
+  "tok": "Reports put XRPL RWAs near $499 million; a Nov. 4 fix targets an issued-token mint bug.",
+  "sup": "Alerts show 1 billion XRP unlocked from Ripple escrow, with large amounts re-locked and moved off Binance.",
+  "corp": "Schwartz says he has retired from Ripple but remains a director and CTO emeritus.",
+  "pay": "Arf says founders met Ripple on XRPL credit liquidity; Ripple Treasury is called a SWIFT partner.",
+  "spec": "The only listed item is Schwartz naming later tokenized XRPL products, not a price call.",
+  "etf": "Reports cite a $4.32 million spot XRP ETF gain, $43.2 million weekly inflow, and fresh SEC comments.",
+  "stb": "A roundup says RLUSD supply topped $2.5 billion, and Binance reopened Ethereum RLUSD withdrawals.",
+  "col": "Reports say 225 million XRP backs $152 million in loans; Canada excludes Group 2 crypto collateral.",
+  "mac": "XRP dropped under $1.25 as crypto longs were liquidated; major spot ETFs lost about $702 million.",
+  "reg": "Canada’s bank crypto rules started, and Group 2 assets are not eligible collateral."
  },
  "theories": {
   "supply-shock": {
    "note": "No confirmed or reported evidence in the last 7 days.",
    "net": "none",
-   "updated_at": "2026-11-03T22:26:11Z",
+   "updated_at": "2026-11-04T13:27:17Z",
    "weeks": {
     "2026-10-05": {
      "note": "The strongest item, a reported $1.7 billion ETF holding after a $4 million week, does not show holdings rising faster than exchange balances.",
@@ -553,14 +555,20 @@
    }
   },
   "swift": {
-   "note": "No confirmed or reported evidence in the last 7 days.",
-   "net": "none",
-   "updated_at": "2026-11-03T22:26:11Z"
+   "note": "Two reported items contradict replacement; strongest says Ripple Treasury is a SWIFT partner, not a replacement.",
+   "net": "weakens",
+   "updated_at": "2026-11-04T13:27:33Z",
+   "weeks": {
+    "2026-11-02": {
+     "note": "Two reported items contradict replacement; strongest says Ripple Treasury is a SWIFT partner, not a replacement.",
+     "net": "weakens"
+    }
+   }
   },
   "collateral": {
-   "note": "Reported Canadian bank crypto rules exclude Group 2 assets from eligible collateral, cutting against banks holding XRP as collateral.",
+   "note": "A reported item says Canada’s bank rules start with Group 2 assets not eligible as collateral.",
    "net": "weakens",
-   "updated_at": "2026-11-03T22:26:22Z",
+   "updated_at": "2026-11-04T13:27:33Z",
    "weeks": {
     "2026-10-05": {
      "note": "The strongest item is a reported note that Basel weights still make bank crypto holdings costly, not a favorable rule or audited disclosure.",
@@ -571,15 +579,15 @@
      "net": "weakens"
     },
     "2026-11-02": {
-     "note": "Reported Canadian bank crypto rules exclude Group 2 assets from eligible collateral, cutting against banks holding XRP as collateral.",
+     "note": "A reported item says Canada’s bank rules start with Group 2 assets not eligible as collateral.",
      "net": "weakens"
     }
    }
   },
   "tokenization": {
-   "note": "An unconfirmed crowd post says Hong Kong bank deposits are not on the XRP Ledger, which does not test XRP demand from tokenization.",
+   "note": "Only a crowd post claims Hong Kong bank deposits are not on the XRP Ledger, which is unconfirmed and thin.",
    "net": "none",
-   "updated_at": "2026-11-03T22:26:22Z",
+   "updated_at": "2026-11-04T13:27:33Z",
    "weeks": {
     "2026-10-05": {
      "note": "The strongest item is a reported proposal that an XRPL sponsor model could hold user reserves, not a product requiring meaningful XRP balances.",
@@ -594,7 +602,7 @@
      "net": "none"
     },
     "2026-11-02": {
-     "note": "An unconfirmed crowd post says Hong Kong bank deposits are not on the XRP Ledger, which does not test XRP demand from tokenization.",
+     "note": "Only a crowd post claims Hong Kong bank deposits are not on the XRP Ledger, which is unconfirmed and thin.",
      "net": "none"
     }
    }
@@ -612,5 +620,5 @@
   "budget-warn:2026-10": "2026-10-19T04:23:13Z",
   "budget-paused:2026-10": "2026-10-23T12:24:49Z"
  },
- "last_link_pass": "2026-11-03T22:44:13Z"
+ "last_link_pass": "2026-11-04T13:27:33Z"
 }
