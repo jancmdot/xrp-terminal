@@ -1,16 +1,5 @@
 {
  "seen": {
-  "x:2111344035503718847": "2026-10-17T12:25:49Z",
-  "x:2111379614375231747": "2026-10-17T12:25:49Z",
-  "x:2111354272516579724": "2026-10-17T12:25:49Z",
-  "x:2111408222342918423": "2026-10-17T12:25:49Z",
-  "x:2111326168464916491": "2026-10-17T12:25:49Z",
-  "x:2111300635236904970": "2026-10-17T12:25:49Z",
-  "x:2111342158926229821": "2026-10-17T12:25:49Z",
-  "x:2111301407848702398": "2026-10-17T12:25:49Z",
-  "x:2111345821387997259": "2026-10-17T12:25:49Z",
-  "x:2111346737885647301": "2026-10-17T12:25:49Z",
-  "n:d2dc9234d256": "2026-10-17T12:25:49Z",
   "x:2111561707239661616": "2026-10-17T21:24:37Z",
   "x:2111558258372796911": "2026-10-17T21:24:37Z",
   "x:2111556642806669450": "2026-10-17T21:24:37Z",
@@ -374,7 +363,12 @@
   "x:2118756268999675925": "2026-11-06T22:28:03Z",
   "x:2118750265801408643": "2026-11-06T22:28:03Z",
   "x:2118721912087953659": "2026-11-06T22:28:03Z",
-  "x:2118716142974025749": "2026-11-06T22:28:03Z"
+  "x:2118716142974025749": "2026-11-06T22:28:03Z",
+  "x:2118858725595504704": "2026-11-07T13:27:19Z",
+  "n:f98ca92e53f3": "2026-11-07T13:27:19Z",
+  "n:e448f71580b9": "2026-11-07T13:27:19Z",
+  "n:ace5e771d933": "2026-11-07T13:27:19Z",
+  "n:ec78f655bbb6": "2026-11-07T13:27:19Z"
  },
  "slots_done": [
   "etf:2026-10-08:20",
@@ -434,7 +428,8 @@
   "scan:2026-11-05:8",
   "scan:2026-11-05:17",
   "scan:2026-11-06:8",
-  "scan:2026-11-06:17"
+  "scan:2026-11-06:17",
+  "scan:2026-11-07:8"
  ],
  "spend": {
   "2026-10": {
@@ -463,49 +458,50 @@
    }
   },
   "2026-11": {
-   "usd": 13.3638,
-   "calls": 145,
-   "x_posts": 1010,
+   "usd": 14.7902,
+   "calls": 157,
+   "x_posts": 1111,
    "x_users": 33,
-   "web_searches": 131,
+   "web_searches": 139,
    "by_day": {
     "2026-11-01": 2.6416,
     "2026-11-02": 2.2571,
     "2026-11-03": 2.723,
     "2026-11-04": 2.2199,
     "2026-11-05": 1.7139,
-    "2026-11-06": 1.8082
+    "2026-11-06": 1.8082,
+    "2026-11-07": 1.4264
    }
   }
  },
  "last_etf_pull": "2026-11-07T02:23:13Z",
  "positioning": {
-  "as_of": "2026-11-07T11:23:12Z",
-  "funding_rate": 0.00879,
-  "funding_pctile_30d": 0.76,
-  "open_interest_usd": 2758913523,
-  "oi_change_24h_pct": -1.28
+  "as_of": "2026-11-07T13:23:14Z",
+  "funding_rate": 0.009043,
+  "funding_pctile_30d": 0.79,
+  "open_interest_usd": 2748570065,
+  "oi_change_24h_pct": -1.53
  },
  "feed_errors": [],
- "last_x_scan": "2026-11-06T22:23:12Z",
- "last_news_scan": "2026-11-06T22:23:12Z",
+ "last_x_scan": "2026-11-07T13:23:14Z",
+ "last_news_scan": "2026-11-07T13:23:14Z",
  "theme_states": {
-  "spec": "A Hyblock chief told CoinDesk not to expect $5 XRP; other notes were low-impact XRPL updates.",
-  "mac": "XRP moved with crypto majors, rising 4.4% then falling about 5% and briefly under $1.25.",
-  "pay": "t54 said XRPL bills can be paid in RLUSD; Arf founders met Ripple on payment liquidity.",
-  "tok": "Reports put XRPL tokenized assets near $5 billion; an amendment closed a mint-permission gap.",
-  "stb": "An outlet roundup said RLUSD supply topped $2.5 billion; XRPL stablecoins were cited at $1.03 billion.",
-  "etf": "Reports showed a $4.32 million spot XRP ETF inflow and fresh SEC comments on filings.",
-  "sup": "Alerts showed large escrow unlocks and re-locks, including 700 million of a 1 billion unlock re-locked.",
-  "corp": "Schwartz said he has retired from Ripple but remains a director and CTO emeritus.",
-  "reg": "Basel text bars Group 2 crypto as eligible collateral; Alderoty called the midterm crypto read mixed.",
-  "col": "Basel and Canadian bank rules bar Group 2 crypto as eligible collateral; one report cited XRP-backed loans."
+  "pay": "Items split SWIFT’s own bank ledger from Ripple as a partner, with small RLUSD bill-pay pilots, not broad XRP rails.",
+  "stb": "A roundup put RLUSD supply above $2.5 billion as Binance reopened Ethereum RLUSD withdrawals.",
+  "corp": "Schwartz said he retired from Ripple work but remains a director and CTO emeritus.",
+  "spec": "A Hyblock chief told CoinDesk not to expect $5 XRP; other notes were not price targets.",
+  "mac": "XRP tracked the crypto tape, with a reported 5% drop and a 4.4% rise alongside other majors.",
+  "tok": "Outlets cited XRPL tokenized assets from about $499 million to $5 billion, plus a mint-permission fix.",
+  "etf": "Reported spot XRP ETF news included a $4.32 million inflow and fresh SEC comments on filings.",
+  "sup": "Alerts showed large Ripple escrow unlocks and re-locks, while tracked exchange XRP balances fell.",
+  "reg": "Basel and Canadian bank texts kept Group 2 crypto off eligible collateral; US political reads stayed mixed.",
+  "col": "Bank rules still bar Group 2 crypto as collateral, while XRPL credit talks and older loan figures circulated."
  },
  "theories": {
   "supply-shock": {
    "note": "No confirmed or reported evidence in the last 7 days.",
    "net": "none",
-   "updated_at": "2026-11-06T22:28:17Z",
+   "updated_at": "2026-11-07T13:27:43Z",
    "weeks": {
     "2026-10-05": {
      "note": "The strongest item, a reported $1.7 billion ETF holding after a $4 million week, does not show holdings rising faster than exchange balances.",
@@ -522,20 +518,20 @@
    }
   },
   "swift": {
-   "note": "Reported items cut against replacement: strongest is SWIFT saying over 12 banks used its own payment ledger, plus Ripple framed as a partner.",
+   "note": "Reported items, led by SWIFT’s own payment-ledger update, show banks using SWIFT rather than disclosing XRP settlement volume.",
    "net": "weakens",
-   "updated_at": "2026-11-06T22:28:33Z",
+   "updated_at": "2026-11-07T13:27:59Z",
    "weeks": {
     "2026-11-02": {
-     "note": "Reported items cut against replacement: strongest is SWIFT saying over 12 banks used its own payment ledger, plus Ripple framed as a partner.",
+     "note": "Reported items, led by SWIFT’s own payment-ledger update, show banks using SWIFT rather than disclosing XRP settlement volume.",
      "net": "weakens"
     }
    }
   },
   "collateral": {
-   "note": "Confirmed Basel text bars Group 2 crypto as eligible collateral, the strongest item against banks holding XRP as collateral.",
+   "note": "Confirmed Basel text barring Group 2 crypto as eligible collateral is the strongest evidence against bank XRP collateral holdings.",
    "net": "weakens",
-   "updated_at": "2026-11-06T22:28:33Z",
+   "updated_at": "2026-11-07T13:27:59Z",
    "weeks": {
     "2026-10-05": {
      "note": "The strongest item is a reported note that Basel weights still make bank crypto holdings costly, not a favorable rule or audited disclosure.",
@@ -546,15 +542,15 @@
      "net": "weakens"
     },
     "2026-11-02": {
-     "note": "Confirmed Basel text bars Group 2 crypto as eligible collateral, the strongest item against banks holding XRP as collateral.",
+     "note": "Confirmed Basel text barring Group 2 crypto as eligible collateral is the strongest evidence against bank XRP collateral holdings.",
      "net": "weakens"
     }
    }
   },
   "tokenization": {
-   "note": "Strongest item is a report of about $5 billion in XRPL tokenized assets, which does not show products requiring meaningful XRP balances.",
+   "note": "The strongest item, a reported $5 billion XRPL asset figure, does not show products requiring meaningful XRP balances.",
    "net": "weakens",
-   "updated_at": "2026-11-06T22:28:33Z",
+   "updated_at": "2026-11-07T13:27:59Z",
    "weeks": {
     "2026-10-05": {
      "note": "The strongest item is a reported proposal that an XRPL sponsor model could hold user reserves, not a product requiring meaningful XRP balances.",
@@ -569,7 +565,7 @@
      "net": "none"
     },
     "2026-11-02": {
-     "note": "Strongest item is a report of about $5 billion in XRPL tokenized assets, which does not show products requiring meaningful XRP balances.",
+     "note": "The strongest item, a reported $5 billion XRPL asset figure, does not show products requiring meaningful XRP balances.",
      "net": "weakens"
     }
    }
@@ -587,5 +583,5 @@
   "budget-warn:2026-10": "2026-10-19T04:23:13Z",
   "budget-paused:2026-10": "2026-10-23T12:24:49Z"
  },
- "last_link_pass": "2026-11-06T22:28:43Z"
+ "last_link_pass": "2026-11-07T13:27:59Z"
 }
